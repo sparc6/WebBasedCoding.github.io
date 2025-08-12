@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Python Kod Editörü - Oyunlaştırma Platformu</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css"
+    />
+    <!-- Pyodide CDN -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+  </head>
+  <body>
+    <div class="app-container">
+      <!-- Header -->
+      <header class="header">
+        <div class="header-left">
+          <h1 class="logo">🐍 Python Kod Editörü</h1>
+        </div>
+        <div class="header-center">
+          <div class="level-info">
+            <span class="level-badge">Seviye 1</span>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 25%"></div>
+            </div>
+            <span class="points">125 Puan</span>
+          </div>
+        </div>
+        <div class="header-right">
+          <button class="btn btn-secondary" id="themeBtn">🌙</button>
+          <button class="btn btn-secondary" id="profileBtn">👤 Profil</button>
+          <button class="btn btn-primary" id="helpBtn">❓ Yardım</button>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+          <div class="sidebar-section">
+            <h3>📚 Görevler</h3>
+            <div class="task-list" id="taskList">
+              <!-- Tasks will be populated by JavaScript -->
+            </div>
+          </div>
+
+          <div class="sidebar-section">
+            <h3>🗺️ İlerleme Haritası</h3>
+            <div class="progress-map" id="progressMap">
+              <!-- Progress map will be populated by JavaScript -->
+            </div>
+          </div>
+        </aside>
+
+        <!-- Editor Area -->
+        <section class="editor-area">
+          <div class="editor-header">
+            <h2 id="currentTaskTitle">Görev Seçin</h2>
+            <div class="editor-controls">
+              <button class="btn btn-success" id="runBtn">▶️ Çalıştır</button>
+              <button class="btn btn-info" id="resetBtn">🔄 Sıfırla</button>
+              <button class="btn btn-warning" id="hintBtn">💡 İpucu</button>
+            </div>
+          </div>
+
+          <div class="editor-container">
+            <textarea id="codeEditor"></textarea>
+          </div>
+
+          <div class="output-container">
+            <div class="output-header">
+              <h3>📤 Çıktı</h3>
+              <button class="btn btn-sm" id="clearOutputBtn">Temizle</button>
+            </div>
+            <div class="output-content" id="outputContent">
+              <div class="welcome-message">
+                <h3>🎉 Python Kod Editörüne Hoş Geldiniz!</h3>
+                <p>Sol menüden bir görev seçin ve kodlamaya başlayın.</p>
+                <div class="features">
+                  <div class="feature">
+                    <span>🎨</span>
+                    <p>Syntax Highlighting</p>
+                  </div>
+                  <div class="feature">
+                    <span>⚡</span>
+                    <p>Hızlı Çalıştırma</p>
+                  </div>
+                  <div class="feature">
+                    <span>🏆</span>
+                    <p>Puan Sistemi</p>
+                  </div>
+                  <div class="feature">
+                    <span>🎯</span>
+                    <p>Görevler</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal" id="profileModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>👤 Kullanıcı Profili</h3>
+          <button class="close-btn" id="closeProfileModal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="profile-stats">
+            <div class="stat">
+              <span class="stat-value" id="totalPoints">0</span>
+              <span class="stat-label">Toplam Puan</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value" id="completedTasks">0</span>
+              <span class="stat-label">Tamamlanan Görev</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value" id="currentLevel">1</span>
+              <span class="stat-label">Mevcut Seviye</span>
+            </div>
+          </div>
+          <div class="achievements">
+            <h4>🏆 Başarılar</h4>
+            <div class="achievement-list" id="achievementList">
+              <!-- Achievements will be populated by JavaScript -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="helpModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>❓ Yardım</h3>
+          <button class="close-btn" id="closeHelpModal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <h4>🎮 Nasıl Kullanılır?</h4>
+          <ol>
+            <li>Sol menüden bir görev seçin</li>
+            <li>Kod editöründe Python kodunuzu yazın</li>
+            <li>"Çalıştır" butonuna tıklayın</li>
+            <li>Sonuçları alt panelde görün</li>
+            <li>Görevi tamamladığınızda puan kazanın!</li>
+          </ol>
+
+          <h4>📚 Desteklenen Kütüphaneler</h4>
+          <ul>
+            <li><code>pandas</code> - Veri analizi</li>
+            <li><code>matplotlib</code> - Grafik çizimi</li>
+            <li><code>turtle</code> - Çizim ve animasyon</li>
+            <li><code>random</code> - Rastgele sayılar</li>
+            <li><code>math</code> - Matematiksel işlemler</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Confetti Container -->
+    <div id="confettiContainer"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/closebrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/matchbrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/trailingspace.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/selection/active-line.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/python-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/anyword-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.css"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/anyword-hint.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/python-hint.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
