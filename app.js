@@ -445,7 +445,12 @@ function runCode() {
   }
 
   const code = editor.getValue();
-  showOutput("info", "🔄 Kod çalıştırılıyor...");
+  
+  // Show loading panel
+  showLoadingPanel();
+  
+  // Clear previous output
+  clearOutput();
 
   // Pyodide yüklüyse gerçek Python çalıştır, değilse simülasyon kullan
   if (isPyodideLoaded && pyodide) {
@@ -474,6 +479,9 @@ sys.stdout = io.StringIO()
     // stdout'u geri yükle
     pyodide.runPython("sys.stdout = sys.__stdout__");
 
+    // Hide loading panel
+    hideLoadingPanel();
+
     showOutput(
       "success",
       `✅ Gerçek Python kodu çalıştırıldı!\n\n📤 Çıktı:\n${output}`
@@ -484,6 +492,8 @@ sys.stdout = io.StringIO()
       completeTask(currentTask);
     }
   } catch (error) {
+    // Hide loading panel on error
+    hideLoadingPanel();
     showOutput("error", `❌ Python hatası:\n${error.message}`);
   }
 }
@@ -495,6 +505,9 @@ function runSimulatedPython(code) {
       const result = simulatePythonExecution(code);
 
       if (result.success) {
+        // Hide loading panel
+        hideLoadingPanel();
+        
         showOutput(
           "success",
           `✅ Kod simülasyonu çalıştırıldı!\n\n📤 Çıktı:\n${result.output}`
@@ -504,9 +517,13 @@ function runSimulatedPython(code) {
           completeTask(currentTask);
         }
       } else {
+        // Hide loading panel on error
+        hideLoadingPanel();
         showOutput("error", `❌ Hata oluştu:\n${result.error}`);
       }
     } catch (error) {
+      // Hide loading panel on error
+      hideLoadingPanel();
       showOutput("error", `❌ Beklenmeyen hata:\n${error.message}`);
     }
   }, 1000);
@@ -745,6 +762,43 @@ function disableDragging(modal) {
   
   // Reset transform
   modalContent.style.transform = 'none';
+}
+
+// Show Loading Panel
+function showLoadingPanel() {
+  const loadingPanel = document.getElementById("loadingPanel");
+  loadingPanel.classList.add("show");
+  
+  // Store the start time to ensure minimum display duration
+  loadingPanel.dataset.startTime = Date.now();
+  
+  // Set a timeout to hide loading panel after 30 seconds (safety measure)
+  setTimeout(() => {
+    if (loadingPanel.classList.contains("show")) {
+      hideLoadingPanel();
+      showOutput("warning", "⚠️ Kod çalıştırma zaman aşımına uğradı. Lütfen tekrar deneyin.");
+    }
+  }, 30000);
+}
+
+// Hide Loading Panel
+function hideLoadingPanel() {
+  const loadingPanel = document.getElementById("loadingPanel");
+  const startTime = parseInt(loadingPanel.dataset.startTime) || 0;
+  const currentTime = Date.now();
+  const elapsedTime = currentTime - startTime;
+  const minimumDisplayTime = 500; // 0.5 seconds in milliseconds
+  
+  if (elapsedTime < minimumDisplayTime) {
+    // If less than 0.5 seconds has passed, wait for the remaining time
+    const remainingTime = minimumDisplayTime - elapsedTime;
+    setTimeout(() => {
+      loadingPanel.classList.remove("show");
+    }, remainingTime);
+  } else {
+    // If 0.5 seconds or more has passed, hide immediately
+    loadingPanel.classList.remove("show");
+  }
 }
 
 // Show Output
