@@ -349,31 +349,7 @@ function getCategoryIcon(category) {
   return icons[category] || "📚";
 }
 
-// Select Task
-function selectTask(task) {
-  currentTask = task;
 
-  // Update active task in sidebar
-  document.querySelectorAll(".task-item").forEach((item) => {
-    item.classList.remove("active");
-  });
-  document.querySelector(`[data-task-id="${task.id}"]`).classList.add("active");
-
-  // Update editor content
-  editor.setValue(task.starterCode);
-
-  // Update task title
-  document.getElementById("currentTaskTitle").textContent = task.title;
-
-  // Clear output
-  clearOutput();
-
-  // Show welcome message
-  showOutput(
-    "info",
-    `🎯 Görev: ${task.title}\n📝 ${task.description}\n🏆 Puan: ${task.points}`
-  );
-}
 
 // Setup Event Listeners
 function setupEventListeners() {
@@ -661,10 +637,85 @@ function showHint() {
   hintModal.classList.add("show");
 }
 
+// Update Pinned Hint
+function updatePinnedHint(task) {
+  const hintModal = document.getElementById("hintModal");
+  
+  console.log("updatePinnedHint called for task:", task.title);
+  console.log("Hint modal held status:", hintModal.classList.contains("held"));
+  
+  // Check if hint modal is pinned
+  if (hintModal.classList.contains("held")) {
+    console.log("Updating pinned hint content...");
+    
+    const hints = task.hints;
+    const randomHint = hints[Math.floor(Math.random() * hints.length)];
+    
+    // Update hint content with new task information
+    const hintContent = document.getElementById("hintContent");
+    hintContent.innerHTML = `
+      <h4>💡 ${task.title} İpucu</h4>
+      <p><strong>İpucu:</strong> ${randomHint}</p>
+    `;
+    
+    // Add a subtle animation to show the hint was updated
+    hintContent.style.animation = "hintUpdate 0.5s ease";
+    setTimeout(() => {
+      hintContent.style.animation = "";
+    }, 500);
+    
+    // Show a brief update notification
+    showHintUpdateNotification();
+    
+    console.log("Hint updated successfully");
+  } else {
+    console.log("Hint modal is not pinned, no update needed");
+  }
+}
+
+// Show Hint Update Notification
+function showHintUpdateNotification() {
+  // Create notification element
+  const notification = document.createElement("div");
+  notification.className = "hint-update-notification";
+  notification.innerHTML = "🔄 İpucu güncellendi";
+  
+  // Add to the pinned hint modal
+  const hintModal = document.getElementById("hintModal");
+  const modalContent = hintModal.querySelector(".modal-content");
+  
+  // Position the notification at the top of the modal
+  modalContent.appendChild(notification);
+  
+  // Remove notification after 2 seconds
+  setTimeout(() => {
+    if (notification.parentNode) {
+      notification.remove();
+    }
+  }, 2000);
+}
+
+// Debug function to check hint modal state
+function debugHintState() {
+  const hintModal = document.getElementById("hintModal");
+  const holdBtn = document.getElementById("holdHintBtn");
+  
+  console.log("=== Hint Modal Debug Info ===");
+  console.log("Modal element:", hintModal);
+  console.log("Modal classes:", hintModal.className);
+  console.log("Is held:", hintModal.classList.contains("held"));
+  console.log("Is visible:", hintModal.classList.contains("show"));
+  console.log("Hold button text:", holdBtn.textContent);
+  console.log("Current task:", currentTask ? currentTask.title : "None");
+  console.log("=============================");
+}
+
 // Hold Hint Function
 function holdHint() {
   const holdBtn = document.getElementById("holdHintBtn");
   const hintModal = document.getElementById("hintModal");
+  
+  console.log("holdHint called, current state:", holdBtn.textContent);
   
   if (holdBtn.textContent === "📌 Sabitle") {
     // Pin the hint window
@@ -672,6 +723,8 @@ function holdHint() {
     holdBtn.classList.add("btn-warning");
     holdBtn.classList.remove("btn-secondary");
     hintModal.classList.add("held");
+    
+    console.log("Hint pinned, held class added:", hintModal.classList.contains("held"));
     
     // Add a visual indicator that it's pinned
     holdBtn.title = "İpucu penceresi sabitlendi";
@@ -684,6 +737,8 @@ function holdHint() {
     holdBtn.classList.remove("btn-warning");
     holdBtn.classList.add("btn-secondary");
     hintModal.classList.remove("held");
+    
+    console.log("Hint unpinned, held class removed:", hintModal.classList.contains("held"));
     
     // Remove the visual indicator
     holdBtn.title = "İpucu penceresini sabitle";
@@ -966,6 +1021,12 @@ document.addEventListener("keydown", function (e) {
         break;
     }
   }
+  
+  // Debug shortcut: Ctrl+Shift+D
+  if (e.ctrlKey && e.shiftKey && e.key === "D") {
+    e.preventDefault();
+    debugHintState();
+  }
 });
 
 // Auto-save code changes
@@ -987,6 +1048,8 @@ function loadSavedCode(taskId) {
 
 // Enhanced task selection with saved code
 function selectTask(task) {
+  console.log("selectTask called for:", task.title);
+  
   currentTask = task;
 
   // Update active task in sidebar
@@ -1010,6 +1073,9 @@ function selectTask(task) {
     "info",
     `🎯 Görev: ${task.title}\n📝 ${task.description}\n🏆 Puan: ${task.points}`
   );
+
+  // Update pinned hint if it exists
+  updatePinnedHint(task);
 }
 
 // Theme Toggle Function

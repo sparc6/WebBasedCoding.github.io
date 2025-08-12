@@ -207,22 +207,95 @@ body {
   overflow: hidden;
 }
 
+.task-item.completed {
+  transition: all 0.3s ease, box-shadow 0.2s ease;
+}
+
 .task-item:hover {
   border-color: #667eea;
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
 }
 
+.task-item.completed:hover {
+  border-color: #28a745;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
 .task-item.active {
   border-color: #667eea;
   background: linear-gradient(135deg, #667eea, #764ba2);
   color: white;
+  border-width: 3px;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.3), 0 4px 15px rgba(102, 126, 234, 0.2);
 }
 
 .task-item.completed {
   border-color: #28a745;
   background: linear-gradient(135deg, #28a745, #20c997);
   color: white;
+  position: relative;
+}
+
+.task-item.completed::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #28a745, #20c997, #28a745);
+  border-radius: 14px;
+  z-index: -1;
+  opacity: 0.3;
+}
+
+/* Completed task when selected - should maintain completed appearance but with selection indicator */
+.task-item.completed.active {
+  border-color: #28a745;
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: white;
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.6), 0 4px 15px rgba(40, 167, 69, 0.3);
+  transform: translateY(-2px);
+  animation: completedTaskPulse 2s ease-in-out infinite;
+}
+
+.task-item.completed.active::after {
+  content: "✓";
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: white;
+  color: #28a745;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 0.8rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  animation: completedCheckPulse 1s ease-in-out infinite;
+}
+
+@keyframes completedCheckPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+@keyframes completedTaskPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.6), 0 4px 15px rgba(40, 167, 69, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 0 5px rgba(102, 126, 234, 0.8), 0 6px 20px rgba(40, 167, 69, 0.4);
+  }
 }
 
 .task-item.completed::after {
@@ -858,6 +931,21 @@ body {
   }
 }
 
+@keyframes hintUpdate {
+  0% {
+    opacity: 0.7;
+    transform: scale(0.98);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 @keyframes spin {
   0% {
     transform: rotate(0deg);
@@ -963,6 +1051,30 @@ body {
 .dark-theme .task-item.active {
   background: linear-gradient(135deg, var(--accent-color), #764ba2);
   border-color: var(--accent-color);
+}
+
+.dark-theme .task-item.completed.active {
+  border-color: #28a745;
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: white;
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.6), 0 4px 15px rgba(40, 167, 69, 0.3);
+  border-width: 3px;
+}
+
+.dark-theme .task-item.completed {
+  border-color: #28a745;
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: white;
+  box-shadow: 0 2px 8px rgba(40, 167, 69, 0.2);
+}
+
+.dark-theme .task-item.completed:hover {
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+.dark-theme .task-item.active {
+  border-width: 3px;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.3), 0 4px 15px rgba(102, 126, 234, 0.2);
 }
 
 .dark-theme .task-description {
@@ -1204,6 +1316,35 @@ body {
   cursor: grabbing;
 }
 
+/* Hint Update Notification */
+.hint-update-notification {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(45deg, #28a745, #20c997);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  z-index: 1004;
+  animation: notificationSlideIn 0.3s ease;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+@keyframes notificationSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
 /* Theme Toggle Button */
 #themeBtn {
   transition: all 0.3s ease;
@@ -1269,6 +1410,11 @@ body {
 
 .dark-theme .loading-progress .progress-bar {
   background: var(--bg-tertiary);
+}
+
+.dark-theme .hint-update-notification {
+  background: linear-gradient(45deg, var(--success-color), #20c997);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
 }
 
 
