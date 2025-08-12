@@ -377,48 +377,7 @@ body {
   min-height: 0;
 }
 
-.welcome-message {
-  text-align: center;
-  color: #6c757d;
-}
 
-.welcome-message h3 {
-  color: #495057;
-  margin-bottom: 1rem;
-  font-size: 1.5rem;
-}
-
-.features {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 1rem;
-  margin-top: 2rem;
-}
-
-.feature {
-  text-align: center;
-  padding: 1rem;
-  background: white;
-  border-radius: 12px;
-  border: 1px solid #e9ecef;
-  transition: all 0.3s ease;
-}
-
-.feature:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-.feature span {
-  font-size: 2rem;
-  display: block;
-  margin-bottom: 0.5rem;
-}
-
-.feature p {
-  font-weight: 500;
-  color: #495057;
-}
 
 /* Output Styling */
 .output-success {
@@ -667,9 +626,7 @@ body {
     grid-template-columns: 1fr;
   }
 
-  .features {
-    grid-template-columns: repeat(2, 1fr);
-  }
+
 }
 
 /* Animations */
@@ -846,23 +803,7 @@ body {
   color: var(--text-primary);
 }
 
-.dark-theme .welcome-message h3 {
-  color: var(--text-primary);
-}
 
-.dark-theme .welcome-message p {
-  color: var(--text-secondary);
-}
-
-.dark-theme .feature {
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
-}
-
-.dark-theme .feature:hover {
-  background: var(--accent-color);
-  border-color: var(--accent-color);
-}
 
 .dark-theme .modal-content {
   background: var(--bg-secondary);
