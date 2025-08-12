@@ -894,16 +894,22 @@ body {
 .hint-modal.held .modal-content::before {
   content: "📌 Sabitlendi";
   position: absolute;
-  top: -10px;
+  top: -25px;
   left: 50%;
   transform: translateX(-50%);
   background: #667eea;
   color: white;
-  padding: 4px 12px;
-  border-radius: 12px;
-  font-size: 0.8rem;
+  padding: 8px 18px;
+  border-radius: 18px;
+  font-size: 0.85rem;
   font-weight: 600;
   z-index: 1003;
+  white-space: nowrap;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+  line-height: 1;
+  min-width: 120px;
+  text-align: center;
+  pointer-events: none;
 }
 
 .hint-content {
@@ -964,7 +970,7 @@ body {
 /* Held hint modal styles */
 .hint-modal.held .modal-content {
   position: fixed;
-  top: 20px;
+  top: 45px;
   right: 20px;
   bottom: auto;
   left: auto;
@@ -977,6 +983,8 @@ body {
   z-index: 1002;
   animation: pinnedHintAppear 0.3s ease;
   cursor: grab;
+  margin-top: 10px;
+  overflow: visible;
 }
 
 .hint-modal.held .modal-content:active {
@@ -1003,6 +1011,7 @@ body {
   background: transparent;
   pointer-events: none;
   backdrop-filter: none;
+  overflow: visible;
 }
 
 .hint-modal.held .modal-content {
