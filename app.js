@@ -410,10 +410,27 @@ function setupEventListeners() {
     .getElementById("closeHelpModal")
     .addEventListener("click", () => hideModal("helpModal"));
 
+  // Hint modal buttons
+  document
+    .getElementById("holdHintBtn")
+    .addEventListener("click", holdHint);
+  
+  // Set initial title for hold button
+  document.getElementById("holdHintBtn").title = "İpucu penceresini sabitle";
+  
+  // Close hint modal button
+  document
+    .getElementById("closeHintModal")
+    .addEventListener("click", () => hideModal("hintModal"));
+
   // Close modal on outside click
   document.querySelectorAll(".modal").forEach((modal) => {
     modal.addEventListener("click", (e) => {
       if (e.target === modal) {
+        // Don't close if it's a held hint modal
+        if (modal.id === "hintModal" && modal.classList.contains("held")) {
+          return;
+        }
         modal.classList.remove("show");
       }
     });
@@ -603,14 +620,131 @@ function resetCode() {
 // Show Hint
 function showHint() {
   if (!currentTask) {
-    showOutput("error", "❌ Lütfen önce bir görev seçin!");
+    // Don't show output message, just return silently
     return;
   }
 
+  // Add animation to hint button
+  const hintBtn = document.getElementById("hintBtn");
+  hintBtn.classList.add("hint-active");
+  setTimeout(() => hintBtn.classList.remove("hint-active"), 600);
+
   const hints = currentTask.hints;
   const randomHint = hints[Math.floor(Math.random() * hints.length)];
+  
+  // Populate hint content
+  const hintContent = document.getElementById("hintContent");
+  hintContent.innerHTML = `
+    <h4>💡 ${currentTask.title} İpucu</h4>
+    <p><strong>İpucu:</strong> ${randomHint}</p>
+  `;
+  
+  // Show hint modal
+  const hintModal = document.getElementById("hintModal");
+  hintModal.classList.add("show");
+}
 
-  showOutput("info", `💡 İpucu: ${randomHint}`);
+// Hold Hint Function
+function holdHint() {
+  const holdBtn = document.getElementById("holdHintBtn");
+  const hintModal = document.getElementById("hintModal");
+  
+  if (holdBtn.textContent === "📌 Sabitle") {
+    // Pin the hint window
+    holdBtn.textContent = "🔓 Bırak";
+    holdBtn.classList.add("btn-warning");
+    holdBtn.classList.remove("btn-secondary");
+    hintModal.classList.add("held");
+    
+    // Add a visual indicator that it's pinned
+    holdBtn.title = "İpucu penceresi sabitlendi";
+    
+    // Enable dragging for pinned modal
+    enableDragging(hintModal);
+  } else {
+    // Unpin the hint window
+    holdBtn.textContent = "📌 Sabitle";
+    holdBtn.classList.remove("btn-warning");
+    holdBtn.classList.add("btn-secondary");
+    hintModal.classList.remove("held");
+    
+    // Remove the visual indicator
+    holdBtn.title = "İpucu penceresini sabitle";
+    
+    // Disable dragging
+    disableDragging(hintModal);
+  }
+}
+
+// Enable dragging for modal
+function enableDragging(modal) {
+  const modalContent = modal.querySelector('.modal-content');
+  let isDragging = false;
+  let currentX;
+  let currentY;
+  let initialX;
+  let initialY;
+  let xOffset = 0;
+  let yOffset = 0;
+
+  function dragStart(e) {
+    if (e.target.closest('.close-btn') || e.target.closest('#holdHintBtn')) {
+      return; // Don't start dragging if clicking on buttons
+    }
+    
+    initialX = e.clientX - xOffset;
+    initialY = e.clientY - yOffset;
+    
+    if (e.target === modalContent || e.target.closest('.modal-header')) {
+      isDragging = true;
+    }
+  }
+
+  function dragEnd() {
+    initialX = currentX;
+    initialY = currentY;
+    isDragging = false;
+  }
+
+  function drag(e) {
+    if (isDragging) {
+      e.preventDefault();
+      currentX = e.clientX - initialX;
+      currentY = e.clientY - initialY;
+      
+      xOffset = currentX;
+      yOffset = currentY;
+      
+      setTranslate(currentX, currentY, modalContent);
+    }
+  }
+
+  function setTranslate(xPos, yPos, el) {
+    el.style.transform = `translate(${xPos}px, ${yPos}px)`;
+  }
+
+  // Remove any existing event listeners
+  modalContent.removeEventListener('mousedown', dragStart);
+  document.removeEventListener('mousemove', drag);
+  document.removeEventListener('mouseup', dragEnd);
+
+  // Add new event listeners
+  modalContent.addEventListener('mousedown', dragStart);
+  document.addEventListener('mousemove', drag);
+  document.addEventListener('mouseup', dragEnd);
+}
+
+// Disable dragging for modal
+function disableDragging(modal) {
+  const modalContent = modal.querySelector('.modal-content');
+  
+  // Remove event listeners
+  modalContent.removeEventListener('mousedown', null);
+  document.removeEventListener('mousemove', null);
+  document.removeEventListener('mouseup', null);
+  
+  // Reset transform
+  modalContent.style.transform = 'none';
 }
 
 // Show Output
@@ -628,28 +762,7 @@ function showOutput(type, message) {
 function clearOutput() {
   const outputContent = document.getElementById("outputContent");
   outputContent.innerHTML = `
-        <div class="welcome-message">
-            <h3>🎉 Python Kod Editörüne Hoş Geldiniz!</h3>
-            <p>Sol menüden bir görev seçin ve kodlamaya başlayın.</p>
-            <div class="features">
-                <div class="feature">
-                    <span>🎨</span>
-                    <p>Syntax Highlighting</p>
-                </div>
-                <div class="feature">
-                    <span>⚡</span>
-                    <p>Hızlı Çalıştırma</p>
-                </div>
-                <div class="feature">
-                    <span>🏆</span>
-                    <p>Puan Sistemi</p>
-                </div>
-                <div class="feature">
-                    <span>🎯</span>
-                    <p>Görevler</p>
-                </div>
-            </div>
-        </div>
+        <!-- Output will be displayed here -->
     `;
 }
 
