@@ -1437,4 +1437,188 @@ body {
   box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
 }
 
+/* Custom Autocomplete Styling */
+.CodeMirror-hints {
+  position: absolute;
+  z-index: 1000;
+  overflow: hidden;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  font-size: 14px;
+  max-height: 300px;
+  overflow-y: auto;
+  min-width: 200px;
+}
+
+.dark-theme .CodeMirror-hints {
+  background: #2d3748;
+  border-color: #4a5568;
+  color: #e2e8f0;
+}
+
+.CodeMirror-hint {
+  margin: 0;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.CodeMirror-hint:hover {
+  background-color: #f7fafc;
+}
+
+.dark-theme .CodeMirror-hint:hover {
+  background-color: #4a5568;
+}
+
+.CodeMirror-hint-active {
+  background-color: #e2e8f0 !important;
+  color: #2d3748;
+}
+
+.dark-theme .CodeMirror-hint-active {
+  background-color: #4a5568 !important;
+  color: #e2e8f0;
+}
+
+/* Hint type styling */
+.cm-hint-keyword {
+  color: #805ad5;
+  font-weight: 600;
+}
+
+.dark-theme .cm-hint-keyword {
+  color: #d6bcfa;
+}
+
+.cm-hint-builtin {
+  color: #3182ce;
+  font-weight: 500;
+}
+
+.dark-theme .cm-hint-builtin {
+  color: #90cdf4;
+}
+
+.cm-hint-identifier {
+  color: #38a169;
+  font-weight: 500;
+}
+
+.dark-theme .cm-hint-identifier {
+  color: #9ae6b4;
+}
+
+.cm-hint-member {
+  color: #dd6b20;
+  font-weight: 500;
+}
+
+.dark-theme .cm-hint-member {
+  color: #fbd38d;
+}
+
+/* Hint description tooltip */
+.CodeMirror-hint-description {
+  font-size: 12px;
+  color: #718096;
+  margin-left: 8px;
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dark-theme .CodeMirror-hint-description {
+  color: #a0aec0;
+}
+
+/* Hint frequency indicator */
+.hint-frequency {
+  font-size: 11px;
+  color: #a0aec0;
+  background: #f7fafc;
+  padding: 2px 6px;
+  border-radius: 10px;
+  margin-left: 8px;
+}
+
+.dark-theme .hint-frequency {
+  color: #718096;
+  background: #4a5568;
+}
+
+/* Loading indicator for Pyodide hints */
+.hint-loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #718096;
+  font-style: italic;
+}
+
+.dark-theme .hint-loading {
+  color: #a0aec0;
+}
+
+.hint-loading::before {
+  content: '';
+  width: 12px;
+  height: 12px;
+  border: 2px solid #e2e8f0;
+  border-top: 2px solid #3182ce;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Ensure hints are properly positioned above other elements */
+.CodeMirror-hints {
+  z-index: 9999 !important;
+}
+
+/* Better scrolling for hints */
+.CodeMirror-hints::-webkit-scrollbar {
+  width: 8px;
+}
+
+.CodeMirror-hints::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.dark-theme .CodeMirror-hints::-webkit-scrollbar-track {
+  background: #4a5568;
+}
+
+.CodeMirror-hints::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.dark-theme .CodeMirror-hints::-webkit-scrollbar-thumb {
+  background: #718096;
+}
+
+.CodeMirror-hints::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+.dark-theme .CodeMirror-hints::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}
+
 

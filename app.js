@@ -11,6 +11,471 @@ let userProgress = {
   achievements: [],
 };
 
+// Python Autocomplete Data
+const PYTHON_KEYWORDS = [
+  'False', 'None', 'True', 'and', 'as', 'assert', 'async', 'await', 'break', 'class',
+  'continue', 'def', 'del', 'elif', 'else', 'except', 'finally', 'for', 'from', 'global',
+  'if', 'import', 'in', 'is', 'lambda', 'nonlocal', 'not', 'or', 'pass', 'raise',
+  'return', 'try', 'while', 'with', 'yield'
+];
+
+const PYTHON_BUILTINS = [
+  'abs', 'all', 'any', 'ascii', 'bin', 'bool', 'breakpoint', 'bytearray', 'bytes',
+  'callable', 'chr', 'classmethod', 'compile', 'complex', 'delattr', 'dict', 'dir',
+  'divmod', 'enumerate', 'eval', 'exec', 'filter', 'float', 'format', 'frozenset',
+  'getattr', 'globals', 'hasattr', 'hash', 'help', 'hex', 'id', 'input', 'int',
+  'isinstance', 'issubclass', 'iter', 'len', 'list', 'locals', 'map', 'max', 'memoryview',
+  'min', 'next', 'object', 'oct', 'open', 'ord', 'pow', 'print', 'property', 'range',
+  'repr', 'reversed', 'round', 'set', 'setattr', 'slice', 'sorted', 'staticmethod',
+  'str', 'sum', 'super', 'tuple', 'type', 'vars', 'zip'
+];
+
+// Documentation for common Python functions and objects
+const PYTHON_DOCS = {
+  'print': 'print(*objects, sep=" ", end="\\n", file=sys.stdout, flush=False) - Print objects to the text stream file',
+  'range': 'range(stop) or range(start, stop[, step]) - Return an object that produces a sequence of integers',
+  'len': 'len(s) - Return the length (the number of items) of an object',
+  'sum': 'sum(iterable[, start]) - Sums start and the items of an iterable from left to right',
+  'list': 'list([iterable]) - Return a list whose items are the same and in the same order as iterable\'s items',
+  'dict': 'dict(**kwarg) or dict(mapping, **kwarg) or dict(iterable, **kwarg) - Create a new dictionary',
+  'str': 'str(object=\'\') - Return a str version of object',
+  'int': 'int([x]) or int(x, base=10) - Return an integer object constructed from a number or string x',
+  'float': 'float([x]) - Return a floating point number constructed from a number or string x',
+  'bool': 'bool([x]) - Return a Boolean value, i.e. one of True or False',
+  'type': 'type(object) or type(name, bases, dict) - Return the type of an object',
+  'isinstance': 'isinstance(object, classinfo) - Return True if the object argument is an instance of the classinfo argument',
+  'max': 'max(iterable, *[, key, default]) or max(arg1, arg2, *args[, key]) - Return the largest item in an iterable',
+  'min': 'min(iterable, *[, key, default]) or min(arg1, arg2, *args[, key]) - Return the smallest item in an iterable',
+  'sorted': 'sorted(iterable, *, key=None, reverse=False) - Return a new sorted list from the items in iterable',
+  'reversed': 'reversed(seq) - Return a reverse iterator over the values of the given sequence',
+  'enumerate': 'enumerate(iterable, start=0) - Return an enumerate object',
+  'zip': 'zip(*iterables) - Make an iterator that aggregates elements from each of the iterables',
+  'map': 'map(function, iterable, ...) - Return an iterator that applies function to every item of iterable',
+  'filter': 'filter(function, iterable) - Construct an iterator from those elements of iterable for which function returns true',
+  'open': 'open(file, mode=\'r\', buffering=-1, encoding=None, errors=None, newline=None, closefd=True, opener=None) - Open file and return a corresponding file object',
+  'input': 'input([prompt]) - If the prompt argument is present, it is written to standard output without a trailing newline',
+  'format': 'format(value[, format_spec]) - Convert a value to a "formatted" representation, as controlled by format_spec',
+  'chr': 'chr(i) - Return the string representing a character whose Unicode code point is the integer i',
+  'ord': 'ord(c) - Given a string representing one Unicode character, return an integer representing the Unicode code point of that character',
+  'hex': 'hex(x) - Convert an integer number to a lowercase hexadecimal string prefixed with "0x"',
+  'bin': 'bin(x) - Convert an integer number to a binary string prefixed with "0b"',
+  'oct': 'oct(x) - Convert an integer number to an octal string prefixed with "0o"',
+  'abs': 'abs(x) - Return the absolute value of a number',
+  'round': 'round(number[, ndigits]) - Return number rounded to ndigits precision after the decimal point',
+  'pow': 'pow(base, exp[, mod]) - Return base to the power exp; if mod is present, return base to the power exp, modulo mod',
+  'divmod': 'divmod(a, b) - Return the pair (a // b, a % b)',
+  'hash': 'hash(object) - Return the hash value of the object (if it has one)',
+  'id': 'id(object) - Return the "identity" of an object',
+  'callable': 'callable(object) - Return True if the object argument appears callable, False if not',
+  'getattr': 'getattr(object, name[, default]) - Return the value of the named attribute of object',
+  'hasattr': 'hasattr(object, name) - The arguments are an object and a string',
+  'setattr': 'setattr(object, name, value) - This is the counterpart of getattr()',
+  'delattr': 'delattr(object, name) - This is a relative of setattr()',
+  'property': 'property(fget=None, fset=None, fdel=None, doc=None) - Return a property attribute',
+  'staticmethod': 'staticmethod(function) - Transform a method into a static method',
+  'classmethod': 'classmethod(function) - Transform a method into a class method',
+  'super': 'super([type[, object-or-type]]) - Return a proxy object that delegates method calls to a parent or sibling class',
+  'issubclass': 'issubclass(class, classinfo) - Return True if class is a subclass (direct, indirect or virtual) of classinfo',
+  'compile': 'compile(source, filename, mode, flags=0, dont_inherit=False, optimize=-1) - Compile the source into a code or AST object',
+  'eval': 'eval(expression[, globals[, locals]]) - The arguments are a string and optional globals and locals',
+  'exec': 'exec(object[, globals[, locals]]) - This function supports dynamic execution of Python code',
+  'globals': 'globals() - Return a dictionary representing the current global symbol table',
+  'locals': 'locals() - Update and return a dictionary representing the current local symbol table',
+  'vars': 'vars([object]) - Return the __dict__ attribute for a module, class, instance, or any other object with a __dict__ attribute',
+  'dir': 'dir([object]) - Without arguments, return the list of names in the current local scope',
+  'help': 'help([object]) - Invoke the built-in help system',
+  'breakpoint': 'breakpoint(*args, **kws) - This function drops you into the debugger at the call site',
+  'memoryview': 'memoryview(object) - Return a "memory view" object created from the given argument',
+  'bytearray': 'bytearray([source[, encoding[, errors]]]) - Return a new array of bytes',
+  'bytes': 'bytes([source[, encoding[, errors]]]) - Return a new "bytes" object',
+  'frozenset': 'frozenset([iterable]) - Return a new frozenset object, optionally with elements taken from iterable',
+  'set': 'set([iterable]) - Return a new set object, optionally with elements taken from iterable',
+  'tuple': 'tuple([iterable]) - Rather than being a function, tuple is actually an immutable sequence type',
+  'complex': 'complex([real[, imag]]) - Return a complex number with the value real + imag*1j or convert a string or number to a complex number'
+};
+
+// Common Python modules and their key attributes
+const PYTHON_MODULES = {
+  'math': ['pi', 'e', 'sqrt', 'sin', 'cos', 'tan', 'log', 'exp', 'pow', 'floor', 'ceil', 'abs'],
+  'random': ['randint', 'choice', 'shuffle', 'random', 'uniform', 'seed'],
+  'turtle': ['Turtle', 'Screen', 'done', 'forward', 'backward', 'right', 'left', 'penup', 'pendown'],
+  'datetime': ['datetime', 'date', 'time', 'timedelta', 'now', 'today'],
+  'os': ['path', 'listdir', 'mkdir', 'remove', 'rename', 'getcwd'],
+  'sys': ['argv', 'path', 'version', 'platform', 'exit'],
+  'json': ['loads', 'dumps', 'load', 'dump'],
+  're': ['search', 'match', 'findall', 'sub', 'compile'],
+  'collections': ['Counter', 'defaultdict', 'OrderedDict', 'deque'],
+  'itertools': ['count', 'cycle', 'repeat', 'chain', 'combinations', 'permutations']
+};
+
+// Pyodide member cache for performance
+const pyodideMemberCache = new Map();
+const CACHE_TTL = 60000; // 60 seconds
+
+// Extract identifiers from editor buffer
+function extractBufferIdentifiers(code) {
+  const identifierRegex = /\b[A-Za-z_]\w*\b/g;
+  const identifiers = new Map();
+  
+  let match;
+  while ((match = identifierRegex.exec(code)) !== null) {
+    const identifier = match[0];
+    if (!PYTHON_KEYWORDS.includes(identifier) && !PYTHON_BUILTINS.includes(identifier)) {
+      identifiers.set(identifier, (identifiers.get(identifier) || 0) + 1);
+    }
+  }
+  
+  return identifiers;
+}
+
+// Get Pyodide object members safely
+async function getPyodideMembers(objectName) {
+  if (!isPyodideLoaded || !pyodide) {
+    // Fallback to static module suggestions
+    return PYTHON_MODULES[objectName] || [];
+  }
+  
+  // Check cache first
+  const cached = pyodideMemberCache.get(objectName);
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+    return cached.members;
+  }
+  
+  try {
+    // Safely evaluate dir(objectName) in Pyodide
+    const members = await pyodide.runPythonAsync(`
+try:
+    import sys
+    if '${objectName}' in globals():
+        result = dir(${objectName})
+    elif '${objectName}' in sys.modules:
+        result = dir(sys.modules['${objectName}'])
+    else:
+        result = []
+    result
+except:
+    []
+`);
+    
+    // Cache the result
+    pyodideMemberCache.set(objectName, {
+      members: members,
+      timestamp: Date.now()
+    });
+    
+    return members;
+  } catch (error) {
+    console.warn(`Failed to get members for ${objectName}:`, error);
+    // Fallback to static module suggestions
+    return PYTHON_MODULES[objectName] || [];
+  }
+}
+
+// Get type information for Pyodide objects
+async function getPyodideType(objectName) {
+  if (!isPyodideLoaded || !pyodide) {
+    return '';
+  }
+  
+  try {
+    const typeResult = await pyodide.runPythonAsync(`
+try:
+    import sys
+    if '${objectName}' in globals():
+        result = type(${objectName}).__name__
+    elif '${objectName}' in sys.modules:
+        result = type(sys.modules['${objectName}']).__name__
+    else:
+        result = ''
+    result
+except:
+    ''
+`);
+    return typeResult || '';
+  } catch (error) {
+    return '';
+  }
+}
+
+// Calculate suggestion score for ranking
+function calculateSuggestionScore(suggestion, query, bufferFreq = 0, isExactMatch = false) {
+  let score = 0;
+  
+  // Exact prefix match gets highest score
+  if (isExactMatch) {
+    score += 1000;
+  }
+  
+  // Camel/snake case subword matching
+  if (query.length > 1) {
+    const queryLower = query.toLowerCase();
+    const suggestionLower = suggestion.toLowerCase();
+    
+    if (suggestionLower.startsWith(queryLower)) {
+      score += 500;
+    } else if (suggestionLower.includes(queryLower)) {
+      score += 200;
+    }
+  }
+  
+  // Buffer frequency bonus
+  score += bufferFreq * 10;
+  
+  // Task-related bonus
+  if (currentTask && currentTask.title.toLowerCase().includes(suggestion.toLowerCase())) {
+    score += 50;
+  }
+  
+  return score;
+}
+
+// Main autocomplete function
+async function providePythonHints(cm, options) {
+  try {
+    const cursor = cm.getCursor();
+    const line = cursor.line;
+    const ch = cursor.ch;
+  
+  // Get current line content
+  const lineContent = cm.getLine(line);
+  const beforeCursor = lineContent.substring(0, ch);
+  
+  // Check if we're in a member access context (e.g., "object.")
+  const memberAccessMatch = beforeCursor.match(/([A-Za-z_][\w\.]*)\.$/);
+  let suggestions = [];
+  let fromPos = { line, ch: ch - 1 };
+  let toPos = { line, ch };
+  
+  if (memberAccessMatch) {
+    // Member access context - get object members
+    const objectName = memberAccessMatch[1];
+    const members = await getPyodideMembers(objectName);
+    
+    suggestions = members.map(member => ({
+      text: member,
+      displayText: member,
+      className: 'cm-hint-member',
+      description: async () => {
+        // Try to get type info from Pyodide first
+        if (isPyodideLoaded && pyodide) {
+          const typeInfo = await getPyodideType(`${objectName}.${member}`);
+          if (typeInfo) return `Type: ${typeInfo}`;
+        }
+        
+        // Fallback to static descriptions for common modules
+        if (PYTHON_MODULES[objectName]) {
+          if (objectName === 'math') {
+            if (member === 'pi') return 'Mathematical constant π (3.14159...)';
+            if (member === 'e') return 'Mathematical constant e (2.71828...)';
+            if (['sin', 'cos', 'tan'].includes(member)) return `Trigonometric function: ${member}(x)`;
+            if (['sqrt', 'log', 'exp'].includes(member)) return `Mathematical function: ${member}(x)`;
+          }
+          if (objectName === 'random') {
+            if (member === 'randint') return 'random.randint(a, b) - Return random integer N such that a <= N <= b';
+            if (member === 'choice') return 'random.choice(seq) - Return a random element from the non-empty sequence seq';
+            if (member === 'shuffle') return 'random.shuffle(x) - Shuffle the sequence x in place';
+          }
+          if (objectName === 'turtle') {
+            if (member === 'Turtle') return 'turtle.Turtle() - Create and return a new turtle object';
+            if (member === 'forward') return 'turtle.forward(distance) - Move the turtle forward by the specified distance';
+            if (member === 'right') return 'turtle.right(angle) - Turn turtle right by angle units';
+          }
+        }
+        
+        return `Member of ${objectName}`;
+      }
+    }));
+    
+    fromPos = { line, ch: ch - 1 };
+    toPos = { line, ch };
+  } else {
+    // Regular identifier context
+    const wordMatch = beforeCursor.match(/([A-Za-z_]\w*)$/);
+    if (wordMatch) {
+      const query = wordMatch[1];
+      fromPos = { line, ch: ch - query.length };
+      toPos = { line, ch };
+      
+      // Get buffer identifiers
+      const bufferIdentifiers = extractBufferIdentifiers(cm.getValue());
+      
+      // Combine all suggestions
+      const allSuggestions = [
+        ...PYTHON_KEYWORDS.map(keyword => ({ 
+          text: keyword, 
+          displayText: keyword, 
+          className: 'cm-hint-keyword',
+          description: () => `Python keyword: ${keyword}`
+        })),
+        ...PYTHON_BUILTINS.map(builtin => ({ 
+          text: builtin, 
+          displayText: builtin, 
+          className: 'cm-hint-builtin',
+          description: () => PYTHON_DOCS[builtin] || `Built-in function: ${builtin}`
+        })),
+        ...Array.from(bufferIdentifiers.keys()).map(identifier => ({ 
+          text: identifier, 
+          displayText: identifier, 
+          className: 'cm-hint-identifier',
+          frequency: bufferIdentifiers.get(identifier),
+          description: () => `Variable/function (used ${bufferIdentifiers.get(identifier)} times)`
+        }))
+      ];
+      
+      // Filter and score suggestions
+      suggestions = allSuggestions
+        .filter(suggestion => suggestion.text.toLowerCase().includes(query.toLowerCase()))
+        .map(suggestion => ({
+          ...suggestion,
+          score: calculateSuggestionScore(
+            suggestion.text, 
+            query, 
+            suggestion.frequency || 0,
+            suggestion.text.toLowerCase().startsWith(query.toLowerCase())
+          )
+        }))
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 50); // Limit to top 50
+    }
+  }
+  
+  // Create enhanced hint objects with proper rendering
+  const enhancedSuggestions = suggestions.map(suggestion => {
+    const hint = {
+      text: suggestion.text,
+      displayText: suggestion.displayText || suggestion.text,
+      className: suggestion.className,
+      render: function(element, self, data) {
+        // Create main text element
+        const textSpan = document.createElement('span');
+        textSpan.textContent = suggestion.text;
+        textSpan.className = suggestion.className || '';
+        element.appendChild(textSpan);
+        
+        // Add description if available
+        if (suggestion.description) {
+          const descSpan = document.createElement('span');
+          descSpan.className = 'CodeMirror-hint-description';
+          
+          // Handle async descriptions
+          if (typeof suggestion.description === 'function') {
+            const desc = suggestion.description();
+            if (desc instanceof Promise) {
+              descSpan.textContent = 'Loading...';
+              desc.then(result => {
+                if (result) descSpan.textContent = result;
+              }).catch(() => {
+                descSpan.textContent = '';
+              });
+            } else {
+              descSpan.textContent = desc;
+            }
+          } else {
+            descSpan.textContent = suggestion.description;
+          }
+          
+          element.appendChild(descSpan);
+        }
+        
+        // Add frequency indicator for buffer identifiers
+        if (suggestion.frequency) {
+          const freqSpan = document.createElement('span');
+          freqSpan.className = 'hint-frequency';
+          freqSpan.textContent = suggestion.frequency;
+          element.appendChild(freqSpan);
+        }
+      }
+    };
+    
+    return hint;
+  });
+  
+    return {
+      list: enhancedSuggestions,
+      from: fromPos,
+      to: toPos
+    };
+  } catch (error) {
+    console.error('Autocomplete error:', error);
+    return handleAutocompleteError(error, 'main function');
+  }
+}
+
+// Debounced autocomplete trigger
+let autocompleteTimeout = null;
+function triggerAutocomplete(cm, delay = 120) {
+  if (autocompleteTimeout) {
+    clearTimeout(autocompleteTimeout);
+  }
+  
+  autocompleteTimeout = setTimeout(() => {
+    CodeMirror.showHint(cm, providePythonHints, {
+      completeSingle: false,
+      closeOnUnfocus: true,
+      hint: providePythonHints
+    });
+  }, delay);
+}
+
+// Clear Pyodide member cache
+function clearPyodideCache() {
+  pyodideMemberCache.clear();
+  console.log('Pyodide member cache cleared');
+}
+
+// Enhanced error handling for autocomplete
+function handleAutocompleteError(error, context) {
+  console.warn(`Autocomplete error in ${context}:`, error);
+  // Return empty suggestions on error
+  return {
+    list: [],
+    from: { line: 0, ch: 0 },
+    to: { line: 0, ch: 0 }
+  };
+}
+
+// Show autocomplete status and debug info
+function showAutocompleteStatus() {
+  const status = {
+    pyodideLoaded: isPyodideLoaded,
+    cacheSize: pyodideMemberCache.size,
+    cacheKeys: Array.from(pyodideMemberCache.keys()),
+    currentTask: currentTask ? currentTask.title : 'None',
+    editorActive: !!editor,
+    theme: isDarkTheme ? 'dark' : 'light'
+  };
+  
+  console.log('=== Autocomplete Status ===');
+  console.log(status);
+  console.log('===========================');
+  
+  // Show in output panel
+  showOutput('info', `🔍 Autocomplete Status:\n🐍 Pyodide: ${status.pyodideLoaded ? 'Loaded' : 'Not loaded'}\n📦 Cache: ${status.cacheSize} items\n🎯 Task: ${status.currentTask}\n🎨 Theme: ${status.theme}`);
+}
+
+// Manual autocomplete trigger for testing
+function manualAutocomplete() {
+  if (!editor) {
+    showOutput('error', '❌ Editor not initialized');
+    return;
+  }
+  
+  const cursor = editor.getCursor();
+  const line = editor.getLine(cursor.line);
+  const beforeCursor = line.substring(0, cursor.ch);
+  
+  console.log('Manual autocomplete triggered');
+  console.log('Cursor position:', cursor);
+  console.log('Line content:', line);
+  console.log('Before cursor:', beforeCursor);
+  
+  // Trigger autocomplete
+  CodeMirror.showHint(editor, providePythonHints, {
+    completeSingle: false,
+    closeOnUnfocus: true
+  });
+}
+
 // Task Data
 const tasks = [
   {
@@ -208,6 +673,9 @@ async function initializePyodide() {
   try {
     showOutput("info", "🐍 Python runtime yükleniyor...");
 
+    // Clear any existing cache
+    clearPyodideCache();
+
     // Pyodide'i yükle
     pyodide = await loadPyodide({
       indexURL: "https://cdn.jsdelivr.net/pyodide/v0.24.1/full/",
@@ -249,7 +717,12 @@ function initializeEditor() {
     indentWithTabs: false,
     lineWrapping: true,
     extraKeys: {
-      "Ctrl-Space": "autocomplete",
+      "Ctrl-Space": function(cm) {
+        CodeMirror.showHint(cm, providePythonHints, {
+          completeSingle: false,
+          closeOnUnfocus: true
+        });
+      },
       Tab: function (cm) {
         if (cm.somethingSelected()) {
           cm.indentSelection("add");
@@ -258,6 +731,29 @@ function initializeEditor() {
         }
       },
     },
+  });
+
+  // Set up automatic autocomplete triggers
+  editor.on('inputRead', function(cm, change) {
+    if (change.text && change.text.length > 0) {
+      const lastChar = change.text[0];
+      
+      // Trigger on dot (member access)
+      if (lastChar === '.') {
+        triggerAutocomplete(cm, 50); // Faster trigger for dots
+      }
+      // Trigger after typing 2+ characters
+      else if (lastChar.length >= 1) {
+        const cursor = cm.getCursor();
+        const lineContent = cm.getLine(cursor.line);
+        const beforeCursor = lineContent.substring(0, cursor.ch);
+        const wordMatch = beforeCursor.match(/([A-Za-z_]\w*)$/);
+        
+        if (wordMatch && wordMatch[1].length >= 2) {
+          triggerAutocomplete(cm, 120);
+        }
+      }
+    }
   });
 
   // Set initial content
@@ -1026,6 +1522,24 @@ document.addEventListener("keydown", function (e) {
   if (e.ctrlKey && e.shiftKey && e.key === "D") {
     e.preventDefault();
     debugHintState();
+  }
+  
+  // Test autocomplete shortcut: Ctrl+Shift+A
+  if (e.ctrlKey && e.shiftKey && e.key === "A") {
+    e.preventDefault();
+    if (editor) {
+      console.log('Testing autocomplete...');
+      CodeMirror.showHint(editor, providePythonHints, {
+        completeSingle: false,
+        closeOnUnfocus: true
+      });
+    }
+  }
+  
+  // Show autocomplete status: Ctrl+Shift+S
+  if (e.ctrlKey && e.shiftKey && e.key === "S") {
+    e.preventDefault();
+    showAutocompleteStatus();
   }
 });
 
