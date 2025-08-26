@@ -37,6 +37,7 @@
               <div class="progress-fill" style="width: 25%"></div>
             </div>
             <span class="points">125 Puan</span>
+            <span class="next-level-info" id="nextLevelInfo">Sonraki seviye için: 75 puan</span>
           </div>
         </div>
         <div class="header-right">
@@ -67,6 +68,11 @@
 
         <!-- Editor Area -->
         <section class="editor-area">
+          <!-- Task Description Display -->
+          <div class="task-description-display" id="taskDescriptionDisplay" style="display: none;">
+            <p id="taskDescriptionText"></p>
+          </div>
+          
           <div class="editor-header">
             <h2 id="currentTaskTitle">Görev Seçin</h2>
             <div class="editor-controls">
@@ -92,6 +98,11 @@
           </div>
         </section>
       </main>
+      
+      <!-- GIF Animation Container -->
+      <div class="gif-container" id="gifContainer">
+        <div class="gif-animation" id="gifAnimation"></div>
+      </div>
     </div>
 
     <!-- Modals -->
@@ -102,6 +113,9 @@
           <button class="close-btn" id="closeProfileModal">&times;</button>
         </div>
         <div class="modal-body">
+          <div class="user-name-display">
+            <h4>👨‍💻 Arman Hanachi</h4>
+          </div>
           <div class="profile-stats">
             <div class="stat">
               <span class="stat-value" id="totalPoints">0</span>
@@ -114,6 +128,29 @@
             <div class="stat">
               <span class="stat-value" id="currentLevel">1</span>
               <span class="stat-label">Mevcut Seviye</span>
+            </div>
+          </div>
+          <div class="overall-progress">
+            <h4>📊 Genel İlerleme</h4>
+            <div class="progress-summary">
+              <div class="progress-item">
+                <span class="progress-label">Puan İlerlemesi:</span>
+                <div class="progress-bar-container">
+                  <div class="progress-bar" id="pointsProgressBar">
+                    <div class="progress-fill" id="pointsProgressFill"></div>
+                  </div>
+                  <span class="progress-text" id="pointsProgressText">0%</span>
+                </div>
+              </div>
+              <div class="progress-item">
+                <span class="progress-label">Görev İlerlemesi:</span>
+                <div class="progress-bar-container">
+                  <div class="progress-bar" id="tasksProgressBar">
+                    <div class="progress-fill" id="tasksProgressFill"></div>
+                  </div>
+                  <span class="progress-text" id="tasksProgressText">0%</span>
+                </div>
+              </div>
             </div>
           </div>
           <div class="achievements">

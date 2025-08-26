@@ -11,6 +11,36 @@ let userProgress = {
   achievements: [],
 };
 
+// Helper function to calculate total available points
+function getTotalAvailablePoints() {
+  return tasks.reduce((sum, task) => sum + task.points, 0);
+}
+
+// Helper function to calculate total available tasks
+function getTotalAvailableTasks() {
+  return tasks.length;
+}
+
+// Helper function to calculate max possible level
+function getMaxPossibleLevel() {
+  return Math.floor(getTotalAvailablePoints() / 100) + 1;
+}
+
+// Helper function to calculate points needed for next level
+function getPointsNeededForNextLevel() {
+  const currentLevel = userProgress.level;
+  const nextLevel = currentLevel + 1;
+  const pointsForNextLevel = (nextLevel - 1) * 100;
+  const pointsNeeded = pointsForNextLevel - userProgress.points;
+  
+  // If already at max level, return 0
+  if (nextLevel > getMaxPossibleLevel()) {
+    return 0;
+  }
+  
+  return Math.max(0, pointsNeeded);
+}
+
 // Python Autocomplete Data
 const PYTHON_KEYWORDS = [
   'False', 'None', 'True', 'and', 'as', 'assert', 'async', 'await', 'break', 'class',
@@ -476,6 +506,29 @@ function manualAutocomplete() {
   });
 }
 
+// Test GIF animations manually
+function testGifAnimations() {
+  showOutput('info', '🧪 Testing GIF animations...');
+  
+  // Test success animation
+  setTimeout(() => {
+    showGifAnimation('success', 2000);
+    showOutput('info', '✅ Success GIF shown');
+  }, 500);
+  
+  // Test warning animation
+  setTimeout(() => {
+    showGifAnimation('warning', 2000);
+    showOutput('info', '⚠️ Warning GIF shown');
+  }, 3000);
+  
+  // Test error animation
+  setTimeout(() => {
+    showGifAnimation('error', 2000);
+    showOutput('info', '❌ Error GIF shown');
+  }, 5500);
+}
+
 // Task Data
 const tasks = [
   {
@@ -633,6 +686,8 @@ const achievements = [
     description: "İlk görevi tamamladınız!",
     icon: "🎯",
     condition: () => userProgress.completedTasks.length >= 1,
+    target: 1,
+    type: "tasks"
   },
   {
     id: 2,
@@ -640,6 +695,8 @@ const achievements = [
     description: "5 görev tamamladınız!",
     icon: "🏆",
     condition: () => userProgress.completedTasks.length >= 5,
+    target: 5,
+    type: "tasks"
   },
   {
     id: 3,
@@ -647,6 +704,8 @@ const achievements = [
     description: "100 puan topladınız!",
     icon: "⭐",
     condition: () => userProgress.points >= 100,
+    target: 100,
+    type: "points"
   },
   {
     id: 4,
@@ -654,6 +713,8 @@ const achievements = [
     description: "3 görevi ilk denemede tamamladınız!",
     icon: "⚡",
     condition: () => userProgress.firstTryCompletions >= 3,
+    target: 3,
+    type: "firstTry"
   },
 ];
 
@@ -666,6 +727,11 @@ document.addEventListener("DOMContentLoaded", function () {
   setupEventListeners();
   updateUI();
   initializePyodide(); // Pyodide'i başlat
+  
+  // Ensure editor shows "bir görev seçin" when no task is selected
+  if (!currentTask) {
+    resetEditorToNoTask();
+  }
 });
 
 // Initialize Pyodide
@@ -756,8 +822,8 @@ function initializeEditor() {
     }
   });
 
-  // Set initial content
-  editor.setValue("# Python kodunuzu buraya yazın\nprint('Merhaba Dünya')");
+  // Set initial content to show "# Bir görev seçin" when no task is selected
+  editor.setValue("# Bir görev seçin");
 }
 
 // Load User Progress from LocalStorage
@@ -788,8 +854,11 @@ function renderTasks() {
     const difficultyDots =
       "●".repeat(task.difficulty) + "○".repeat(5 - task.difficulty);
 
+    // Add star icon for first 3 tasks
+    const starIcon = task.id <= 3 ? "⭐ " : "";
+
     taskElement.innerHTML = `
-            <div class="task-title">${task.title}</div>
+            <div class="task-title">${starIcon}${task.title}</div>
             <div class="task-description">${task.description}</div>
             <div class="task-difficulty">${difficultyDots}</div>
         `;
@@ -821,9 +890,7 @@ function renderProgressMap() {
             <span>${getCategoryIcon(category)}</span>
             <div>
                 <div>${category}</div>
-                <small>${completedTasks.length}/${
-      categoryTasks.length
-    } tamamlandı</small>
+                <small>${completedTasks.length}/${categoryTasks.length} tamamlandı</small>
             </div>
         `;
 
@@ -916,6 +983,8 @@ function runCode() {
     return;
   }
 
+  // No warning here - we'll show it after checking the output
+
   const code = editor.getValue();
   
   // Show loading panel
@@ -951,22 +1020,35 @@ sys.stdout = io.StringIO()
     // stdout'u geri yükle
     pyodide.runPython("sys.stdout = sys.__stdout__");
 
-    // Hide loading panel
+    // Complete loading progress and hide loading panel
+    completeLoadingProgress();
     hideLoadingPanel();
+
+    // Görev tamamlama kontrolü
+    if (checkTaskCompletion(output, currentTask)) {
+      completeTask(currentTask);
+      // Show success GIF
+      showGifAnimation("success", 2000);
+    } else {
+      // Show warning if task is not completed and output doesn't match requirements
+      if (!userProgress.completedTasks.includes(currentTask.id)) {
+        showOutput("warning", "⚠️ Bu görev henüz tamamlanmamış! Kodunuz çalıştı ama görev gereksinimlerini karşılamıyor. Lütfen görevi tekrar gözden geçirin.");
+        // Show warning GIF
+        showGifAnimation("warning", 2000);
+      }
+    }
 
     showOutput(
       "success",
       `✅ Gerçek Python kodu çalıştırıldı!\n\n📤 Çıktı:\n${output}`
     );
-
-    // Görev tamamlama kontrolü
-    if (checkTaskCompletion(output, currentTask)) {
-      completeTask(currentTask);
-    }
   } catch (error) {
-    // Hide loading panel on error
+    // Complete loading progress and hide loading panel on error
+    completeLoadingProgress();
     hideLoadingPanel();
     showOutput("error", `❌ Python hatası:\n${error.message}`);
+    // Show error GIF
+    showGifAnimation("error", 2000);
   }
 }
 
@@ -977,27 +1059,43 @@ function runSimulatedPython(code) {
       const result = simulatePythonExecution(code);
 
       if (result.success) {
-        // Hide loading panel
+        // Complete loading progress and hide loading panel
+        completeLoadingProgress();
         hideLoadingPanel();
         
+        if (checkTaskCompletion(code, currentTask)) {
+          completeTask(currentTask);
+          // Show success GIF
+          showGifAnimation("success", 2000);
+        } else {
+          // Show warning if task is not completed and output doesn't match requirements
+          if (!userProgress.completedTasks.includes(currentTask.id)) {
+            showOutput("warning", "⚠️ Bu görev henüz tamamlanmamış! Kodunuz çalıştı ama görev gereksinimlerini karşılamıyor. Lütfen görevi tekrar gözden geçirin.");
+            // Show warning GIF
+            showGifAnimation("warning", 2000);
+          }
+        }
+
         showOutput(
           "success",
           `✅ Kod simülasyonu çalıştırıldı!\n\n📤 Çıktı:\n${result.output}`
         );
-
-        if (checkTaskCompletion(code, currentTask)) {
-          completeTask(currentTask);
-        }
-      } else {
-        // Hide loading panel on error
-        hideLoadingPanel();
-        showOutput("error", `❌ Hata oluştu:\n${result.error}`);
-      }
-    } catch (error) {
-      // Hide loading panel on error
-      hideLoadingPanel();
-      showOutput("error", `❌ Beklenmeyen hata:\n${error.message}`);
-    }
+             } else {
+         // Complete loading progress and hide loading panel on error
+         completeLoadingProgress();
+         hideLoadingPanel();
+         showOutput("error", `❌ Hata oluştu:\n${result.error}`);
+         // Show error GIF
+         showGifAnimation("error", 2000);
+       }
+         } catch (error) {
+       // Complete loading progress and hide loading panel on error
+       completeLoadingProgress();
+       hideLoadingPanel();
+       showOutput("error", `❌ Beklenmeyen hata:\n${error.message}`);
+       // Show error GIF
+       showGifAnimation("error", 2000);
+     }
   }, 1000);
 }
 
@@ -1087,12 +1185,19 @@ function completeTask(task) {
 
   // Show success animation
   showSuccessAnimation();
+  
+  // Show success GIF (this will be shown after the loading panel hides)
+  setTimeout(() => {
+    showGifAnimation("success", 2000);
+  }, 500);
 
   // Show completion message
   setTimeout(() => {
+    // Calculate total available points for completion message
+    const totalAvailablePoints = getTotalAvailablePoints();
     showOutput(
       "success",
-      `🎉 Tebrikler! Görev tamamlandı!\n🏆 ${task.points} puan kazandınız!\n⭐ Toplam puanınız: ${userProgress.points}`
+      `🎉 Tebrikler! Görev tamamlandı!\n🏆 ${task.points} puan kazandınız!\n⭐ Toplam puanınız: ${userProgress.points}/${totalAvailablePoints}`
     );
   }, 1000);
 }
@@ -1109,7 +1214,16 @@ function resetCode() {
 // Show Hint
 function showHint() {
   if (!currentTask) {
-    // Don't show output message, just return silently
+    // Show "bir görev seçin" message when no task is selected
+    const hintContent = document.getElementById("hintContent");
+    hintContent.innerHTML = `
+      <h4>💡 İpucu</h4>
+      <p><strong>İpucu:</strong> bir görev seçin</p>
+    `;
+    
+    // Show hint modal
+    const hintModal = document.getElementById("hintModal");
+    hintModal.classList.add("show");
     return;
   }
 
@@ -1318,18 +1432,66 @@ function disableDragging(modal) {
 // Show Loading Panel
 function showLoadingPanel() {
   const loadingPanel = document.getElementById("loadingPanel");
+  const progressFill = loadingPanel.querySelector(".loading-progress .progress-fill");
+  
   loadingPanel.classList.add("show");
   
   // Store the start time to ensure minimum display duration
   loadingPanel.dataset.startTime = Date.now();
   
+  // Reset progress bar to 0%
+  progressFill.style.width = "0%";
+  progressFill.style.animation = "none";
+  
+  // Start progress bar animation after a small delay to ensure smooth animation
+  setTimeout(() => {
+    progressFill.style.animation = "loadingProgress 1s ease-in-out forwards";
+  }, 100);
+  
   // Set a timeout to hide loading panel after 30 seconds (safety measure)
   setTimeout(() => {
     if (loadingPanel.classList.contains("show")) {
+      completeLoadingProgress();
       hideLoadingPanel();
       showOutput("warning", "⚠️ Kod çalıştırma zaman aşımına uğradı. Lütfen tekrar deneyin.");
     }
   }, 30000);
+}
+
+// Complete Loading Progress
+function completeLoadingProgress() {
+  const loadingPanel = document.getElementById("loadingPanel");
+  const progressFill = loadingPanel.querySelector(".loading-progress .progress-fill");
+  
+  // Ensure progress bar is at 100%
+  progressFill.style.animation = "none";
+  progressFill.style.width = "100%";
+}
+
+// Show GIF Animation
+function showGifAnimation(type, duration = 2000) {
+  const gifContainer = document.getElementById("gifContainer");
+  const gifAnimation = document.getElementById("gifAnimation");
+  
+  // Clear any existing classes
+  gifAnimation.className = "gif-animation";
+  
+  // Add the appropriate type class
+  gifAnimation.classList.add(type);
+  
+  // Show the animation
+  gifAnimation.classList.add("show");
+  
+  // Hide after specified duration
+  setTimeout(() => {
+    gifAnimation.classList.remove("show");
+  }, duration);
+}
+
+// Hide GIF Animation
+function hideGifAnimation() {
+  const gifAnimation = document.getElementById("gifAnimation");
+  gifAnimation.classList.remove("show");
 }
 
 // Hide Loading Panel
@@ -1338,16 +1500,21 @@ function hideLoadingPanel() {
   const startTime = parseInt(loadingPanel.dataset.startTime) || 0;
   const currentTime = Date.now();
   const elapsedTime = currentTime - startTime;
-  const minimumDisplayTime = 500; // 0.5 seconds in milliseconds
+  const minimumDisplayTime = 1000; // 1 second in milliseconds
   
-  if (elapsedTime < minimumDisplayTime) {
-    // If less than 0.5 seconds has passed, wait for the remaining time
-    const remainingTime = minimumDisplayTime - elapsedTime;
+  // Check if progress bar has completed (width should be 100%)
+  const progressFill = loadingPanel.querySelector(".loading-progress .progress-fill");
+  const progressCompleted = progressFill.style.width === "100%" || 
+                           getComputedStyle(progressFill).width === "100%";
+  
+  if (elapsedTime < minimumDisplayTime || !progressCompleted) {
+    // If less than 1 second has passed or progress bar hasn't completed, wait
+    const remainingTime = Math.max(minimumDisplayTime - elapsedTime, 0);
     setTimeout(() => {
-      loadingPanel.classList.remove("show");
+      hideLoadingPanel();
     }, remainingTime);
   } else {
-    // If 0.5 seconds or more has passed, hide immediately
+    // If 1 second or more has passed and progress bar is complete, hide immediately
     loadingPanel.classList.remove("show");
   }
 }
@@ -1420,10 +1587,25 @@ function showLevelUpAnimation() {
     levelBadge.classList.remove("bounce");
   }, 1000);
 
+  // Calculate max possible level for level up message
+  const totalAvailablePoints = getTotalAvailablePoints();
+  const maxPossibleLevel = getMaxPossibleLevel();
+  
   showOutput(
     "success",
-    `🎉 Seviye atladınız! Yeni seviyeniz: ${userProgress.level}`
+    `🎉 Seviye atladınız! Yeni seviyeniz: ${userProgress.level}/${maxPossibleLevel}`
   );
+  
+  // Update next level info immediately
+  const nextLevelInfo = document.getElementById("nextLevelInfo");
+  if (nextLevelInfo) {
+    const pointsNeeded = getPointsNeededForNextLevel();
+    if (pointsNeeded > 0) {
+      nextLevelInfo.textContent = `Sonraki seviye için: ${pointsNeeded} puan`;
+    } else {
+      nextLevelInfo.textContent = "Maksimum seviyeye ulaştınız! 🎉";
+    }
+  }
 }
 
 // Update UI
@@ -1436,16 +1618,62 @@ function updateUI() {
   const completedTasks = document.getElementById("completedTasks");
   const currentLevel = document.getElementById("currentLevel");
 
+  // Calculate totals using helper functions
+  const totalAvailablePoints = getTotalAvailablePoints();
+  const totalAvailableTasks = getTotalAvailableTasks();
+  const maxPossibleLevel = getMaxPossibleLevel();
+
   if (levelBadge) levelBadge.textContent = `Seviye ${userProgress.level}`;
   if (progressFill) {
-    const progress = ((userProgress.points % 100) / 100) * 100;
-    progressFill.style.width = `${progress}%`;
+    // Calculate progress as percentage of total available points
+    const progress = (userProgress.points / totalAvailablePoints) * 100;
+    progressFill.style.width = `${Math.min(progress, 100)}%`;
   }
-  if (pointsSpan) pointsSpan.textContent = `${userProgress.points} Puan`;
-  if (totalPoints) totalPoints.textContent = userProgress.points;
-  if (completedTasks)
-    completedTasks.textContent = userProgress.completedTasks.length;
-  if (currentLevel) currentLevel.textContent = userProgress.level;
+  if (pointsSpan) pointsSpan.textContent = `${userProgress.points}/${totalAvailablePoints} Puan`;
+  
+  // Update next level info
+  const nextLevelInfo = document.getElementById("nextLevelInfo");
+  if (nextLevelInfo) {
+    const pointsNeeded = getPointsNeededForNextLevel();
+    if (pointsNeeded > 0) {
+      nextLevelInfo.textContent = `Sonraki seviye için: ${pointsNeeded} puan`;
+      nextLevelInfo.style.display = "inline";
+    } else {
+      nextLevelInfo.textContent = "Maksimum seviyeye ulaştınız! 🎉";
+      nextLevelInfo.style.display = "inline";
+    }
+  }
+  
+  if (totalPoints) {
+    totalPoints.textContent = `${userProgress.points}/${totalAvailablePoints}`;
+    totalPoints.title = `${userProgress.points} puan kazandınız, ${totalAvailablePoints} puan mevcut`;
+  }
+  if (completedTasks) {
+    completedTasks.textContent = `${userProgress.completedTasks.length}/${totalAvailableTasks}`;
+    completedTasks.title = `${userProgress.completedTasks.length} görev tamamladınız, ${totalAvailableTasks} görev mevcut`;
+  }
+  if (currentLevel) {
+    currentLevel.textContent = `${userProgress.level}/${maxPossibleLevel}`;
+    currentLevel.title = `Seviye ${userProgress.level}, maksimum seviye ${maxPossibleLevel}`;
+  }
+
+  // Update overall progress bars
+  const pointsProgressFill = document.getElementById("pointsProgressFill");
+  const pointsProgressText = document.getElementById("pointsProgressText");
+  const tasksProgressFill = document.getElementById("tasksProgressFill");
+  const tasksProgressText = document.getElementById("tasksProgressText");
+
+  if (pointsProgressFill && pointsProgressText) {
+    const pointsProgress = (userProgress.points / totalAvailablePoints) * 100;
+    pointsProgressFill.style.width = `${Math.min(pointsProgress, 100)}%`;
+    pointsProgressText.textContent = `${Math.round(pointsProgress)}%`;
+  }
+
+  if (tasksProgressFill && tasksProgressText) {
+    const tasksProgress = (userProgress.completedTasks.length / totalAvailableTasks) * 100;
+    tasksProgressFill.style.width = `${Math.min(tasksProgress, 100)}%`;
+    tasksProgressText.textContent = `${Math.round(tasksProgress)}%`;
+  }
 
   // Pyodide durumunu göster
   const runBtn = document.getElementById("runBtn");
@@ -1475,11 +1703,32 @@ function updateAchievements() {
       isUnlocked ? "unlocked" : ""
     }`;
 
+    // Calculate progress for each achievement
+    let progressText = "";
+    let currentValue = 0;
+    
+    if (achievement.type === "tasks") {
+      currentValue = userProgress.completedTasks.length;
+      progressText = `(${currentValue}/${achievement.target})`;
+    } else if (achievement.type === "points") {
+      currentValue = userProgress.points;
+      progressText = `(${currentValue}/${achievement.target})`;
+    } else if (achievement.type === "firstTry") {
+      currentValue = userProgress.firstTryCompletions || 0;
+      progressText = `(${currentValue}/${achievement.target})`;
+    }
+
+    // Calculate progress percentage
+    const progressPercentage = Math.min((currentValue / achievement.target) * 100, 100);
+    
     achievementElement.innerHTML = `
             <span class="achievement-icon">${achievement.icon}</span>
             <div class="achievement-info">
                 <h5>${achievement.title}</h5>
-                <p>${achievement.description}</p>
+                <p>${achievement.description} ${progressText}</p>
+                <div class="achievement-progress">
+                    <div class="achievement-progress-bar" style="width: ${progressPercentage}%"></div>
+                </div>
             </div>
         `;
 
@@ -1541,6 +1790,8 @@ document.addEventListener("keydown", function (e) {
     e.preventDefault();
     showAutocompleteStatus();
   }
+  
+  
 });
 
 // Auto-save code changes
@@ -1579,17 +1830,50 @@ function selectTask(task) {
   // Update task title
   document.getElementById("currentTaskTitle").textContent = task.title;
 
+  // Show task description
+  const taskDescriptionDisplay = document.getElementById("taskDescriptionDisplay");
+  const taskDescriptionText = document.getElementById("taskDescriptionText");
+  taskDescriptionText.textContent = task.description;
+  taskDescriptionDisplay.style.display = "block";
+
   // Clear output
   clearOutput();
 
+  // Calculate total available points for welcome message
+  const totalAvailablePoints = getTotalAvailablePoints();
+  const totalAvailableTasks = getTotalAvailableTasks();
+  
   // Show welcome message
   showOutput(
     "info",
-    `🎯 Görev: ${task.title}\n📝 ${task.description}\n🏆 Puan: ${task.points}`
+    `🎯 Görev: ${task.title}\n📝 ${task.description}\n🏆 Puan: ${task.points}\n📊 Genel İlerleme: ${userProgress.points}/${totalAvailablePoints} puan, ${userProgress.completedTasks.length}/${totalAvailableTasks} görev`
   );
 
   // Update pinned hint if it exists
   updatePinnedHint(task);
+}
+
+// Function to reset editor when no task is selected
+function resetEditorToNoTask() {
+  currentTask = null;
+  
+  // Update active task in sidebar
+  document.querySelectorAll(".task-item").forEach((item) => {
+    item.classList.remove("active");
+  });
+
+  // Update task title
+  document.getElementById("currentTaskTitle").textContent = "Görev Seçin";
+
+  // Hide task description
+  const taskDescriptionDisplay = document.getElementById("taskDescriptionDisplay");
+  taskDescriptionDisplay.style.display = "none";
+
+  // Set editor content to "# Bir görev seçin"
+  editor.setValue("# Bir görev seçin");
+
+  // Clear output
+  clearOutput();
 }
 
 // Theme Toggle Function
