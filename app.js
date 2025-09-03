@@ -32,110 +32,257 @@ function getPointsNeededForNextLevel() {
   const nextLevel = currentLevel + 1;
   const pointsForNextLevel = (nextLevel - 1) * 100;
   const pointsNeeded = pointsForNextLevel - userProgress.points;
-  
+
   // If already at max level, return 0
   if (nextLevel > getMaxPossibleLevel()) {
     return 0;
   }
-  
+
   return Math.max(0, pointsNeeded);
 }
 
 // Python Autocomplete Data
 const PYTHON_KEYWORDS = [
-  'False', 'None', 'True', 'and', 'as', 'assert', 'async', 'await', 'break', 'class',
-  'continue', 'def', 'del', 'elif', 'else', 'except', 'finally', 'for', 'from', 'global',
-  'if', 'import', 'in', 'is', 'lambda', 'nonlocal', 'not', 'or', 'pass', 'raise',
-  'return', 'try', 'while', 'with', 'yield'
+  "False",
+  "None",
+  "True",
+  "and",
+  "as",
+  "assert",
+  "async",
+  "await",
+  "break",
+  "class",
+  "continue",
+  "def",
+  "del",
+  "elif",
+  "else",
+  "except",
+  "finally",
+  "for",
+  "from",
+  "global",
+  "if",
+  "import",
+  "in",
+  "is",
+  "lambda",
+  "nonlocal",
+  "not",
+  "or",
+  "pass",
+  "raise",
+  "return",
+  "try",
+  "while",
+  "with",
+  "yield",
 ];
 
 const PYTHON_BUILTINS = [
-  'abs', 'all', 'any', 'ascii', 'bin', 'bool', 'breakpoint', 'bytearray', 'bytes',
-  'callable', 'chr', 'classmethod', 'compile', 'complex', 'delattr', 'dict', 'dir',
-  'divmod', 'enumerate', 'eval', 'exec', 'filter', 'float', 'format', 'frozenset',
-  'getattr', 'globals', 'hasattr', 'hash', 'help', 'hex', 'id', 'input', 'int',
-  'isinstance', 'issubclass', 'iter', 'len', 'list', 'locals', 'map', 'max', 'memoryview',
-  'min', 'next', 'object', 'oct', 'open', 'ord', 'pow', 'print', 'property', 'range',
-  'repr', 'reversed', 'round', 'set', 'setattr', 'slice', 'sorted', 'staticmethod',
-  'str', 'sum', 'super', 'tuple', 'type', 'vars', 'zip'
+  "abs",
+  "all",
+  "any",
+  "ascii",
+  "bin",
+  "bool",
+  "breakpoint",
+  "bytearray",
+  "bytes",
+  "callable",
+  "chr",
+  "classmethod",
+  "compile",
+  "complex",
+  "delattr",
+  "dict",
+  "dir",
+  "divmod",
+  "enumerate",
+  "eval",
+  "exec",
+  "filter",
+  "float",
+  "format",
+  "frozenset",
+  "getattr",
+  "globals",
+  "hasattr",
+  "hash",
+  "help",
+  "hex",
+  "id",
+  "input",
+  "int",
+  "isinstance",
+  "issubclass",
+  "iter",
+  "len",
+  "list",
+  "locals",
+  "map",
+  "max",
+  "memoryview",
+  "min",
+  "next",
+  "object",
+  "oct",
+  "open",
+  "ord",
+  "pow",
+  "print",
+  "property",
+  "range",
+  "repr",
+  "reversed",
+  "round",
+  "set",
+  "setattr",
+  "slice",
+  "sorted",
+  "staticmethod",
+  "str",
+  "sum",
+  "super",
+  "tuple",
+  "type",
+  "vars",
+  "zip",
 ];
 
 // Documentation for common Python functions and objects
 const PYTHON_DOCS = {
-  'print': 'print(*objects, sep=" ", end="\\n", file=sys.stdout, flush=False) - Print objects to the text stream file',
-  'range': 'range(stop) or range(start, stop[, step]) - Return an object that produces a sequence of integers',
-  'len': 'len(s) - Return the length (the number of items) of an object',
-  'sum': 'sum(iterable[, start]) - Sums start and the items of an iterable from left to right',
-  'list': 'list([iterable]) - Return a list whose items are the same and in the same order as iterable\'s items',
-  'dict': 'dict(**kwarg) or dict(mapping, **kwarg) or dict(iterable, **kwarg) - Create a new dictionary',
-  'str': 'str(object=\'\') - Return a str version of object',
-  'int': 'int([x]) or int(x, base=10) - Return an integer object constructed from a number or string x',
-  'float': 'float([x]) - Return a floating point number constructed from a number or string x',
-  'bool': 'bool([x]) - Return a Boolean value, i.e. one of True or False',
-  'type': 'type(object) or type(name, bases, dict) - Return the type of an object',
-  'isinstance': 'isinstance(object, classinfo) - Return True if the object argument is an instance of the classinfo argument',
-  'max': 'max(iterable, *[, key, default]) or max(arg1, arg2, *args[, key]) - Return the largest item in an iterable',
-  'min': 'min(iterable, *[, key, default]) or min(arg1, arg2, *args[, key]) - Return the smallest item in an iterable',
-  'sorted': 'sorted(iterable, *, key=None, reverse=False) - Return a new sorted list from the items in iterable',
-  'reversed': 'reversed(seq) - Return a reverse iterator over the values of the given sequence',
-  'enumerate': 'enumerate(iterable, start=0) - Return an enumerate object',
-  'zip': 'zip(*iterables) - Make an iterator that aggregates elements from each of the iterables',
-  'map': 'map(function, iterable, ...) - Return an iterator that applies function to every item of iterable',
-  'filter': 'filter(function, iterable) - Construct an iterator from those elements of iterable for which function returns true',
-  'open': 'open(file, mode=\'r\', buffering=-1, encoding=None, errors=None, newline=None, closefd=True, opener=None) - Open file and return a corresponding file object',
-  'input': 'input([prompt]) - If the prompt argument is present, it is written to standard output without a trailing newline',
-  'format': 'format(value[, format_spec]) - Convert a value to a "formatted" representation, as controlled by format_spec',
-  'chr': 'chr(i) - Return the string representing a character whose Unicode code point is the integer i',
-  'ord': 'ord(c) - Given a string representing one Unicode character, return an integer representing the Unicode code point of that character',
-  'hex': 'hex(x) - Convert an integer number to a lowercase hexadecimal string prefixed with "0x"',
-  'bin': 'bin(x) - Convert an integer number to a binary string prefixed with "0b"',
-  'oct': 'oct(x) - Convert an integer number to an octal string prefixed with "0o"',
-  'abs': 'abs(x) - Return the absolute value of a number',
-  'round': 'round(number[, ndigits]) - Return number rounded to ndigits precision after the decimal point',
-  'pow': 'pow(base, exp[, mod]) - Return base to the power exp; if mod is present, return base to the power exp, modulo mod',
-  'divmod': 'divmod(a, b) - Return the pair (a // b, a % b)',
-  'hash': 'hash(object) - Return the hash value of the object (if it has one)',
-  'id': 'id(object) - Return the "identity" of an object',
-  'callable': 'callable(object) - Return True if the object argument appears callable, False if not',
-  'getattr': 'getattr(object, name[, default]) - Return the value of the named attribute of object',
-  'hasattr': 'hasattr(object, name) - The arguments are an object and a string',
-  'setattr': 'setattr(object, name, value) - This is the counterpart of getattr()',
-  'delattr': 'delattr(object, name) - This is a relative of setattr()',
-  'property': 'property(fget=None, fset=None, fdel=None, doc=None) - Return a property attribute',
-  'staticmethod': 'staticmethod(function) - Transform a method into a static method',
-  'classmethod': 'classmethod(function) - Transform a method into a class method',
-  'super': 'super([type[, object-or-type]]) - Return a proxy object that delegates method calls to a parent or sibling class',
-  'issubclass': 'issubclass(class, classinfo) - Return True if class is a subclass (direct, indirect or virtual) of classinfo',
-  'compile': 'compile(source, filename, mode, flags=0, dont_inherit=False, optimize=-1) - Compile the source into a code or AST object',
-  'eval': 'eval(expression[, globals[, locals]]) - The arguments are a string and optional globals and locals',
-  'exec': 'exec(object[, globals[, locals]]) - This function supports dynamic execution of Python code',
-  'globals': 'globals() - Return a dictionary representing the current global symbol table',
-  'locals': 'locals() - Update and return a dictionary representing the current local symbol table',
-  'vars': 'vars([object]) - Return the __dict__ attribute for a module, class, instance, or any other object with a __dict__ attribute',
-  'dir': 'dir([object]) - Without arguments, return the list of names in the current local scope',
-  'help': 'help([object]) - Invoke the built-in help system',
-  'breakpoint': 'breakpoint(*args, **kws) - This function drops you into the debugger at the call site',
-  'memoryview': 'memoryview(object) - Return a "memory view" object created from the given argument',
-  'bytearray': 'bytearray([source[, encoding[, errors]]]) - Return a new array of bytes',
-  'bytes': 'bytes([source[, encoding[, errors]]]) - Return a new "bytes" object',
-  'frozenset': 'frozenset([iterable]) - Return a new frozenset object, optionally with elements taken from iterable',
-  'set': 'set([iterable]) - Return a new set object, optionally with elements taken from iterable',
-  'tuple': 'tuple([iterable]) - Rather than being a function, tuple is actually an immutable sequence type',
-  'complex': 'complex([real[, imag]]) - Return a complex number with the value real + imag*1j or convert a string or number to a complex number'
+  print:
+    'print(*objects, sep=" ", end="\\n", file=sys.stdout, flush=False) - Print objects to the text stream file',
+  range:
+    "range(stop) or range(start, stop[, step]) - Return an object that produces a sequence of integers",
+  len: "len(s) - Return the length (the number of items) of an object",
+  sum: "sum(iterable[, start]) - Sums start and the items of an iterable from left to right",
+  list: "list([iterable]) - Return a list whose items are the same and in the same order as iterable's items",
+  dict: "dict(**kwarg) or dict(mapping, **kwarg) or dict(iterable, **kwarg) - Create a new dictionary",
+  str: "str(object='') - Return a str version of object",
+  int: "int([x]) or int(x, base=10) - Return an integer object constructed from a number or string x",
+  float:
+    "float([x]) - Return a floating point number constructed from a number or string x",
+  bool: "bool([x]) - Return a Boolean value, i.e. one of True or False",
+  type: "type(object) or type(name, bases, dict) - Return the type of an object",
+  isinstance:
+    "isinstance(object, classinfo) - Return True if the object argument is an instance of the classinfo argument",
+  max: "max(iterable, *[, key, default]) or max(arg1, arg2, *args[, key]) - Return the largest item in an iterable",
+  min: "min(iterable, *[, key, default]) or min(arg1, arg2, *args[, key]) - Return the smallest item in an iterable",
+  sorted:
+    "sorted(iterable, *, key=None, reverse=False) - Return a new sorted list from the items in iterable",
+  reversed:
+    "reversed(seq) - Return a reverse iterator over the values of the given sequence",
+  enumerate: "enumerate(iterable, start=0) - Return an enumerate object",
+  zip: "zip(*iterables) - Make an iterator that aggregates elements from each of the iterables",
+  map: "map(function, iterable, ...) - Return an iterator that applies function to every item of iterable",
+  filter:
+    "filter(function, iterable) - Construct an iterator from those elements of iterable for which function returns true",
+  open: "open(file, mode='r', buffering=-1, encoding=None, errors=None, newline=None, closefd=True, opener=None) - Open file and return a corresponding file object",
+  input:
+    "input([prompt]) - If the prompt argument is present, it is written to standard output without a trailing newline",
+  format:
+    'format(value[, format_spec]) - Convert a value to a "formatted" representation, as controlled by format_spec',
+  chr: "chr(i) - Return the string representing a character whose Unicode code point is the integer i",
+  ord: "ord(c) - Given a string representing one Unicode character, return an integer representing the Unicode code point of that character",
+  hex: 'hex(x) - Convert an integer number to a lowercase hexadecimal string prefixed with "0x"',
+  bin: 'bin(x) - Convert an integer number to a binary string prefixed with "0b"',
+  oct: 'oct(x) - Convert an integer number to an octal string prefixed with "0o"',
+  abs: "abs(x) - Return the absolute value of a number",
+  round:
+    "round(number[, ndigits]) - Return number rounded to ndigits precision after the decimal point",
+  pow: "pow(base, exp[, mod]) - Return base to the power exp; if mod is present, return base to the power exp, modulo mod",
+  divmod: "divmod(a, b) - Return the pair (a // b, a % b)",
+  hash: "hash(object) - Return the hash value of the object (if it has one)",
+  id: 'id(object) - Return the "identity" of an object',
+  callable:
+    "callable(object) - Return True if the object argument appears callable, False if not",
+  getattr:
+    "getattr(object, name[, default]) - Return the value of the named attribute of object",
+  hasattr: "hasattr(object, name) - The arguments are an object and a string",
+  setattr:
+    "setattr(object, name, value) - This is the counterpart of getattr()",
+  delattr: "delattr(object, name) - This is a relative of setattr()",
+  property:
+    "property(fget=None, fset=None, fdel=None, doc=None) - Return a property attribute",
+  staticmethod:
+    "staticmethod(function) - Transform a method into a static method",
+  classmethod: "classmethod(function) - Transform a method into a class method",
+  super:
+    "super([type[, object-or-type]]) - Return a proxy object that delegates method calls to a parent or sibling class",
+  issubclass:
+    "issubclass(class, classinfo) - Return True if class is a subclass (direct, indirect or virtual) of classinfo",
+  compile:
+    "compile(source, filename, mode, flags=0, dont_inherit=False, optimize=-1) - Compile the source into a code or AST object",
+  eval: "eval(expression[, globals[, locals]]) - The arguments are a string and optional globals and locals",
+  exec: "exec(object[, globals[, locals]]) - This function supports dynamic execution of Python code",
+  globals:
+    "globals() - Return a dictionary representing the current global symbol table",
+  locals:
+    "locals() - Update and return a dictionary representing the current local symbol table",
+  vars: "vars([object]) - Return the __dict__ attribute for a module, class, instance, or any other object with a __dict__ attribute",
+  dir: "dir([object]) - Without arguments, return the list of names in the current local scope",
+  help: "help([object]) - Invoke the built-in help system",
+  breakpoint:
+    "breakpoint(*args, **kws) - This function drops you into the debugger at the call site",
+  memoryview:
+    'memoryview(object) - Return a "memory view" object created from the given argument',
+  bytearray:
+    "bytearray([source[, encoding[, errors]]]) - Return a new array of bytes",
+  bytes: 'bytes([source[, encoding[, errors]]]) - Return a new "bytes" object',
+  frozenset:
+    "frozenset([iterable]) - Return a new frozenset object, optionally with elements taken from iterable",
+  set: "set([iterable]) - Return a new set object, optionally with elements taken from iterable",
+  tuple:
+    "tuple([iterable]) - Rather than being a function, tuple is actually an immutable sequence type",
+  complex:
+    "complex([real[, imag]]) - Return a complex number with the value real + imag*1j or convert a string or number to a complex number",
 };
 
 // Common Python modules and their key attributes
 const PYTHON_MODULES = {
-  'math': ['pi', 'e', 'sqrt', 'sin', 'cos', 'tan', 'log', 'exp', 'pow', 'floor', 'ceil', 'abs'],
-  'random': ['randint', 'choice', 'shuffle', 'random', 'uniform', 'seed'],
-  'turtle': ['Turtle', 'Screen', 'done', 'forward', 'backward', 'right', 'left', 'penup', 'pendown'],
-  'datetime': ['datetime', 'date', 'time', 'timedelta', 'now', 'today'],
-  'os': ['path', 'listdir', 'mkdir', 'remove', 'rename', 'getcwd'],
-  'sys': ['argv', 'path', 'version', 'platform', 'exit'],
-  'json': ['loads', 'dumps', 'load', 'dump'],
-  're': ['search', 'match', 'findall', 'sub', 'compile'],
-  'collections': ['Counter', 'defaultdict', 'OrderedDict', 'deque'],
-  'itertools': ['count', 'cycle', 'repeat', 'chain', 'combinations', 'permutations']
+  math: [
+    "pi",
+    "e",
+    "sqrt",
+    "sin",
+    "cos",
+    "tan",
+    "log",
+    "exp",
+    "pow",
+    "floor",
+    "ceil",
+    "abs",
+  ],
+  random: ["randint", "choice", "shuffle", "random", "uniform", "seed"],
+  turtle: [
+    "Turtle",
+    "Screen",
+    "done",
+    "forward",
+    "backward",
+    "right",
+    "left",
+    "penup",
+    "pendown",
+  ],
+  datetime: ["datetime", "date", "time", "timedelta", "now", "today"],
+  os: ["path", "listdir", "mkdir", "remove", "rename", "getcwd"],
+  sys: ["argv", "path", "version", "platform", "exit"],
+  json: ["loads", "dumps", "load", "dump"],
+  re: ["search", "match", "findall", "sub", "compile"],
+  collections: ["Counter", "defaultdict", "OrderedDict", "deque"],
+  itertools: [
+    "count",
+    "cycle",
+    "repeat",
+    "chain",
+    "combinations",
+    "permutations",
+  ],
 };
 
 // Pyodide member cache for performance
@@ -146,15 +293,18 @@ const CACHE_TTL = 60000; // 60 seconds
 function extractBufferIdentifiers(code) {
   const identifierRegex = /\b[A-Za-z_]\w*\b/g;
   const identifiers = new Map();
-  
+
   let match;
   while ((match = identifierRegex.exec(code)) !== null) {
     const identifier = match[0];
-    if (!PYTHON_KEYWORDS.includes(identifier) && !PYTHON_BUILTINS.includes(identifier)) {
+    if (
+      !PYTHON_KEYWORDS.includes(identifier) &&
+      !PYTHON_BUILTINS.includes(identifier)
+    ) {
       identifiers.set(identifier, (identifiers.get(identifier) || 0) + 1);
     }
   }
-  
+
   return identifiers;
 }
 
@@ -164,13 +314,13 @@ async function getPyodideMembers(objectName) {
     // Fallback to static module suggestions
     return PYTHON_MODULES[objectName] || [];
   }
-  
+
   // Check cache first
   const cached = pyodideMemberCache.get(objectName);
   if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
     return cached.members;
   }
-  
+
   try {
     // Safely evaluate dir(objectName) in Pyodide
     const members = await pyodide.runPythonAsync(`
@@ -186,13 +336,13 @@ try:
 except:
     []
 `);
-    
+
     // Cache the result
     pyodideMemberCache.set(objectName, {
       members: members,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
-    
+
     return members;
   } catch (error) {
     console.warn(`Failed to get members for ${objectName}:`, error);
@@ -204,9 +354,9 @@ except:
 // Get type information for Pyodide objects
 async function getPyodideType(objectName) {
   if (!isPyodideLoaded || !pyodide) {
-    return '';
+    return "";
   }
-  
+
   try {
     const typeResult = await pyodide.runPythonAsync(`
 try:
@@ -221,41 +371,49 @@ try:
 except:
     ''
 `);
-    return typeResult || '';
+    return typeResult || "";
   } catch (error) {
-    return '';
+    return "";
   }
 }
 
 // Calculate suggestion score for ranking
-function calculateSuggestionScore(suggestion, query, bufferFreq = 0, isExactMatch = false) {
+function calculateSuggestionScore(
+  suggestion,
+  query,
+  bufferFreq = 0,
+  isExactMatch = false
+) {
   let score = 0;
-  
+
   // Exact prefix match gets highest score
   if (isExactMatch) {
     score += 1000;
   }
-  
+
   // Camel/snake case subword matching
   if (query.length > 1) {
     const queryLower = query.toLowerCase();
     const suggestionLower = suggestion.toLowerCase();
-    
+
     if (suggestionLower.startsWith(queryLower)) {
       score += 500;
     } else if (suggestionLower.includes(queryLower)) {
       score += 200;
     }
   }
-  
+
   // Buffer frequency bonus
   score += bufferFreq * 10;
-  
+
   // Task-related bonus
-  if (currentTask && currentTask.title.toLowerCase().includes(suggestion.toLowerCase())) {
+  if (
+    currentTask &&
+    currentTask.title.toLowerCase().includes(suggestion.toLowerCase())
+  ) {
     score += 50;
   }
-  
+
   return score;
 }
 
@@ -265,169 +423,186 @@ async function providePythonHints(cm, options) {
     const cursor = cm.getCursor();
     const line = cursor.line;
     const ch = cursor.ch;
-  
-  // Get current line content
-  const lineContent = cm.getLine(line);
-  const beforeCursor = lineContent.substring(0, ch);
-  
-  // Check if we're in a member access context (e.g., "object.")
-  const memberAccessMatch = beforeCursor.match(/([A-Za-z_][\w\.]*)\.$/);
-  let suggestions = [];
-  let fromPos = { line, ch: ch - 1 };
-  let toPos = { line, ch };
-  
-  if (memberAccessMatch) {
-    // Member access context - get object members
-    const objectName = memberAccessMatch[1];
-    const members = await getPyodideMembers(objectName);
-    
-    suggestions = members.map(member => ({
-      text: member,
-      displayText: member,
-      className: 'cm-hint-member',
-      description: async () => {
-        // Try to get type info from Pyodide first
-        if (isPyodideLoaded && pyodide) {
-          const typeInfo = await getPyodideType(`${objectName}.${member}`);
-          if (typeInfo) return `Type: ${typeInfo}`;
-        }
-        
-        // Fallback to static descriptions for common modules
-        if (PYTHON_MODULES[objectName]) {
-          if (objectName === 'math') {
-            if (member === 'pi') return 'Mathematical constant π (3.14159...)';
-            if (member === 'e') return 'Mathematical constant e (2.71828...)';
-            if (['sin', 'cos', 'tan'].includes(member)) return `Trigonometric function: ${member}(x)`;
-            if (['sqrt', 'log', 'exp'].includes(member)) return `Mathematical function: ${member}(x)`;
+
+    // Get current line content
+    const lineContent = cm.getLine(line);
+    const beforeCursor = lineContent.substring(0, ch);
+
+    // Check if we're in a member access context (e.g., "object.")
+    const memberAccessMatch = beforeCursor.match(/([A-Za-z_][\w\.]*)\.$/);
+    let suggestions = [];
+    let fromPos = { line, ch: ch - 1 };
+    let toPos = { line, ch };
+
+    if (memberAccessMatch) {
+      // Member access context - get object members
+      const objectName = memberAccessMatch[1];
+      const members = await getPyodideMembers(objectName);
+
+      suggestions = members.map((member) => ({
+        text: member,
+        displayText: member,
+        className: "cm-hint-member",
+        description: async () => {
+          // Try to get type info from Pyodide first
+          if (isPyodideLoaded && pyodide) {
+            const typeInfo = await getPyodideType(`${objectName}.${member}`);
+            if (typeInfo) return `Type: ${typeInfo}`;
           }
-          if (objectName === 'random') {
-            if (member === 'randint') return 'random.randint(a, b) - Return random integer N such that a <= N <= b';
-            if (member === 'choice') return 'random.choice(seq) - Return a random element from the non-empty sequence seq';
-            if (member === 'shuffle') return 'random.shuffle(x) - Shuffle the sequence x in place';
-          }
-          if (objectName === 'turtle') {
-            if (member === 'Turtle') return 'turtle.Turtle() - Create and return a new turtle object';
-            if (member === 'forward') return 'turtle.forward(distance) - Move the turtle forward by the specified distance';
-            if (member === 'right') return 'turtle.right(angle) - Turn turtle right by angle units';
-          }
-        }
-        
-        return `Member of ${objectName}`;
-      }
-    }));
-    
-    fromPos = { line, ch: ch - 1 };
-    toPos = { line, ch };
-  } else {
-    // Regular identifier context
-    const wordMatch = beforeCursor.match(/([A-Za-z_]\w*)$/);
-    if (wordMatch) {
-      const query = wordMatch[1];
-      fromPos = { line, ch: ch - query.length };
-      toPos = { line, ch };
-      
-      // Get buffer identifiers
-      const bufferIdentifiers = extractBufferIdentifiers(cm.getValue());
-      
-      // Combine all suggestions
-      const allSuggestions = [
-        ...PYTHON_KEYWORDS.map(keyword => ({ 
-          text: keyword, 
-          displayText: keyword, 
-          className: 'cm-hint-keyword',
-          description: () => `Python keyword: ${keyword}`
-        })),
-        ...PYTHON_BUILTINS.map(builtin => ({ 
-          text: builtin, 
-          displayText: builtin, 
-          className: 'cm-hint-builtin',
-          description: () => PYTHON_DOCS[builtin] || `Built-in function: ${builtin}`
-        })),
-        ...Array.from(bufferIdentifiers.keys()).map(identifier => ({ 
-          text: identifier, 
-          displayText: identifier, 
-          className: 'cm-hint-identifier',
-          frequency: bufferIdentifiers.get(identifier),
-          description: () => `Variable/function (used ${bufferIdentifiers.get(identifier)} times)`
-        }))
-      ];
-      
-      // Filter and score suggestions
-      suggestions = allSuggestions
-        .filter(suggestion => suggestion.text.toLowerCase().includes(query.toLowerCase()))
-        .map(suggestion => ({
-          ...suggestion,
-          score: calculateSuggestionScore(
-            suggestion.text, 
-            query, 
-            suggestion.frequency || 0,
-            suggestion.text.toLowerCase().startsWith(query.toLowerCase())
-          )
-        }))
-        .sort((a, b) => b.score - a.score)
-        .slice(0, 50); // Limit to top 50
-    }
-  }
-  
-  // Create enhanced hint objects with proper rendering
-  const enhancedSuggestions = suggestions.map(suggestion => {
-    const hint = {
-      text: suggestion.text,
-      displayText: suggestion.displayText || suggestion.text,
-      className: suggestion.className,
-      render: function(element, self, data) {
-        // Create main text element
-        const textSpan = document.createElement('span');
-        textSpan.textContent = suggestion.text;
-        textSpan.className = suggestion.className || '';
-        element.appendChild(textSpan);
-        
-        // Add description if available
-        if (suggestion.description) {
-          const descSpan = document.createElement('span');
-          descSpan.className = 'CodeMirror-hint-description';
-          
-          // Handle async descriptions
-          if (typeof suggestion.description === 'function') {
-            const desc = suggestion.description();
-            if (desc instanceof Promise) {
-              descSpan.textContent = 'Loading...';
-              desc.then(result => {
-                if (result) descSpan.textContent = result;
-              }).catch(() => {
-                descSpan.textContent = '';
-              });
-            } else {
-              descSpan.textContent = desc;
+
+          // Fallback to static descriptions for common modules
+          if (PYTHON_MODULES[objectName]) {
+            if (objectName === "math") {
+              if (member === "pi")
+                return "Mathematical constant π (3.14159...)";
+              if (member === "e") return "Mathematical constant e (2.71828...)";
+              if (["sin", "cos", "tan"].includes(member))
+                return `Trigonometric function: ${member}(x)`;
+              if (["sqrt", "log", "exp"].includes(member))
+                return `Mathematical function: ${member}(x)`;
             }
-          } else {
-            descSpan.textContent = suggestion.description;
+            if (objectName === "random") {
+              if (member === "randint")
+                return "random.randint(a, b) - Return random integer N such that a <= N <= b";
+              if (member === "choice")
+                return "random.choice(seq) - Return a random element from the non-empty sequence seq";
+              if (member === "shuffle")
+                return "random.shuffle(x) - Shuffle the sequence x in place";
+            }
+            if (objectName === "turtle") {
+              if (member === "Turtle")
+                return "turtle.Turtle() - Create and return a new turtle object";
+              if (member === "forward")
+                return "turtle.forward(distance) - Move the turtle forward by the specified distance";
+              if (member === "right")
+                return "turtle.right(angle) - Turn turtle right by angle units";
+            }
           }
-          
-          element.appendChild(descSpan);
-        }
-        
-        // Add frequency indicator for buffer identifiers
-        if (suggestion.frequency) {
-          const freqSpan = document.createElement('span');
-          freqSpan.className = 'hint-frequency';
-          freqSpan.textContent = suggestion.frequency;
-          element.appendChild(freqSpan);
-        }
+
+          return `Member of ${objectName}`;
+        },
+      }));
+
+      fromPos = { line, ch: ch - 1 };
+      toPos = { line, ch };
+    } else {
+      // Regular identifier context
+      const wordMatch = beforeCursor.match(/([A-Za-z_]\w*)$/);
+      if (wordMatch) {
+        const query = wordMatch[1];
+        fromPos = { line, ch: ch - query.length };
+        toPos = { line, ch };
+
+        // Get buffer identifiers
+        const bufferIdentifiers = extractBufferIdentifiers(cm.getValue());
+
+        // Combine all suggestions
+        const allSuggestions = [
+          ...PYTHON_KEYWORDS.map((keyword) => ({
+            text: keyword,
+            displayText: keyword,
+            className: "cm-hint-keyword",
+            description: () => `Python keyword: ${keyword}`,
+          })),
+          ...PYTHON_BUILTINS.map((builtin) => ({
+            text: builtin,
+            displayText: builtin,
+            className: "cm-hint-builtin",
+            description: () =>
+              PYTHON_DOCS[builtin] || `Built-in function: ${builtin}`,
+          })),
+          ...Array.from(bufferIdentifiers.keys()).map((identifier) => ({
+            text: identifier,
+            displayText: identifier,
+            className: "cm-hint-identifier",
+            frequency: bufferIdentifiers.get(identifier),
+            description: () =>
+              `Variable/function (used ${bufferIdentifiers.get(
+                identifier
+              )} times)`,
+          })),
+        ];
+
+        // Filter and score suggestions
+        suggestions = allSuggestions
+          .filter((suggestion) =>
+            suggestion.text.toLowerCase().includes(query.toLowerCase())
+          )
+          .map((suggestion) => ({
+            ...suggestion,
+            score: calculateSuggestionScore(
+              suggestion.text,
+              query,
+              suggestion.frequency || 0,
+              suggestion.text.toLowerCase().startsWith(query.toLowerCase())
+            ),
+          }))
+          .sort((a, b) => b.score - a.score)
+          .slice(0, 50); // Limit to top 50
       }
-    };
-    
-    return hint;
-  });
-  
+    }
+
+    // Create enhanced hint objects with proper rendering
+    const enhancedSuggestions = suggestions.map((suggestion) => {
+      const hint = {
+        text: suggestion.text,
+        displayText: suggestion.displayText || suggestion.text,
+        className: suggestion.className,
+        render: function (element, self, data) {
+          // Create main text element
+          const textSpan = document.createElement("span");
+          textSpan.textContent = suggestion.text;
+          textSpan.className = suggestion.className || "";
+          element.appendChild(textSpan);
+
+          // Add description if available
+          if (suggestion.description) {
+            const descSpan = document.createElement("span");
+            descSpan.className = "CodeMirror-hint-description";
+
+            // Handle async descriptions
+            if (typeof suggestion.description === "function") {
+              const desc = suggestion.description();
+              if (desc instanceof Promise) {
+                descSpan.textContent = "Loading...";
+                desc
+                  .then((result) => {
+                    if (result) descSpan.textContent = result;
+                  })
+                  .catch(() => {
+                    descSpan.textContent = "";
+                  });
+              } else {
+                descSpan.textContent = desc;
+              }
+            } else {
+              descSpan.textContent = suggestion.description;
+            }
+
+            element.appendChild(descSpan);
+          }
+
+          // Add frequency indicator for buffer identifiers
+          if (suggestion.frequency) {
+            const freqSpan = document.createElement("span");
+            freqSpan.className = "hint-frequency";
+            freqSpan.textContent = suggestion.frequency;
+            element.appendChild(freqSpan);
+          }
+        },
+      };
+
+      return hint;
+    });
+
     return {
       list: enhancedSuggestions,
       from: fromPos,
-      to: toPos
+      to: toPos,
     };
   } catch (error) {
-    console.error('Autocomplete error:', error);
-    return handleAutocompleteError(error, 'main function');
+    console.error("Autocomplete error:", error);
+    return handleAutocompleteError(error, "main function");
   }
 }
 
@@ -437,12 +612,12 @@ function triggerAutocomplete(cm, delay = 120) {
   if (autocompleteTimeout) {
     clearTimeout(autocompleteTimeout);
   }
-  
+
   autocompleteTimeout = setTimeout(() => {
     CodeMirror.showHint(cm, providePythonHints, {
       completeSingle: false,
       closeOnUnfocus: true,
-      hint: providePythonHints
+      hint: providePythonHints,
     });
   }, delay);
 }
@@ -450,7 +625,7 @@ function triggerAutocomplete(cm, delay = 120) {
 // Clear Pyodide member cache
 function clearPyodideCache() {
   pyodideMemberCache.clear();
-  console.log('Pyodide member cache cleared');
+  console.log("Pyodide member cache cleared");
 }
 
 // Enhanced error handling for autocomplete
@@ -460,7 +635,7 @@ function handleAutocompleteError(error, context) {
   return {
     list: [],
     from: { line: 0, ch: 0 },
-    to: { line: 0, ch: 0 }
+    to: { line: 0, ch: 0 },
   };
 }
 
@@ -470,62 +645,69 @@ function showAutocompleteStatus() {
     pyodideLoaded: isPyodideLoaded,
     cacheSize: pyodideMemberCache.size,
     cacheKeys: Array.from(pyodideMemberCache.keys()),
-    currentTask: currentTask ? currentTask.title : 'None',
+    currentTask: currentTask ? currentTask.title : "None",
     editorActive: !!editor,
-    theme: isDarkTheme ? 'dark' : 'light'
+    theme: isDarkTheme ? "dark" : "light",
   };
-  
-  console.log('=== Autocomplete Status ===');
+
+  console.log("=== Autocomplete Status ===");
   console.log(status);
-  console.log('===========================');
-  
+  console.log("===========================");
+
   // Show in output panel
-  showOutput('info', `🔍 Autocomplete Status:\n🐍 Pyodide: ${status.pyodideLoaded ? 'Loaded' : 'Not loaded'}\n📦 Cache: ${status.cacheSize} items\n🎯 Task: ${status.currentTask}\n🎨 Theme: ${status.theme}`);
+  showOutput(
+    "info",
+    `🔍 Autocomplete Status:\n🐍 Pyodide: ${
+      status.pyodideLoaded ? "Loaded" : "Not loaded"
+    }\n📦 Cache: ${status.cacheSize} items\n🎯 Task: ${
+      status.currentTask
+    }\n🎨 Theme: ${status.theme}`
+  );
 }
 
 // Manual autocomplete trigger for testing
 function manualAutocomplete() {
   if (!editor) {
-    showOutput('error', '❌ Editor not initialized');
+    showOutput("error", "❌ Editor not initialized");
     return;
   }
-  
+
   const cursor = editor.getCursor();
   const line = editor.getLine(cursor.line);
   const beforeCursor = line.substring(0, cursor.ch);
-  
-  console.log('Manual autocomplete triggered');
-  console.log('Cursor position:', cursor);
-  console.log('Line content:', line);
-  console.log('Before cursor:', beforeCursor);
-  
+
+  console.log("Manual autocomplete triggered");
+  console.log("Cursor position:", cursor);
+  console.log("Line content:", line);
+  console.log("Before cursor:", beforeCursor);
+
   // Trigger autocomplete
   CodeMirror.showHint(editor, providePythonHints, {
     completeSingle: false,
-    closeOnUnfocus: true
+    closeOnUnfocus: true,
   });
 }
 
 // Test GIF animations manually
 function testGifAnimations() {
-  showOutput('info', '🧪 Testing GIF animations...');
-  
+  showOutput("info", "🧪 Testing GIF animations...");
+
   // Test success animation
   setTimeout(() => {
-    showGifAnimation('success', 2000);
-    showOutput('info', '✅ Success GIF shown');
+    showGifAnimation("success", 2000);
+    showOutput("info", "✅ Success GIF shown");
   }, 500);
-  
+
   // Test warning animation
   setTimeout(() => {
-    showGifAnimation('warning', 2000);
-    showOutput('info', '⚠️ Warning GIF shown');
+    showGifAnimation("warning", 2000);
+    showOutput("info", "⚠️ Warning GIF shown");
   }, 3000);
-  
+
   // Test error animation
   setTimeout(() => {
-    showGifAnimation('error', 2000);
-    showOutput('info', '❌ Error GIF shown');
+    showGifAnimation("error", 2000);
+    showOutput("info", "❌ Error GIF shown");
   }, 5500);
 }
 
@@ -560,122 +742,122 @@ const tasks = [
     points: 15,
     solution: "sayi1 = 5\nsayi2 = 3\ntoplam = sayi1 + sayi2\nprint(toplam)",
   },
-  {
-    id: 3,
-    title: "Döngü ile Sayılar",
-    description: "1'den 5'e kadar olan sayıları yazdırın.",
-    difficulty: 2,
-    category: "Döngüler",
-    starterCode:
-      "# 1'den 5'e kadar sayıları yazdırın\nfor i in range(1, 6):\n    print(i)",
-    expectedOutput: "1\n2\n3\n4\n5",
-    hints: ["for döngüsü kullanın", "range() fonksiyonunu kullanın"],
-    points: 20,
-    solution: "for i in range(1, 6):\n    print(i)",
-  },
-  {
-    id: 4,
-    title: "Tahmin Oyunu",
-    description:
-      "1-10 arası rastgele bir sayı üretin ve kullanıcıdan tahmin etmesini isteyin.",
-    difficulty: 3,
-    category: "Oyunlar",
-    starterCode:
-      'import random\n\n# Rastgele sayı üretin\nsayi = random.randint(1, 10)\nprint(f"1-10 arası bir sayı tahmin edin: {sayi}")',
-    expectedOutput: /1-10 arası bir sayı tahmin edin: \d+/,
-    hints: ["random.randint() kullanın", "f-string ile formatlama yapın"],
-    points: 25,
-    solution:
-      'import random\nsayi = random.randint(1, 10)\nprint(f"1-10 arası bir sayı tahmin edin: {sayi}")',
-  },
-  {
-    id: 5,
-    title: "Turtle ile Çizim",
-    description: "Turtle kullanarak bir kare çizin.",
-    difficulty: 2,
-    category: "Çizim",
-    starterCode:
-      "import turtle\n\n# Turtle nesnesini oluşturun\nt = turtle.Turtle()\n\n# Kare çizin\nfor i in range(4):\n    t.forward(100)\n    t.right(90)\n\nturtle.done()",
-    expectedOutput: "Kare çizildi",
-    hints: [
-      "turtle.Turtle() ile nesne oluşturun",
-      "forward() ve right() metodlarını kullanın",
-    ],
-    points: 30,
-    solution:
-      "import turtle\nt = turtle.Turtle()\nfor i in range(4):\n    t.forward(100)\n    t.right(90)\nturtle.done()",
-  },
-  {
-    id: 6,
-    title: "Liste İşlemleri",
-    description: "Bir liste oluşturun ve elemanlarını toplayın.",
-    difficulty: 2,
-    category: "Veri Yapıları",
-    starterCode:
-      '# Sayılar listesi oluşturun\nsayilar = [1, 2, 3, 4, 5]\n\n# Toplamı hesaplayın\ntoplam = sum(sayilar)\nprint(f"Toplam: {toplam}")',
-    expectedOutput: "Toplam: 15",
-    hints: ["sum() fonksiyonunu kullanın", "f-string ile formatlama yapın"],
-    points: 20,
-    solution:
-      'sayilar = [1, 2, 3, 4, 5]\ntoplam = sum(sayilar)\nprint(f"Toplam: {toplam}")',
-  },
-  {
-    id: 7,
-    title: "Fonksiyon Yazma",
-    description: "İki sayıyı çarpan bir fonksiyon yazın.",
-    difficulty: 3,
-    category: "Fonksiyonlar",
-    starterCode:
-      'def carp(a, b):\n    return a * b\n\n# Fonksiyonu test edin\nsonuc = carp(4, 5)\nprint(f"4 x 5 = {sonuc}")',
-    expectedOutput: "4 x 5 = 20",
-    hints: ["def ile fonksiyon tanımlayın", "return ile sonucu döndürün"],
-    points: 25,
-    solution:
-      'def carp(a, b):\n    return a * b\nsonuc = carp(4, 5)\nprint(f"4 x 5 = {sonuc}")',
-  },
-  {
-    id: 8,
-    title: "Koşullu İfadeler",
-    description:
-      "Bir sayının pozitif, negatif veya sıfır olduğunu kontrol edin.",
-    difficulty: 2,
-    category: "Koşullar",
-    starterCode:
-      'sayi = 7\n\nif sayi > 0:\n    print("Pozitif")\nelif sayi < 0:\n    print("Negatif")\nelse:\n    print("Sıfır")',
-    expectedOutput: "Pozitif",
-    hints: ["if, elif, else kullanın", "Karşılaştırma operatörlerini kullanın"],
-    points: 20,
-    solution:
-      'sayi = 7\nif sayi > 0:\n    print("Pozitif")\nelif sayi < 0:\n    print("Negatif")\nelse:\n    print("Sıfır")',
-  },
-  {
-    id: 9,
-    title: "Matematik İşlemleri",
-    description: "Karmaşık matematik işlemleri yapın.",
-    difficulty: 2,
-    category: "Temel",
-    starterCode:
-      "import math\n\n# Pi sayısını kullanarak daire alanı hesaplayın\nr = 5\nalan = math.pi * r ** 2\nprint(f'Yarıçapı {r} olan dairenin alanı: {alan:.2f}')",
-    expectedOutput: /Yarıçapı 5 olan dairenin alanı: 78\.54/,
-    hints: ["math.pi kullanın", "** operatörü ile üs alın"],
-    points: 25,
-    solution:
-      "import math\nr = 5\nalan = math.pi * r ** 2\nprint(f'Yarıçapı {r} olan dairenin alanı: {alan:.2f}')",
-  },
-  {
-    id: 10,
-    title: "String İşlemleri",
-    description: "String metodlarını kullanarak metin işlemleri yapın.",
-    difficulty: 2,
-    category: "Temel",
-    starterCode:
-      'metin = "Python Programlama Dili"\n\n# Metni büyük harfe çevirin\nbuyuk = metin.upper()\nprint(buyuk)\n\n# Kelime sayısını bulun\nkelime_sayisi = len(metin.split())\nprint(f"Kelime sayısı: {kelime_sayisi}")',
-    expectedOutput: "PYTHON PROGRAMLAMA DİLİ\nKelime sayısı: 3",
-    hints: ["upper() metodunu kullanın", "split() ile kelimeleri ayırın"],
-    points: 20,
-    solution:
-      'metin = "Python Programlama Dili"\nbuyuk = metin.upper()\nprint(buyuk)\nkelime_sayisi = len(metin.split())\nprint(f"Kelime sayısı: {kelime_sayisi}")',
-  },
+  // {
+  //   id: 3,
+  //   title: "Döngü ile Sayılar",
+  //   description: "1'den 5'e kadar olan sayıları yazdırın.",
+  //   difficulty: 2,
+  //   category: "Döngüler",
+  //   starterCode:
+  //     "# 1'den 5'e kadar sayıları yazdırın\nfor i in range(1, 6):\n    print(i)",
+  //   expectedOutput: "1\n2\n3\n4\n5",
+  //   hints: ["for döngüsü kullanın", "range() fonksiyonunu kullanın"],
+  //   points: 20,
+  //   solution: "for i in range(1, 6):\n    print(i)",
+  // },
+  // {
+  //   id: 4,
+  //   title: "Tahmin Oyunu",
+  //   description:
+  //     "1-10 arası rastgele bir sayı üretin ve kullanıcıdan tahmin etmesini isteyin.",
+  //   difficulty: 3,
+  //   category: "Oyunlar",
+  //   starterCode:
+  //     'import random\n\n# Rastgele sayı üretin\nsayi = random.randint(1, 10)\nprint(f"1-10 arası bir sayı tahmin edin: {sayi}")',
+  //   expectedOutput: /1-10 arası bir sayı tahmin edin: \d+/,
+  //   hints: ["random.randint() kullanın", "f-string ile formatlama yapın"],
+  //   points: 25,
+  //   solution:
+  //     'import random\nsayi = random.randint(1, 10)\nprint(f"1-10 arası bir sayı tahmin edin: {sayi}")',
+  // },
+  // {
+  //   id: 5,
+  //   title: "Turtle ile Çizim",
+  //   description: "Turtle kullanarak bir kare çizin.",
+  //   difficulty: 2,
+  //   category: "Çizim",
+  //   starterCode:
+  //     "import turtle\n\n# Turtle nesnesini oluşturun\nt = turtle.Turtle()\n\n# Kare çizin\nfor i in range(4):\n    t.forward(100)\n    t.right(90)\n\nturtle.done()",
+  //   expectedOutput: "Kare çizildi",
+  //   hints: [
+  //     "turtle.Turtle() ile nesne oluşturun",
+  //     "forward() ve right() metodlarını kullanın",
+  //   ],
+  //   points: 30,
+  //   solution:
+  //     "import turtle\nt = turtle.Turtle()\nfor i in range(4):\n    t.forward(100)\n    t.right(90)\nturtle.done()",
+  // },
+  // {
+  //   id: 6,
+  //   title: "Liste İşlemleri",
+  //   description: "Bir liste oluşturun ve elemanlarını toplayın.",
+  //   difficulty: 2,
+  //   category: "Veri Yapıları",
+  //   starterCode:
+  //     '# Sayılar listesi oluşturun\nsayilar = [1, 2, 3, 4, 5]\n\n# Toplamı hesaplayın\ntoplam = sum(sayilar)\nprint(f"Toplam: {toplam}")',
+  //   expectedOutput: "Toplam: 15",
+  //   hints: ["sum() fonksiyonunu kullanın", "f-string ile formatlama yapın"],
+  //   points: 20,
+  //   solution:
+  //     'sayilar = [1, 2, 3, 4, 5]\ntoplam = sum(sayilar)\nprint(f"Toplam: {toplam}")',
+  // },
+  // {
+  //   id: 7,
+  //   title: "Fonksiyon Yazma",
+  //   description: "İki sayıyı çarpan bir fonksiyon yazın.",
+  //   difficulty: 3,
+  //   category: "Fonksiyonlar",
+  //   starterCode:
+  //     'def carp(a, b):\n    return a * b\n\n# Fonksiyonu test edin\nsonuc = carp(4, 5)\nprint(f"4 x 5 = {sonuc}")',
+  //   expectedOutput: "4 x 5 = 20",
+  //   hints: ["def ile fonksiyon tanımlayın", "return ile sonucu döndürün"],
+  //   points: 25,
+  //   solution:
+  //     'def carp(a, b):\n    return a * b\nsonuc = carp(4, 5)\nprint(f"4 x 5 = {sonuc}")',
+  // },
+  // {
+  //   id: 8,
+  //   title: "Koşullu İfadeler",
+  //   description:
+  //     "Bir sayının pozitif, negatif veya sıfır olduğunu kontrol edin.",
+  //   difficulty: 2,
+  //   category: "Koşullar",
+  //   starterCode:
+  //     'sayi = 7\n\nif sayi > 0:\n    print("Pozitif")\nelif sayi < 0:\n    print("Negatif")\nelse:\n    print("Sıfır")',
+  //   expectedOutput: "Pozitif",
+  //   hints: ["if, elif, else kullanın", "Karşılaştırma operatörlerini kullanın"],
+  //   points: 20,
+  //   solution:
+  //     'sayi = 7\nif sayi > 0:\n    print("Pozitif")\nelif sayi < 0:\n    print("Negatif")\nelse:\n    print("Sıfır")',
+  // },
+  // {
+  //   id: 9,
+  //   title: "Matematik İşlemleri",
+  //   description: "Karmaşık matematik işlemleri yapın.",
+  //   difficulty: 2,
+  //   category: "Temel",
+  //   starterCode:
+  //     "import math\n\n# Pi sayısını kullanarak daire alanı hesaplayın\nr = 5\nalan = math.pi * r ** 2\nprint(f'Yarıçapı {r} olan dairenin alanı: {alan:.2f}')",
+  //   expectedOutput: /Yarıçapı 5 olan dairenin alanı: 78\.54/,
+  //   hints: ["math.pi kullanın", "** operatörü ile üs alın"],
+  //   points: 25,
+  //   solution:
+  //     "import math\nr = 5\nalan = math.pi * r ** 2\nprint(f'Yarıçapı {r} olan dairenin alanı: {alan:.2f}')",
+  // },
+  // {
+  //   id: 10,
+  //   title: "String İşlemleri",
+  //   description: "String metodlarını kullanarak metin işlemleri yapın.",
+  //   difficulty: 2,
+  //   category: "Temel",
+  //   starterCode:
+  //     'metin = "Python Programlama Dili"\n\n# Metni büyük harfe çevirin\nbuyuk = metin.upper()\nprint(buyuk)\n\n# Kelime sayısını bulun\nkelime_sayisi = len(metin.split())\nprint(f"Kelime sayısı: {kelime_sayisi}")',
+  //   expectedOutput: "PYTHON PROGRAMLAMA DİLİ\nKelime sayısı: 3",
+  //   hints: ["upper() metodunu kullanın", "split() ile kelimeleri ayırın"],
+  //   points: 20,
+  //   solution:
+  //     'metin = "Python Programlama Dili"\nbuyuk = metin.upper()\nprint(buyuk)\nkelime_sayisi = len(metin.split())\nprint(f"Kelime sayısı: {kelime_sayisi}")',
+  // },
 ];
 
 // Achievements Data
@@ -687,7 +869,7 @@ const achievements = [
     icon: "🎯",
     condition: () => userProgress.completedTasks.length >= 1,
     target: 1,
-    type: "tasks"
+    type: "tasks",
   },
   {
     id: 2,
@@ -696,7 +878,7 @@ const achievements = [
     icon: "🏆",
     condition: () => userProgress.completedTasks.length >= 5,
     target: 5,
-    type: "tasks"
+    type: "tasks",
   },
   {
     id: 3,
@@ -705,7 +887,7 @@ const achievements = [
     icon: "⭐",
     condition: () => userProgress.points >= 100,
     target: 100,
-    type: "points"
+    type: "points",
   },
   {
     id: 4,
@@ -714,7 +896,7 @@ const achievements = [
     icon: "⚡",
     condition: () => userProgress.firstTryCompletions >= 3,
     target: 3,
-    type: "firstTry"
+    type: "firstTry",
   },
 ];
 
@@ -727,7 +909,7 @@ document.addEventListener("DOMContentLoaded", function () {
   setupEventListeners();
   updateUI();
   initializePyodide(); // Pyodide'i başlat
-  
+
   // Ensure editor shows "bir görev seçin" when no task is selected
   if (!currentTask) {
     resetEditorToNoTask();
@@ -783,10 +965,10 @@ function initializeEditor() {
     indentWithTabs: false,
     lineWrapping: true,
     extraKeys: {
-      "Ctrl-Space": function(cm) {
+      "Ctrl-Space": function (cm) {
         CodeMirror.showHint(cm, providePythonHints, {
           completeSingle: false,
-          closeOnUnfocus: true
+          closeOnUnfocus: true,
         });
       },
       Tab: function (cm) {
@@ -800,12 +982,12 @@ function initializeEditor() {
   });
 
   // Set up automatic autocomplete triggers
-  editor.on('inputRead', function(cm, change) {
+  editor.on("inputRead", function (cm, change) {
     if (change.text && change.text.length > 0) {
       const lastChar = change.text[0];
-      
+
       // Trigger on dot (member access)
-      if (lastChar === '.') {
+      if (lastChar === ".") {
         triggerAutocomplete(cm, 50); // Faster trigger for dots
       }
       // Trigger after typing 2+ characters
@@ -814,7 +996,7 @@ function initializeEditor() {
         const lineContent = cm.getLine(cursor.line);
         const beforeCursor = lineContent.substring(0, cursor.ch);
         const wordMatch = beforeCursor.match(/([A-Za-z_]\w*)$/);
-        
+
         if (wordMatch && wordMatch[1].length >= 2) {
           triggerAutocomplete(cm, 120);
         }
@@ -890,7 +1072,9 @@ function renderProgressMap() {
             <span>${getCategoryIcon(category)}</span>
             <div>
                 <div>${category}</div>
-                <small>${completedTasks.length}/${categoryTasks.length} tamamlandı</small>
+                <small>${completedTasks.length}/${
+      categoryTasks.length
+    } tamamlandı</small>
             </div>
         `;
 
@@ -911,8 +1095,6 @@ function getCategoryIcon(category) {
   };
   return icons[category] || "📚";
 }
-
-
 
 // Setup Event Listeners
 function setupEventListeners() {
@@ -950,13 +1132,11 @@ function setupEventListeners() {
     .addEventListener("click", () => hideModal("helpModal"));
 
   // Hint modal buttons
-  document
-    .getElementById("holdHintBtn")
-    .addEventListener("click", holdHint);
-  
+  document.getElementById("holdHintBtn").addEventListener("click", holdHint);
+
   // Set initial title for hold button
   document.getElementById("holdHintBtn").title = "İpucu penceresini sabitle";
-  
+
   // Close hint modal button
   document
     .getElementById("closeHintModal")
@@ -986,10 +1166,10 @@ function runCode() {
   // No warning here - we'll show it after checking the output
 
   const code = editor.getValue();
-  
+
   // Show loading panel
   showLoadingPanel();
-  
+
   // Clear previous output
   clearOutput();
 
@@ -1032,7 +1212,10 @@ sys.stdout = io.StringIO()
     } else {
       // Show warning if task is not completed and output doesn't match requirements
       if (!userProgress.completedTasks.includes(currentTask.id)) {
-        showOutput("warning", "⚠️ Bu görev henüz tamamlanmamış! Kodunuz çalıştı ama görev gereksinimlerini karşılamıyor. Lütfen görevi tekrar gözden geçirin.");
+        showOutput(
+          "warning",
+          "⚠️ Bu görev henüz tamamlanmamış! Kodunuz çalıştı ama görev gereksinimlerini karşılamıyor. Lütfen görevi tekrar gözden geçirin."
+        );
         // Show warning GIF
         showGifAnimation("warning", 2000);
       }
@@ -1062,7 +1245,7 @@ function runSimulatedPython(code) {
         // Complete loading progress and hide loading panel
         completeLoadingProgress();
         hideLoadingPanel();
-        
+
         if (checkTaskCompletion(code, currentTask)) {
           completeTask(currentTask);
           // Show success GIF
@@ -1070,7 +1253,10 @@ function runSimulatedPython(code) {
         } else {
           // Show warning if task is not completed and output doesn't match requirements
           if (!userProgress.completedTasks.includes(currentTask.id)) {
-            showOutput("warning", "⚠️ Bu görev henüz tamamlanmamış! Kodunuz çalıştı ama görev gereksinimlerini karşılamıyor. Lütfen görevi tekrar gözden geçirin.");
+            showOutput(
+              "warning",
+              "⚠️ Bu görev henüz tamamlanmamış! Kodunuz çalıştı ama görev gereksinimlerini karşılamıyor. Lütfen görevi tekrar gözden geçirin."
+            );
             // Show warning GIF
             showGifAnimation("warning", 2000);
           }
@@ -1080,22 +1266,22 @@ function runSimulatedPython(code) {
           "success",
           `✅ Kod simülasyonu çalıştırıldı!\n\n📤 Çıktı:\n${result.output}`
         );
-             } else {
-         // Complete loading progress and hide loading panel on error
-         completeLoadingProgress();
-         hideLoadingPanel();
-         showOutput("error", `❌ Hata oluştu:\n${result.error}`);
-         // Show error GIF
-         showGifAnimation("error", 2000);
-       }
-         } catch (error) {
-       // Complete loading progress and hide loading panel on error
-       completeLoadingProgress();
-       hideLoadingPanel();
-       showOutput("error", `❌ Beklenmeyen hata:\n${error.message}`);
-       // Show error GIF
-       showGifAnimation("error", 2000);
-     }
+      } else {
+        // Complete loading progress and hide loading panel on error
+        completeLoadingProgress();
+        hideLoadingPanel();
+        showOutput("error", `❌ Hata oluştu:\n${result.error}`);
+        // Show error GIF
+        showGifAnimation("error", 2000);
+      }
+    } catch (error) {
+      // Complete loading progress and hide loading panel on error
+      completeLoadingProgress();
+      hideLoadingPanel();
+      showOutput("error", `❌ Beklenmeyen hata:\n${error.message}`);
+      // Show error GIF
+      showGifAnimation("error", 2000);
+    }
   }, 1000);
 }
 
@@ -1185,7 +1371,7 @@ function completeTask(task) {
 
   // Show success animation
   showSuccessAnimation();
-  
+
   // Show success GIF (this will be shown after the loading panel hides)
   setTimeout(() => {
     showGifAnimation("success", 2000);
@@ -1220,7 +1406,7 @@ function showHint() {
       <h4>💡 İpucu</h4>
       <p><strong>İpucu:</strong> bir görev seçin</p>
     `;
-    
+
     // Show hint modal
     const hintModal = document.getElementById("hintModal");
     hintModal.classList.add("show");
@@ -1234,14 +1420,14 @@ function showHint() {
 
   const hints = currentTask.hints;
   const randomHint = hints[Math.floor(Math.random() * hints.length)];
-  
+
   // Populate hint content
   const hintContent = document.getElementById("hintContent");
   hintContent.innerHTML = `
     <h4>💡 ${currentTask.title} İpucu</h4>
     <p><strong>İpucu:</strong> ${randomHint}</p>
   `;
-  
+
   // Show hint modal
   const hintModal = document.getElementById("hintModal");
   hintModal.classList.add("show");
@@ -1250,33 +1436,33 @@ function showHint() {
 // Update Pinned Hint
 function updatePinnedHint(task) {
   const hintModal = document.getElementById("hintModal");
-  
+
   console.log("updatePinnedHint called for task:", task.title);
   console.log("Hint modal held status:", hintModal.classList.contains("held"));
-  
+
   // Check if hint modal is pinned
   if (hintModal.classList.contains("held")) {
     console.log("Updating pinned hint content...");
-    
+
     const hints = task.hints;
     const randomHint = hints[Math.floor(Math.random() * hints.length)];
-    
+
     // Update hint content with new task information
     const hintContent = document.getElementById("hintContent");
     hintContent.innerHTML = `
       <h4>💡 ${task.title} İpucu</h4>
       <p><strong>İpucu:</strong> ${randomHint}</p>
     `;
-    
+
     // Add a subtle animation to show the hint was updated
     hintContent.style.animation = "hintUpdate 0.5s ease";
     setTimeout(() => {
       hintContent.style.animation = "";
     }, 500);
-    
+
     // Show a brief update notification
     showHintUpdateNotification();
-    
+
     console.log("Hint updated successfully");
   } else {
     console.log("Hint modal is not pinned, no update needed");
@@ -1289,14 +1475,14 @@ function showHintUpdateNotification() {
   const notification = document.createElement("div");
   notification.className = "hint-update-notification";
   notification.innerHTML = "🔄 İpucu güncellendi";
-  
+
   // Add to the pinned hint modal
   const hintModal = document.getElementById("hintModal");
   const modalContent = hintModal.querySelector(".modal-content");
-  
+
   // Position the notification at the top of the modal
   modalContent.appendChild(notification);
-  
+
   // Remove notification after 2 seconds
   setTimeout(() => {
     if (notification.parentNode) {
@@ -1309,7 +1495,7 @@ function showHintUpdateNotification() {
 function debugHintState() {
   const hintModal = document.getElementById("hintModal");
   const holdBtn = document.getElementById("holdHintBtn");
-  
+
   console.log("=== Hint Modal Debug Info ===");
   console.log("Modal element:", hintModal);
   console.log("Modal classes:", hintModal.className);
@@ -1324,21 +1510,24 @@ function debugHintState() {
 function holdHint() {
   const holdBtn = document.getElementById("holdHintBtn");
   const hintModal = document.getElementById("hintModal");
-  
+
   console.log("holdHint called, current state:", holdBtn.textContent);
-  
+
   if (holdBtn.textContent === "📌 Sabitle") {
     // Pin the hint window
     holdBtn.textContent = "🔓 Bırak";
     holdBtn.classList.add("btn-warning");
     holdBtn.classList.remove("btn-secondary");
     hintModal.classList.add("held");
-    
-    console.log("Hint pinned, held class added:", hintModal.classList.contains("held"));
-    
+
+    console.log(
+      "Hint pinned, held class added:",
+      hintModal.classList.contains("held")
+    );
+
     // Add a visual indicator that it's pinned
     holdBtn.title = "İpucu penceresi sabitlendi";
-    
+
     // Enable dragging for pinned modal
     enableDragging(hintModal);
   } else {
@@ -1347,12 +1536,15 @@ function holdHint() {
     holdBtn.classList.remove("btn-warning");
     holdBtn.classList.add("btn-secondary");
     hintModal.classList.remove("held");
-    
-    console.log("Hint unpinned, held class removed:", hintModal.classList.contains("held"));
-    
+
+    console.log(
+      "Hint unpinned, held class removed:",
+      hintModal.classList.contains("held")
+    );
+
     // Remove the visual indicator
     holdBtn.title = "İpucu penceresini sabitle";
-    
+
     // Disable dragging
     disableDragging(hintModal);
   }
@@ -1360,7 +1552,7 @@ function holdHint() {
 
 // Enable dragging for modal
 function enableDragging(modal) {
-  const modalContent = modal.querySelector('.modal-content');
+  const modalContent = modal.querySelector(".modal-content");
   let isDragging = false;
   let currentX;
   let currentY;
@@ -1370,14 +1562,14 @@ function enableDragging(modal) {
   let yOffset = 0;
 
   function dragStart(e) {
-    if (e.target.closest('.close-btn') || e.target.closest('#holdHintBtn')) {
+    if (e.target.closest(".close-btn") || e.target.closest("#holdHintBtn")) {
       return; // Don't start dragging if clicking on buttons
     }
-    
+
     initialX = e.clientX - xOffset;
     initialY = e.clientY - yOffset;
-    
-    if (e.target === modalContent || e.target.closest('.modal-header')) {
+
+    if (e.target === modalContent || e.target.closest(".modal-header")) {
       isDragging = true;
     }
   }
@@ -1393,10 +1585,10 @@ function enableDragging(modal) {
       e.preventDefault();
       currentX = e.clientX - initialX;
       currentY = e.clientY - initialY;
-      
+
       xOffset = currentX;
       yOffset = currentY;
-      
+
       setTranslate(currentX, currentY, modalContent);
     }
   }
@@ -1406,54 +1598,59 @@ function enableDragging(modal) {
   }
 
   // Remove any existing event listeners
-  modalContent.removeEventListener('mousedown', dragStart);
-  document.removeEventListener('mousemove', drag);
-  document.removeEventListener('mouseup', dragEnd);
+  modalContent.removeEventListener("mousedown", dragStart);
+  document.removeEventListener("mousemove", drag);
+  document.removeEventListener("mouseup", dragEnd);
 
   // Add new event listeners
-  modalContent.addEventListener('mousedown', dragStart);
-  document.addEventListener('mousemove', drag);
-  document.addEventListener('mouseup', dragEnd);
+  modalContent.addEventListener("mousedown", dragStart);
+  document.addEventListener("mousemove", drag);
+  document.addEventListener("mouseup", dragEnd);
 }
 
 // Disable dragging for modal
 function disableDragging(modal) {
-  const modalContent = modal.querySelector('.modal-content');
-  
+  const modalContent = modal.querySelector(".modal-content");
+
   // Remove event listeners
-  modalContent.removeEventListener('mousedown', null);
-  document.removeEventListener('mousemove', null);
-  document.removeEventListener('mouseup', null);
-  
+  modalContent.removeEventListener("mousedown", null);
+  document.removeEventListener("mousemove", null);
+  document.removeEventListener("mouseup", null);
+
   // Reset transform
-  modalContent.style.transform = 'none';
+  modalContent.style.transform = "none";
 }
 
 // Show Loading Panel
 function showLoadingPanel() {
   const loadingPanel = document.getElementById("loadingPanel");
-  const progressFill = loadingPanel.querySelector(".loading-progress .progress-fill");
-  
+  const progressFill = loadingPanel.querySelector(
+    ".loading-progress .progress-fill"
+  );
+
   loadingPanel.classList.add("show");
-  
+
   // Store the start time to ensure minimum display duration
   loadingPanel.dataset.startTime = Date.now();
-  
+
   // Reset progress bar to 0%
   progressFill.style.width = "0%";
   progressFill.style.animation = "none";
-  
+
   // Start progress bar animation after a small delay to ensure smooth animation
   setTimeout(() => {
     progressFill.style.animation = "loadingProgress 1s ease-in-out forwards";
   }, 100);
-  
+
   // Set a timeout to hide loading panel after 30 seconds (safety measure)
   setTimeout(() => {
     if (loadingPanel.classList.contains("show")) {
       completeLoadingProgress();
       hideLoadingPanel();
-      showOutput("warning", "⚠️ Kod çalıştırma zaman aşımına uğradı. Lütfen tekrar deneyin.");
+      showOutput(
+        "warning",
+        "⚠️ Kod çalıştırma zaman aşımına uğradı. Lütfen tekrar deneyin."
+      );
     }
   }, 30000);
 }
@@ -1461,8 +1658,10 @@ function showLoadingPanel() {
 // Complete Loading Progress
 function completeLoadingProgress() {
   const loadingPanel = document.getElementById("loadingPanel");
-  const progressFill = loadingPanel.querySelector(".loading-progress .progress-fill");
-  
+  const progressFill = loadingPanel.querySelector(
+    ".loading-progress .progress-fill"
+  );
+
   // Ensure progress bar is at 100%
   progressFill.style.animation = "none";
   progressFill.style.width = "100%";
@@ -1472,16 +1671,16 @@ function completeLoadingProgress() {
 function showGifAnimation(type, duration = 2000) {
   const gifContainer = document.getElementById("gifContainer");
   const gifAnimation = document.getElementById("gifAnimation");
-  
+
   // Clear any existing classes
   gifAnimation.className = "gif-animation";
-  
+
   // Add the appropriate type class
   gifAnimation.classList.add(type);
-  
+
   // Show the animation
   gifAnimation.classList.add("show");
-  
+
   // Hide after specified duration
   setTimeout(() => {
     gifAnimation.classList.remove("show");
@@ -1501,12 +1700,15 @@ function hideLoadingPanel() {
   const currentTime = Date.now();
   const elapsedTime = currentTime - startTime;
   const minimumDisplayTime = 1000; // 1 second in milliseconds
-  
+
   // Check if progress bar has completed (width should be 100%)
-  const progressFill = loadingPanel.querySelector(".loading-progress .progress-fill");
-  const progressCompleted = progressFill.style.width === "100%" || 
-                           getComputedStyle(progressFill).width === "100%";
-  
+  const progressFill = loadingPanel.querySelector(
+    ".loading-progress .progress-fill"
+  );
+  const progressCompleted =
+    progressFill.style.width === "100%" ||
+    getComputedStyle(progressFill).width === "100%";
+
   if (elapsedTime < minimumDisplayTime || !progressCompleted) {
     // If less than 1 second has passed or progress bar hasn't completed, wait
     const remainingTime = Math.max(minimumDisplayTime - elapsedTime, 0);
@@ -1590,12 +1792,12 @@ function showLevelUpAnimation() {
   // Calculate max possible level for level up message
   const totalAvailablePoints = getTotalAvailablePoints();
   const maxPossibleLevel = getMaxPossibleLevel();
-  
+
   showOutput(
     "success",
     `🎉 Seviye atladınız! Yeni seviyeniz: ${userProgress.level}/${maxPossibleLevel}`
   );
-  
+
   // Update next level info immediately
   const nextLevelInfo = document.getElementById("nextLevelInfo");
   if (nextLevelInfo) {
@@ -1629,8 +1831,9 @@ function updateUI() {
     const progress = (userProgress.points / totalAvailablePoints) * 100;
     progressFill.style.width = `${Math.min(progress, 100)}%`;
   }
-  if (pointsSpan) pointsSpan.textContent = `${userProgress.points}/${totalAvailablePoints} Puan`;
-  
+  if (pointsSpan)
+    pointsSpan.textContent = `${userProgress.points}/${totalAvailablePoints} Puan`;
+
   // Update next level info
   const nextLevelInfo = document.getElementById("nextLevelInfo");
   if (nextLevelInfo) {
@@ -1643,7 +1846,7 @@ function updateUI() {
       nextLevelInfo.style.display = "inline";
     }
   }
-  
+
   if (totalPoints) {
     totalPoints.textContent = `${userProgress.points}/${totalAvailablePoints}`;
     totalPoints.title = `${userProgress.points} puan kazandınız, ${totalAvailablePoints} puan mevcut`;
@@ -1670,7 +1873,8 @@ function updateUI() {
   }
 
   if (tasksProgressFill && tasksProgressText) {
-    const tasksProgress = (userProgress.completedTasks.length / totalAvailableTasks) * 100;
+    const tasksProgress =
+      (userProgress.completedTasks.length / totalAvailableTasks) * 100;
     tasksProgressFill.style.width = `${Math.min(tasksProgress, 100)}%`;
     tasksProgressText.textContent = `${Math.round(tasksProgress)}%`;
   }
@@ -1679,10 +1883,10 @@ function updateUI() {
   const runBtn = document.getElementById("runBtn");
   if (runBtn) {
     if (isPyodideLoaded) {
-      runBtn.innerHTML = "🐍 Çalıştır (Gerçek Python)";
+      runBtn.innerHTML = "▶️ Çalıştır (Gerçek Python)";
       runBtn.title = "Gerçek Python runtime ile çalıştır";
     } else {
-      runBtn.innerHTML = "🔄 Çalıştır (Simülasyon)";
+      runBtn.innerHTML = "▶️ Çalıştır (Simülasyon)";
       runBtn.title = "Simülasyon modunda çalıştır";
     }
   }
@@ -1706,7 +1910,7 @@ function updateAchievements() {
     // Calculate progress for each achievement
     let progressText = "";
     let currentValue = 0;
-    
+
     if (achievement.type === "tasks") {
       currentValue = userProgress.completedTasks.length;
       progressText = `(${currentValue}/${achievement.target})`;
@@ -1719,8 +1923,11 @@ function updateAchievements() {
     }
 
     // Calculate progress percentage
-    const progressPercentage = Math.min((currentValue / achievement.target) * 100, 100);
-    
+    const progressPercentage = Math.min(
+      (currentValue / achievement.target) * 100,
+      100
+    );
+
     achievementElement.innerHTML = `
             <span class="achievement-icon">${achievement.icon}</span>
             <div class="achievement-info">
@@ -1766,32 +1973,30 @@ document.addEventListener("keydown", function (e) {
         break;
     }
   }
-  
+
   // Debug shortcut: Ctrl+Shift+D
   if (e.ctrlKey && e.shiftKey && e.key === "D") {
     e.preventDefault();
     debugHintState();
   }
-  
+
   // Test autocomplete shortcut: Ctrl+Shift+A
   if (e.ctrlKey && e.shiftKey && e.key === "A") {
     e.preventDefault();
     if (editor) {
-      console.log('Testing autocomplete...');
+      console.log("Testing autocomplete...");
       CodeMirror.showHint(editor, providePythonHints, {
         completeSingle: false,
-        closeOnUnfocus: true
+        closeOnUnfocus: true,
       });
     }
   }
-  
+
   // Show autocomplete status: Ctrl+Shift+S
   if (e.ctrlKey && e.shiftKey && e.key === "S") {
     e.preventDefault();
     showAutocompleteStatus();
   }
-  
-  
 });
 
 // Auto-save code changes
@@ -1814,7 +2019,7 @@ function loadSavedCode(taskId) {
 // Enhanced task selection with saved code
 function selectTask(task) {
   console.log("selectTask called for:", task.title);
-  
+
   currentTask = task;
 
   // Update active task in sidebar
@@ -1831,7 +2036,9 @@ function selectTask(task) {
   document.getElementById("currentTaskTitle").textContent = task.title;
 
   // Show task description
-  const taskDescriptionDisplay = document.getElementById("taskDescriptionDisplay");
+  const taskDescriptionDisplay = document.getElementById(
+    "taskDescriptionDisplay"
+  );
   const taskDescriptionText = document.getElementById("taskDescriptionText");
   taskDescriptionText.textContent = task.description;
   taskDescriptionDisplay.style.display = "block";
@@ -1842,7 +2049,7 @@ function selectTask(task) {
   // Calculate total available points for welcome message
   const totalAvailablePoints = getTotalAvailablePoints();
   const totalAvailableTasks = getTotalAvailableTasks();
-  
+
   // Show welcome message
   showOutput(
     "info",
@@ -1856,7 +2063,7 @@ function selectTask(task) {
 // Function to reset editor when no task is selected
 function resetEditorToNoTask() {
   currentTask = null;
-  
+
   // Update active task in sidebar
   document.querySelectorAll(".task-item").forEach((item) => {
     item.classList.remove("active");
@@ -1866,7 +2073,9 @@ function resetEditorToNoTask() {
   document.getElementById("currentTaskTitle").textContent = "Görev Seçin";
 
   // Hide task description
-  const taskDescriptionDisplay = document.getElementById("taskDescriptionDisplay");
+  const taskDescriptionDisplay = document.getElementById(
+    "taskDescriptionDisplay"
+  );
   taskDescriptionDisplay.style.display = "none";
 
   // Set editor content to "# Bir görev seçin"

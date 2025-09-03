@@ -247,7 +247,8 @@ body {
   background: linear-gradient(135deg, #667eea, #764ba2);
   color: white;
   border-width: 4px;
-  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.5), 0 6px 20px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.5),
+    0 6px 20px rgba(102, 126, 234, 0.3);
 }
 
 .task-item.completed {
@@ -258,7 +259,7 @@ body {
 }
 
 .task-item.completed::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -2px;
   left: -2px;
@@ -275,7 +276,8 @@ body {
   border-color: #28a745;
   background: linear-gradient(135deg, #28a745, #20c997);
   color: white;
-  box-shadow: 0 0 0 5px rgba(102, 126, 234, 0.7), 0 6px 20px rgba(40, 167, 69, 0.3);
+  box-shadow: 0 0 0 5px rgba(102, 126, 234, 0.7),
+    0 6px 20px rgba(40, 167, 69, 0.3);
   transform: translateY(-2px);
   animation: completedTaskPulse 2s ease-in-out infinite;
 }
@@ -300,7 +302,8 @@ body {
 }
 
 @keyframes completedCheckPulse {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
   }
   50% {
@@ -309,11 +312,14 @@ body {
 }
 
 @keyframes completedTaskPulse {
-  0%, 100% {
-    box-shadow: 0 0 0 5px rgba(102, 126, 234, 0.7), 0 6px 20px rgba(40, 167, 69, 0.3);
+  0%,
+  100% {
+    box-shadow: 0 0 0 5px rgba(102, 126, 234, 0.7),
+      0 6px 20px rgba(40, 167, 69, 0.3);
   }
   50% {
-    box-shadow: 0 0 0 6px rgba(102, 126, 234, 0.9), 0 8px 25px rgba(40, 167, 69, 0.4);
+    box-shadow: 0 0 0 6px rgba(102, 126, 234, 0.9),
+      0 8px 25px rgba(40, 167, 69, 0.4);
   }
 }
 
@@ -508,8 +514,6 @@ body {
   min-height: 0;
 }
 
-
-
 /* Output Styling */
 .output-success {
   color: #28a745;
@@ -670,9 +674,15 @@ body {
   animation-fill-mode: both;
 }
 
-.stat:nth-child(1) { animation-delay: 0.1s; }
-.stat:nth-child(2) { animation-delay: 0.2s; }
-.stat:nth-child(3) { animation-delay: 0.3s; }
+.stat:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.stat:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.stat:nth-child(3) {
+  animation-delay: 0.3s;
+}
 
 @keyframes statEntrance {
   from {
@@ -708,7 +718,7 @@ body {
 }
 
 .stat-value[title]:hover::before {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 100%;
   left: 50%;
@@ -756,10 +766,18 @@ body {
   animation-fill-mode: both;
 }
 
-.achievement-item:nth-child(1) { animation-delay: 0.1s; }
-.achievement-item:nth-child(2) { animation-delay: 0.2s; }
-.achievement-item:nth-child(3) { animation-delay: 0.3s; }
-.achievement-item:nth-child(4) { animation-delay: 0.4s; }
+.achievement-item:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.achievement-item:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.achievement-item:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.achievement-item:nth-child(4) {
+  animation-delay: 0.4s;
+}
 
 @keyframes achievementEntrance {
   from {
@@ -810,13 +828,18 @@ body {
 }
 
 .achievement-progress-bar::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
   animation: shimmer 2s infinite;
 }
 
@@ -867,8 +890,12 @@ body {
   animation-fill-mode: both;
 }
 
-.progress-item:nth-child(1) { animation-delay: 0.2s; }
-.progress-item:nth-child(2) { animation-delay: 0.4s; }
+.progress-item:nth-child(1) {
+  animation-delay: 0.2s;
+}
+.progress-item:nth-child(2) {
+  animation-delay: 0.4s;
+}
 
 @keyframes progressItemEntrance {
   from {
@@ -913,13 +940,18 @@ body {
 }
 
 .progress-fill::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
   animation: progressShimmer 3s infinite;
 }
 
@@ -1019,13 +1051,13 @@ body {
     order: 3;
     width: 100%;
   }
-  
+
   .level-info {
     flex-direction: column;
     gap: 0.5rem;
     padding: 0.75rem;
   }
-  
+
   .next-level-info {
     font-size: 0.75rem;
     padding: 0.2rem 0.4rem;
@@ -1063,31 +1095,29 @@ body {
     padding: 0.75rem;
     margin-bottom: 1rem;
   }
-  
+
   .user-name-display h4 {
     font-size: 1.1rem;
   }
-  
+
   .profile-stats {
     grid-template-columns: 1fr;
     gap: 0.75rem;
   }
-  
+
   .progress-item {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
   }
-  
+
   .progress-label {
     min-width: auto;
   }
-  
+
   .progress-bar-container {
     width: 100%;
   }
-
-
 }
 
 /* Animations */
@@ -1177,7 +1207,7 @@ body {
 }
 
 .loading-spinner::after {
-  content: '';
+  content: "";
   position: absolute;
   top: -2px;
   left: -2px;
@@ -1205,7 +1235,8 @@ body {
 }
 
 @keyframes loadingTextPulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.8;
   }
   50% {
@@ -1216,8 +1247,6 @@ body {
 .loading-progress {
   margin-top: 2rem;
 }
-
-
 
 .loading-progress .progress-bar {
   width: 100%;
@@ -1237,13 +1266,18 @@ body {
 }
 
 .loading-progress .progress-fill::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
   animation: shimmer 1.5s infinite;
 }
 
@@ -1417,7 +1451,8 @@ body {
   border-color: #28a745;
   background: linear-gradient(135deg, #28a745, #20c997);
   color: white;
-  box-shadow: 0 0 0 5px rgba(102, 126, 234, 0.7), 0 6px 20px rgba(40, 167, 69, 0.3);
+  box-shadow: 0 0 0 5px rgba(102, 126, 234, 0.7),
+    0 6px 20px rgba(40, 167, 69, 0.3);
   border-width: 4px;
 }
 
@@ -1434,7 +1469,8 @@ body {
 
 .dark-theme .task-item.active {
   border-width: 4px;
-  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.5), 0 6px 20px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.5),
+    0 6px 20px rgba(102, 126, 234, 0.3);
 }
 
 .dark-theme .task-description {
@@ -1493,8 +1529,6 @@ body {
   color: var(--text-primary);
 }
 
-
-
 .dark-theme .modal-content {
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
@@ -1530,6 +1564,15 @@ body {
 .dark-theme .progress-node {
   background: #2d2d2d;
   border: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+.dark-theme .progress-node div {
+  color: var(--text-primary);
+}
+
+.dark-theme .progress-node small {
+  color: var(--text-secondary);
 }
 
 .dark-theme .achievement-info h5 {
@@ -1613,7 +1656,8 @@ body {
   border: 1px solid #e9ecef;
 }
 
-.hint-content ul, .hint-content ol {
+.hint-content ul,
+.hint-content ol {
   margin-bottom: 1rem;
   padding-left: 1.5rem;
 }
@@ -1926,7 +1970,7 @@ body {
 }
 
 .hint-loading::before {
-  content: '';
+  content: "";
   width: 12px;
   height: 12px;
   border: 2px solid #e2e8f0;
@@ -1936,8 +1980,12 @@ body {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Ensure hints are properly positioned above other elements */
@@ -2020,26 +2068,43 @@ body {
 }
 
 @keyframes successBounce {
-  0% { transform: scale(0.8) translateY(20px); }
-  50% { transform: scale(1.1) translateY(-5px); }
-  100% { transform: scale(1) translateY(0); }
+  0% {
+    transform: scale(0.8) translateY(20px);
+  }
+  50% {
+    transform: scale(1.1) translateY(-5px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+  }
 }
 
 @keyframes errorShake {
-  0%, 100% { transform: scale(1) translateY(0) rotate(0deg); }
-  25% { transform: scale(1) translateY(0) rotate(-5deg); }
-  75% { transform: scale(1) translateY(0) rotate(5deg); }
+  0%,
+  100% {
+    transform: scale(1) translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: scale(1) translateY(0) rotate(-5deg);
+  }
+  75% {
+    transform: scale(1) translateY(0) rotate(5deg);
+  }
 }
 
 @keyframes warningPulse {
-  0% { transform: scale(0.8) translateY(20px); }
-  50% { transform: scale(1.05) translateY(-2px); }
-  100% { transform: scale(1) translateY(0); }
+  0% {
+    transform: scale(0.8) translateY(20px);
+  }
+  50% {
+    transform: scale(1.05) translateY(-2px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+  }
 }
 
 /* Dark theme adjustments */
 .dark-theme .gif-animation {
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
 }
-
-
