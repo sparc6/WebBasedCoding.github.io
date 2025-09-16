@@ -36,11 +36,11 @@ body {
 
 .header-left .logo {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.75rem;
   min-height: 60px;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .logo-image {
@@ -50,14 +50,15 @@ body {
 }
 
 .logo-text {
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   font-weight: 700;
   background: linear-gradient(45deg, #ffd700, #ffed4e);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  text-align: center;
-  line-height: 1.1;
+  text-align: left;
+  line-height: 1.2;
+  white-space: nowrap;
 }
 
 .header-center {
@@ -84,6 +85,26 @@ body {
   border-radius: 15px;
   font-weight: 600;
   font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+}
+
+.level-icon {
+  font-size: 1rem;
+  animation: levelIconPulse 2s ease-in-out infinite;
+}
+
+@keyframes levelIconPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.progress-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .progress-bar {
@@ -92,6 +113,17 @@ body {
   background: rgba(255, 255, 255, 0.3);
   border-radius: 4px;
   overflow: hidden;
+  position: relative;
+}
+
+.progress-icon {
+  font-size: 1rem;
+  animation: progressIconBounce 1.5s ease-in-out infinite;
+}
+
+@keyframes progressIconBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
 }
 
 .progress-fill {
@@ -104,6 +136,34 @@ body {
 .points {
   font-weight: 600;
   color: #ffd700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 215, 0, 0.1);
+  padding: 0.25rem 0.75rem;
+  border-radius: 15px;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.2);
+}
+
+.points-icon {
+  font-size: 1rem;
+  animation: pointsIconTwinkle 2s ease-in-out infinite;
+}
+
+@keyframes pointsIconTwinkle {
+  0%, 100% { 
+    transform: scale(1) rotate(0deg);
+    filter: brightness(1);
+  }
+  25% { 
+    transform: scale(1.1) rotate(5deg);
+    filter: brightness(1.2);
+  }
+  75% { 
+    transform: scale(1.1) rotate(-5deg);
+    filter: brightness(1.2);
+  }
 }
 
 .next-level-info {
@@ -153,8 +213,40 @@ body {
 }
 
 .btn-success {
-  background: linear-gradient(45deg, #56ab2f, #a8e6cf);
+  background: linear-gradient(45deg, #28a745, #20c997);
   color: white;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-success::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn-success:hover::before {
+  left: 100%;
+}
+
+.btn-success:hover {
+  background: linear-gradient(45deg, #20c997, #28a745);
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+  border-color: #17a2b8;
+}
+
+.btn-success:active {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.5);
 }
 
 .btn-info {
@@ -170,6 +262,55 @@ body {
 .btn-sm {
   padding: 0.25rem 0.5rem;
   font-size: 0.8rem;
+}
+
+/* Enhanced Run Button Styling */
+#runBtn {
+  background: linear-gradient(45deg, #28a745, #20c997) !important;
+  color: white !important;
+  font-weight: 700 !important;
+  font-size: 1rem !important;
+  padding: 0.75rem 1.5rem !important;
+  border-radius: 12px !important;
+  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4) !important;
+  border: 2px solid transparent !important;
+  position: relative !important;
+  overflow: hidden !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+#runBtn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.6s ease;
+}
+
+#runBtn:hover::before {
+  left: 100%;
+}
+
+#runBtn:hover {
+  background: linear-gradient(45deg, #20c997, #28a745) !important;
+  transform: translateY(-4px) scale(1.08) !important;
+  box-shadow: 0 12px 30px rgba(40, 167, 69, 0.5) !important;
+  border-color: #17a2b8 !important;
+}
+
+#runBtn:active {
+  transform: translateY(-2px) scale(1.05) !important;
+  box-shadow: 0 8px 20px rgba(40, 167, 69, 0.6) !important;
+}
+
+#runBtn:focus {
+  outline: none !important;
+  box-shadow: 0 0 0 4px rgba(40, 167, 69, 0.3) !important;
 }
 
 /* Main Content */
@@ -221,9 +362,10 @@ body {
   border-radius: 12px;
   padding: 1rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
+  transform: scale(1);
 }
 
 .task-item.completed {
@@ -232,14 +374,16 @@ body {
 
 .task-item:hover {
   border-color: #667eea;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+  background: linear-gradient(135deg, #f8f9ff, #e8f0ff);
 }
 
 .task-item.completed:hover {
   border-color: #28a745;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+  background: linear-gradient(135deg, #28a745, #20c997);
 }
 
 .task-item.active {
@@ -345,9 +489,33 @@ body {
   margin-bottom: 0.5rem;
 }
 
+.task-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
 .task-difficulty {
   display: flex;
   gap: 0.25rem;
+}
+
+.task-points {
+  background: linear-gradient(45deg, #ffd700, #ffed4e);
+  color: #333;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(255, 215, 0, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.task-item:hover .task-points {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.5);
+  background: linear-gradient(45deg, #ffed4e, #ffd700);
 }
 
 .difficulty-dot {
@@ -355,6 +523,12 @@ body {
   height: 8px;
   border-radius: 50%;
   background: #dee2e6;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.task-item:hover .difficulty-dot.active {
+  transform: scale(1.2);
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
 }
 
 .difficulty-dot.active {
@@ -536,6 +710,46 @@ body {
   border-radius: 8px;
   margin-bottom: 0.5rem;
   border-left: 4px solid #17a2b8;
+}
+
+/* Output Status Labels */
+.output-status-label {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  animation: statusLabelPulse 0.5s ease-out;
+}
+
+.status-correct {
+  background: linear-gradient(45deg, #28a745, #20c997);
+  color: white;
+  border: 2px solid #1e7e34;
+}
+
+.status-wrong {
+  background: linear-gradient(45deg, #dc3545, #c82333);
+  color: white;
+  border: 2px solid #bd2130;
+}
+
+@keyframes statusLabelPulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 /* Modals */
@@ -994,6 +1208,20 @@ body {
 }
 
 /* Responsive Design */
+@media (max-width: 1024px) {
+  .header-left .logo {
+    gap: 0.5rem;
+  }
+  
+  .logo-text {
+    font-size: 1rem;
+  }
+  
+  .logo-image {
+    height: 32px;
+  }
+}
+
 @media (max-width: 768px) {
   .header {
     padding: 1rem;
@@ -1018,6 +1246,22 @@ body {
   .header-center {
     order: 3;
     width: 100%;
+  }
+
+  .header-left .logo {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+    text-align: center;
+  }
+
+  .logo-text {
+    font-size: 1rem;
+    text-align: center;
+  }
+
+  .logo-image {
+    height: 30px;
   }
   
   .level-info {
@@ -1086,8 +1330,20 @@ body {
   .progress-bar-container {
     width: 100%;
   }
+}
 
-
+@media (max-width: 480px) {
+  .header-left .logo {
+    gap: 0.25rem;
+  }
+  
+  .logo-text {
+    font-size: 0.9rem;
+  }
+  
+  .logo-image {
+    height: 28px;
+  }
 }
 
 /* Animations */
@@ -1404,8 +1660,10 @@ body {
 }
 
 .dark-theme .task-item:hover {
-  background: var(--accent-color);
+  background: linear-gradient(135deg, #667eea, #764ba2);
   border-color: var(--accent-color);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
 }
 
 .dark-theme .task-item.active {
@@ -1429,7 +1687,9 @@ body {
 }
 
 .dark-theme .task-item.completed:hover {
-  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+  background: linear-gradient(135deg, #28a745, #20c997);
 }
 
 .dark-theme .task-item.active {
@@ -1439,6 +1699,18 @@ body {
 
 .dark-theme .task-description {
   color: #e0e0e0;
+}
+
+.dark-theme .task-points {
+  background: linear-gradient(45deg, #ffd700, #ffed4e);
+  color: #333;
+  box-shadow: 0 2px 4px rgba(255, 215, 0, 0.4);
+}
+
+.dark-theme .task-item:hover .task-points {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.6);
+  background: linear-gradient(45deg, #ffed4e, #ffd700);
 }
 
 .dark-theme .editor-area {
@@ -1790,6 +2062,44 @@ body {
 .dark-theme .hint-update-notification {
   background: linear-gradient(45deg, var(--success-color), #20c997);
   box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+}
+
+/* Dark theme for status labels */
+.dark-theme .status-correct {
+  background: linear-gradient(45deg, #28a745, #20c997);
+  box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+}
+
+.dark-theme .status-wrong {
+  background: linear-gradient(45deg, #dc3545, #c82333);
+  box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+}
+
+/* Dark theme for enhanced run button */
+.dark-theme #runBtn {
+  background: linear-gradient(45deg, #28a745, #20c997) !important;
+  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.5) !important;
+}
+
+.dark-theme #runBtn:hover {
+  background: linear-gradient(45deg, #20c997, #28a745) !important;
+  box-shadow: 0 12px 30px rgba(40, 167, 69, 0.6) !important;
+}
+
+.dark-theme #runBtn:focus {
+  box-shadow: 0 0 0 4px rgba(40, 167, 69, 0.4) !important;
+}
+
+/* Dark theme for modern header icons */
+.dark-theme .level-badge {
+  background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.4);
+}
+
+.dark-theme .points {
+  background: rgba(255, 215, 0, 0.15);
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
 }
 
 /* Custom Autocomplete Styling */

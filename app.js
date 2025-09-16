@@ -538,7 +538,7 @@ const tasks = [
     difficulty: 1,
     category: "Temel",
     starterCode:
-      '# İlk Python programınızı buraya yazın\nprint("Merhaba Dünya")',
+      'print("Merhaba Dünya")',
     expectedOutput: "Merhaba Dünya",
     hints: ["print() fonksiyonunu kullanın", "Tırnak işaretlerini unutmayın"],
     points: 10,
@@ -551,7 +551,7 @@ const tasks = [
     difficulty: 1,
     category: "Temel",
     starterCode:
-      "# İki sayıyı toplayan program\nsayi1 = 5\nsayi2 = 3\n# Toplamı hesaplayın ve yazdırın",
+      "sayi1 = 5\nsayi2 = 3",
     expectedOutput: "8",
     hints: [
       "Toplama için + operatörünü kullanın",
@@ -567,7 +567,7 @@ const tasks = [
     difficulty: 2,
     category: "Döngüler",
     starterCode:
-      "# 1'den 5'e kadar sayıları yazdırın\nfor i in range(1, 6):\n    print(i)",
+      "for i in range(1, 6):\n    print(i)",
     expectedOutput: "1\n2\n3\n4\n5",
     hints: ["for döngüsü kullanın", "range() fonksiyonunu kullanın"],
     points: 20,
@@ -581,7 +581,7 @@ const tasks = [
     difficulty: 3,
     category: "Oyunlar",
     starterCode:
-      'import random\n\n# Rastgele sayı üretin\nsayi = random.randint(1, 10)\nprint(f"1-10 arası bir sayı tahmin edin: {sayi}")',
+      'import random\n\nsayi = random.randint(1, 10)\nprint(f"1-10 arası bir sayı tahmin edin: {sayi}")',
     expectedOutput: /1-10 arası bir sayı tahmin edin: \d+/,
     hints: ["random.randint() kullanın", "f-string ile formatlama yapın"],
     points: 25,
@@ -595,7 +595,7 @@ const tasks = [
     difficulty: 2,
     category: "Çizim",
     starterCode:
-      "import turtle\n\n# Turtle nesnesini oluşturun\nt = turtle.Turtle()\n\n# Kare çizin\nfor i in range(4):\n    t.forward(100)\n    t.right(90)\n\nturtle.done()",
+      "import turtle\n\nt = turtle.Turtle()\n\nfor i in range(4):\n    t.forward(100)\n    t.right(90)\n\nturtle.done()",
     expectedOutput: "Kare çizildi",
     hints: [
       "turtle.Turtle() ile nesne oluşturun",
@@ -612,7 +612,7 @@ const tasks = [
     difficulty: 2,
     category: "Veri Yapıları",
     starterCode:
-      '# Sayılar listesi oluşturun\nsayilar = [1, 2, 3, 4, 5]\n\n# Toplamı hesaplayın\ntoplam = sum(sayilar)\nprint(f"Toplam: {toplam}")',
+      'sayilar = [1, 2, 3, 4, 5]\n\ntoplam = sum(sayilar)\nprint(f"Toplam: {toplam}")',
     expectedOutput: "Toplam: 15",
     hints: ["sum() fonksiyonunu kullanın", "f-string ile formatlama yapın"],
     points: 20,
@@ -626,7 +626,7 @@ const tasks = [
     difficulty: 3,
     category: "Fonksiyonlar",
     starterCode:
-      'def carp(a, b):\n    return a * b\n\n# Fonksiyonu test edin\nsonuc = carp(4, 5)\nprint(f"4 x 5 = {sonuc}")',
+      'def carp(a, b):\n    return a * b\n\nsonuc = carp(4, 5)\nprint(f"4 x 5 = {sonuc}")',
     expectedOutput: "4 x 5 = 20",
     hints: ["def ile fonksiyon tanımlayın", "return ile sonucu döndürün"],
     points: 25,
@@ -655,7 +655,7 @@ const tasks = [
     difficulty: 2,
     category: "Temel",
     starterCode:
-      "import math\n\n# Pi sayısını kullanarak daire alanı hesaplayın\nr = 5\nalan = math.pi * r ** 2\nprint(f'Yarıçapı {r} olan dairenin alanı: {alan:.2f}')",
+      "import math\n\nr = 5\nalan = math.pi * r ** 2\nprint(f'Yarıçapı {r} olan dairenin alanı: {alan:.2f}')",
     expectedOutput: /Yarıçapı 5 olan dairenin alanı: 78\.54/,
     hints: ["math.pi kullanın", "** operatörü ile üs alın"],
     points: 25,
@@ -669,7 +669,7 @@ const tasks = [
     difficulty: 2,
     category: "Temel",
     starterCode:
-      'metin = "Python Programlama Dili"\n\n# Metni büyük harfe çevirin\nbuyuk = metin.upper()\nprint(buyuk)\n\n# Kelime sayısını bulun\nkelime_sayisi = len(metin.split())\nprint(f"Kelime sayısı: {kelime_sayisi}")',
+      'metin = "Python Programlama Dili"\n\nbuyuk = metin.upper()\nprint(buyuk)\n\nkelime_sayisi = len(metin.split())\nprint(f"Kelime sayısı: {kelime_sayisi}")',
     expectedOutput: "PYTHON PROGRAMLAMA DİLİ\nKelime sayısı: 3",
     hints: ["upper() metodunu kullanın", "split() ile kelimeleri ayırın"],
     points: 20,
@@ -860,7 +860,10 @@ function renderTasks() {
     taskElement.innerHTML = `
             <div class="task-title">${starIcon}${task.title}</div>
             <div class="task-description">${task.description}</div>
+            <div class="task-meta">
             <div class="task-difficulty">${difficultyDots}</div>
+                <div class="task-points">🏆 ${task.points} Puan</div>
+            </div>
         `;
 
     taskElement.addEventListener("click", () => selectTask(task));
@@ -1040,13 +1043,14 @@ sys.stdout = io.StringIO()
 
     showOutput(
       "success",
-      `✅ Gerçek Python kodu çalıştırıldı!\n\n📤 Çıktı:\n${output}`
+      `✅ Gerçek Python kodu çalıştırıldı!\n\n📤 Çıktı:\n${output}`,
+      true
     );
   } catch (error) {
     // Complete loading progress and hide loading panel on error
     completeLoadingProgress();
     hideLoadingPanel();
-    showOutput("error", `❌ Python hatası:\n${error.message}`);
+    showOutput("error", `❌ Python hatası:\n${error.message}`, true);
     // Show error GIF
     showGifAnimation("error", 2000);
   }
@@ -1075,27 +1079,28 @@ function runSimulatedPython(code) {
             showGifAnimation("warning", 2000);
           }
         }
-
+        
         showOutput(
           "success",
-          `✅ Kod simülasyonu çalıştırıldı!\n\n📤 Çıktı:\n${result.output}`
+          `✅ Kod simülasyonu çalıştırıldı!\n\n📤 Çıktı:\n${result.output}`,
+          true
         );
-             } else {
+      } else {
          // Complete loading progress and hide loading panel on error
          completeLoadingProgress();
-         hideLoadingPanel();
-         showOutput("error", `❌ Hata oluştu:\n${result.error}`);
+        hideLoadingPanel();
+        showOutput("error", `❌ Hata oluştu:\n${result.error}`, true);
          // Show error GIF
          showGifAnimation("error", 2000);
-       }
-         } catch (error) {
+      }
+    } catch (error) {
        // Complete loading progress and hide loading panel on error
        completeLoadingProgress();
-       hideLoadingPanel();
-       showOutput("error", `❌ Beklenmeyen hata:\n${error.message}`);
+      hideLoadingPanel();
+      showOutput("error", `❌ Beklenmeyen hata:\n${error.message}`, true);
        // Show error GIF
        showGifAnimation("error", 2000);
-     }
+    }
   }, 1000);
 }
 
@@ -1520,11 +1525,30 @@ function hideLoadingPanel() {
 }
 
 // Show Output
-function showOutput(type, message) {
+function showOutput(type, message, showStatusLabel = false) {
   const outputContent = document.getElementById("outputContent");
   const outputDiv = document.createElement("div");
   outputDiv.className = `output-${type}`;
-  outputDiv.textContent = message;
+  
+  // Add status label if requested
+  if (showStatusLabel) {
+    const statusLabel = document.createElement("div");
+    statusLabel.className = "output-status-label";
+    
+    if (type === "success") {
+      statusLabel.textContent = "✓ Doğru";
+      statusLabel.classList.add("status-correct");
+    } else if (type === "error") {
+      statusLabel.textContent = "✗ Yanlış";
+      statusLabel.classList.add("status-wrong");
+    }
+    
+    outputDiv.appendChild(statusLabel);
+  }
+  
+  const messageDiv = document.createElement("div");
+  messageDiv.textContent = message;
+  outputDiv.appendChild(messageDiv);
 
   outputContent.appendChild(outputDiv);
   outputContent.scrollTop = outputContent.scrollHeight;
@@ -1580,7 +1604,8 @@ function createConfetti() {
 // Show Level Up Animation
 function showLevelUpAnimation() {
   const levelBadge = document.querySelector(".level-badge");
-  levelBadge.textContent = `Seviye ${userProgress.level}`;
+  const levelText = levelBadge.querySelector('.level-text');
+  if (levelText) levelText.textContent = `Seviye ${userProgress.level}`;
   levelBadge.classList.add("bounce");
 
   setTimeout(() => {
@@ -1590,7 +1615,7 @@ function showLevelUpAnimation() {
   // Calculate max possible level for level up message
   const totalAvailablePoints = getTotalAvailablePoints();
   const maxPossibleLevel = getMaxPossibleLevel();
-  
+
   showOutput(
     "success",
     `🎉 Seviye atladınız! Yeni seviyeniz: ${userProgress.level}/${maxPossibleLevel}`
@@ -1623,13 +1648,21 @@ function updateUI() {
   const totalAvailableTasks = getTotalAvailableTasks();
   const maxPossibleLevel = getMaxPossibleLevel();
 
-  if (levelBadge) levelBadge.textContent = `Seviye ${userProgress.level}`;
+  if (levelBadge) {
+    const levelText = levelBadge.querySelector('.level-text');
+    if (levelText) levelText.textContent = `Seviye ${userProgress.level}`;
+  }
   if (progressFill) {
     // Calculate progress as percentage of total available points
     const progress = (userProgress.points / totalAvailablePoints) * 100;
     progressFill.style.width = `${Math.min(progress, 100)}%`;
   }
-  if (pointsSpan) pointsSpan.textContent = `${userProgress.points}/${totalAvailablePoints} Puan`;
+  if (pointsSpan) {
+    const pointsText = pointsSpan.querySelector('.points-text');
+    if (pointsText) {
+      pointsText.textContent = `${userProgress.points} Puan`;
+    }
+  }
   
   // Update next level info
   const nextLevelInfo = document.getElementById("nextLevelInfo");
@@ -1679,10 +1712,10 @@ function updateUI() {
   const runBtn = document.getElementById("runBtn");
   if (runBtn) {
     if (isPyodideLoaded) {
-      runBtn.innerHTML = "🐍 Çalıştır (Gerçek Python)";
+      runBtn.innerHTML = "🐍 Çalıştır";
       runBtn.title = "Gerçek Python runtime ile çalıştır";
     } else {
-      runBtn.innerHTML = "🔄 Çalıştır (Simülasyon)";
+      runBtn.innerHTML = "🐍 Çalıştır";
       runBtn.title = "Simülasyon modunda çalıştır";
     }
   }
@@ -1720,7 +1753,7 @@ function updateAchievements() {
 
     // Calculate progress percentage
     const progressPercentage = Math.min((currentValue / achievement.target) * 100, 100);
-    
+
     achievementElement.innerHTML = `
             <span class="achievement-icon">${achievement.icon}</span>
             <div class="achievement-info">
@@ -1839,15 +1872,7 @@ function selectTask(task) {
   // Clear output
   clearOutput();
 
-  // Calculate total available points for welcome message
-  const totalAvailablePoints = getTotalAvailablePoints();
-  const totalAvailableTasks = getTotalAvailableTasks();
-  
-  // Show welcome message
-  showOutput(
-    "info",
-    `🎯 Görev: ${task.title}\n📝 ${task.description}\n🏆 Puan: ${task.points}\n📊 Genel İlerleme: ${userProgress.points}/${totalAvailablePoints} puan, ${userProgress.completedTasks.length}/${totalAvailableTasks} görev`
-  );
+  // Show welcome message - removed
 
   // Update pinned hint if it exists
   updatePinnedHint(task);
