@@ -4,6 +4,7 @@ let currentTask = null;
 let isDarkTheme = false;
 let pyodide = null; // Pyodide instance
 let isPyodideLoaded = false; // Pyodide yükleme durumu
+let selectedCategory = "Tümü"; // Currently selected category
 let userProgress = {
   level: 1,
   points: 0,
@@ -540,7 +541,29 @@ const tasks = [
     starterCode:
       'print("Merhaba Dünya")',
     expectedOutput: "Merhaba Dünya",
-    hints: ["print() fonksiyonunu kullanın", "Tırnak işaretlerini unutmayın"],
+    shortHint: "print() fonksiyonunu kullanın ve tırnak işaretlerini unutmayın.",
+    longHint: `# Python'da Metin Yazdırma
+
+Python'da metin yazdırmak için print() fonksiyonu kullanılır.
+
+## Temel Kullanım:
+print("Merhaba Dünya")
+
+## Önemli Noktalar:
+• Tırnak işaretleri ("" veya '') kullanılmalı
+• Metin tırnak içinde yazılmalı
+• print() fonksiyonu parantez içinde çağrılmalı
+
+## Örnekler:
+print("Python öğreniyorum")
+print('Bu da tek tırnak ile')
+print("Sayılar: ", 123)
+
+## Hata Örnekleri:
+print(Merhaba)        # HATA: Tırnak yok
+print "Merhaba"       # HATA: Parantez yok
+
+Bu görevde sadece "Merhaba Dünya" yazdırmanız yeterli!`,
     points: 10,
     solution: 'print("Merhaba Dünya")',
   },
@@ -553,10 +576,41 @@ const tasks = [
     starterCode:
       "sayi1 = 5\nsayi2 = 3",
     expectedOutput: "8",
-    hints: [
-      "Toplama için + operatörünü kullanın",
-      "Sonucu print() ile yazdırın",
-    ],
+    shortHint: "Değişkenleri toplayın ve sonucu print() ile yazdırın.",
+    longHint: `# Python'da Değişkenler ve Matematik İşlemler
+
+Python'da değişkenler veri saklamak için kullanılır.
+
+## Değişken Tanımlama:
+sayi1 = 5
+sayi2 = 3
+
+## Matematik İşlemler:
+• Toplama: +
+• Çıkarma: -
+• Çarpma: *
+• Bölme: /
+
+## Bu Görev İçin:
+1. İki sayıyı değişkenlere atayın
+2. Toplama işlemi yapın
+3. Sonucu yazdırın
+
+## Örnek Çözüm:
+sayi1 = 5
+sayi2 = 3
+toplam = sayi1 + sayi2
+print(toplam)
+
+## Alternatif Çözüm:
+sayi1 = 5
+sayi2 = 3
+print(sayi1 + sayi2)
+
+## Önemli Notlar:
+• Değişken isimleri anlamlı olmalı
+• = işareti atama operatörüdür
+• print() ile sonucu ekrana yazdırırız`,
     points: 15,
     solution: "sayi1 = 5\nsayi2 = 3\ntoplam = sayi1 + sayi2\nprint(toplam)",
   },
@@ -569,7 +623,50 @@ const tasks = [
     starterCode:
       "for i in range(1, 6):\n    print(i)",
     expectedOutput: "1\n2\n3\n4\n5",
-    hints: ["for döngüsü kullanın", "range() fonksiyonunu kullanın"],
+    shortHint: "range(1, 6) kullanarak for döngüsü ile sayıları yazdırın.",
+    longHint: `# Python'da For Döngüleri
+
+For döngüleri belirli bir aralıktaki değerler üzerinde tekrar eder.
+
+## Temel Kullanım:
+for i in range(1, 6):
+    print(i)
+
+## Range Fonksiyonu:
+• range(1, 6) → 1, 2, 3, 4, 5
+• İlk sayı dahil, son sayı hariç
+• range(5) → 0, 1, 2, 3, 4
+
+## Döngü Yapısı:
+for değişken in aralık:
+    # Yapılacak işlemler
+    # Girinti önemli!
+
+## Bu Görev İçin:
+1. range(1, 6) ile 1'den 5'e kadar sayıları al
+2. Her sayıyı for döngüsü ile yazdır
+3. print() fonksiyonunu kullan
+
+## Örnek Çözüm:
+for i in range(1, 6):
+    print(i)
+
+## Alternatif Çözümler:
+# Liste ile
+sayilar = [1, 2, 3, 4, 5]
+for sayi in sayilar:
+    print(sayi)
+
+# While döngüsü ile
+i = 1
+while i <= 5:
+    print(i)
+    i += 1
+
+## Önemli Notlar:
+• Girinti (indentation) çok önemli
+• Her döngü adımında i değişkeni farklı değer alır
+• range() fonksiyonu sayı dizisi oluşturur`,
     points: 20,
     solution: "for i in range(1, 6):\n    print(i)",
   },
@@ -839,12 +936,60 @@ function saveUserProgress() {
   localStorage.setItem("pythonEditorProgress", JSON.stringify(userProgress));
 }
 
-// Render Tasks in Sidebar
+// Show Category Select Modal
+function showCategorySelect() {
+  const categories = ["Tümü", ...new Set(tasks.map(task => task.category))];
+  
+  const modal = document.createElement("div");
+  modal.className = "modal show";
+  modal.innerHTML = `
+    <div class="modal-content" style="max-width: 400px;">
+      <div class="modal-header">
+        <h3>🏷️ Kategori Seç</h3>
+        <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="category-list">
+          ${categories.map(category => `
+            <button class="category-option ${selectedCategory === category ? 'active' : ''}" 
+                    data-category="${category}">
+              ${getCategoryIcon(category)} ${category}
+            </button>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  
+  // Add event listeners to category options
+  modal.querySelectorAll('.category-option').forEach(option => {
+    option.addEventListener('click', () => {
+      selectedCategory = option.dataset.category;
+      modal.remove();
+      renderTasks(); // Re-render tasks with new filter
+    });
+  });
+  
+  // Close modal on outside click
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.remove();
+    }
+  });
+}
+
 function renderTasks() {
   const taskList = document.getElementById("taskList");
   taskList.innerHTML = "";
 
-  tasks.forEach((task) => {
+  // Filter tasks based on selected category
+  const filteredTasks = selectedCategory === "Tümü" 
+    ? tasks 
+    : tasks.filter(task => task.category === selectedCategory);
+
+  filteredTasks.forEach((task) => {
     const taskElement = document.createElement("div");
     taskElement.className = `task-item ${
       userProgress.completedTasks.includes(task.id) ? "completed" : ""
@@ -931,10 +1076,18 @@ function setupEventListeners() {
   // Hint button
   document.getElementById("hintBtn").addEventListener("click", showHint);
 
+  // Download button
+  document.getElementById("downloadBtn").addEventListener("click", downloadCode);
+
   // Clear output button
   document
     .getElementById("clearOutputBtn")
     .addEventListener("click", clearOutput);
+
+  // Category select button
+  document
+    .getElementById("categorySelectBtn")
+    .addEventListener("click", showCategorySelect);
 
   // Modal buttons
   document
@@ -1236,20 +1389,145 @@ function showHint() {
   const hintBtn = document.getElementById("hintBtn");
   hintBtn.classList.add("hint-active");
   setTimeout(() => hintBtn.classList.remove("hint-active"), 600);
-
-  const hints = currentTask.hints;
-  const randomHint = hints[Math.floor(Math.random() * hints.length)];
   
-  // Populate hint content
+  // Populate hint content with new structure
   const hintContent = document.getElementById("hintContent");
   hintContent.innerHTML = `
-    <h4>💡 ${currentTask.title} İpucu</h4>
-    <p><strong>İpucu:</strong> ${randomHint}</p>
+    <div class="hint-header">
+      <h4>💡 ${currentTask.title} İpucu</h4>
+      <div class="hint-controls">
+        <button class="btn btn-sm btn-secondary hint-toggle-btn active" data-type="short">Kısa</button>
+        <button class="btn btn-sm btn-secondary hint-toggle-btn" data-type="long">Ayrıntı</button>
+      </div>
+    </div>
+    <div class="hint-content-wrapper">
+      <div class="hint-text short-hint active">
+        <p><strong>İpucu:</strong> ${currentTask.shortHint}</p>
+      </div>
+      <div class="hint-text long-hint">
+        <div class="hint-markdown">${formatHintMarkdown(currentTask.longHint)}</div>
+      </div>
+    </div>
   `;
+  
+  // Add event listeners to toggle buttons
+  hintContent.querySelectorAll('.hint-toggle-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const type = btn.dataset.type;
+      toggleHintType(type);
+    });
+  });
   
   // Show hint modal
   const hintModal = document.getElementById("hintModal");
   hintModal.classList.add("show");
+}
+
+// Toggle between short and long hints
+function toggleHintType(type) {
+  const shortHint = document.querySelector('.short-hint');
+  const longHint = document.querySelector('.long-hint');
+  const shortBtn = document.querySelector('[data-type="short"]');
+  const longBtn = document.querySelector('[data-type="long"]');
+  
+  // Update button states
+  shortBtn.classList.toggle('active', type === 'short');
+  longBtn.classList.toggle('active', type === 'long');
+  
+  // Animate content transition
+  if (type === 'short') {
+    longHint.style.maxHeight = '0';
+    longHint.style.opacity = '0';
+    setTimeout(() => {
+      longHint.classList.remove('active');
+      shortHint.classList.add('active');
+      shortHint.style.maxHeight = 'none';
+      shortHint.style.opacity = '1';
+    }, 150);
+  } else {
+    shortHint.style.maxHeight = '0';
+    shortHint.style.opacity = '0';
+    setTimeout(() => {
+      shortHint.classList.remove('active');
+      longHint.classList.add('active');
+      longHint.style.maxHeight = 'none';
+      longHint.style.opacity = '1';
+    }, 150);
+  }
+}
+
+// Format hint markdown for display
+function formatHintMarkdown(text) {
+  return text
+    .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+    .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+    .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+    .replace(/^• (.*$)/gim, '<li>$1</li>')
+    .replace(/^(\d+)\. (.*$)/gim, '<li>$1. $2</li>')
+    .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/\n\n/g, '</p><p>')
+    .replace(/\n/g, '<br>')
+    .replace(/^(.+)$/gm, '<p>$1</p>')
+    .replace(/<p><h/g, '<h')
+    .replace(/<\/h([1-6])><\/p>/g, '</h$1>')
+    .replace(/<p><li>/g, '<ul><li>')
+    .replace(/<\/li><\/p>/g, '</li></ul>')
+    .replace(/<p><pre>/g, '<pre>')
+    .replace(/<\/pre><\/p>/g, '</pre>');
+}
+
+// Download Code as Python File
+function downloadCode() {
+  if (!currentTask) {
+    showOutput("error", "❌ Önce bir görev seçin!");
+    return;
+  }
+
+  // Get code from editor
+  const code = editor.getValue();
+  
+  // Create file content with task description as comment
+  const fileContent = `# Görev: ${currentTask.description}
+# Görev ID: ${currentTask.id}
+# Kategori: ${currentTask.category}
+# Zorluk: ${currentTask.difficulty}/5
+# Puan: ${currentTask.points}
+
+${code}`;
+
+  // Create filename in the format: gorevID_kullaniciKod.py
+  const fileName = `gorev${currentTask.id}_kullaniciKod.py`;
+
+  // Create blob with the file content
+  const blob = new Blob([fileContent], { type: 'text/python' });
+  
+  // Create download URL
+  const url = URL.createObjectURL(blob);
+  
+  // Create temporary anchor element for download
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = fileName;
+  a.style.display = 'none';
+  
+  // Add to DOM, click, and remove
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  
+  // Clean up the URL object
+  URL.revokeObjectURL(url);
+  
+  // Show success message
+  showOutput("success", `✅ Kod başarıyla indirildi: ${fileName}`);
+  
+  // Add animation to download button
+  const downloadBtn = document.getElementById("downloadBtn");
+  downloadBtn.classList.add("download-active");
+  setTimeout(() => downloadBtn.classList.remove("download-active"), 600);
 }
 
 // Update Pinned Hint
