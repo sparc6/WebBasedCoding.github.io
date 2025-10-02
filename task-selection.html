@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Bilişim Garajı Python Eğitim Platformu</title>
+    <title>Görev Seçimi - Bilişim Garajı Python Eğitim Platformu</title>
     <link rel="stylesheet" href="styles.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
@@ -11,28 +11,29 @@
     />
   </head>
   <body>
-    <!-- Level Selection Screen -->
+    <!-- Task Selection Screen -->
     <div class="level-selection-screen" id="levelSelectionScreen">
       <div class="level-selection-container">
         <div class="level-header">
           <div class="level-logo">
             <img src="Images and Logos/bilisim-garaj-logo.png" alt="Bilisim Garaj Logo" class="logo-image">
-            <h1>Bilişim Garajı Python Eğitim Platformu</h1>
+            <h1 id="categoryTitle">Kategori Seçildi</h1>
           </div>
-          <p class="level-subtitle">
-            <span class="subtitle-main">Profesyonel Python programlama eğitimi ile kodlama becerilerinizi geliştirin!</span><br>
-            <span class="subtitle-secondary">Hangi seviyeden başlamak istiyorsunuz?</span>
-          </p>
+          <button class="btn btn-secondary" id="backToCategoriesBtn">← Kategoriler</button>
         </div>
         
-        <!-- Kategori Kartları -->
-        <div class="categories-grid" id="categoriesGrid">
-          <!-- Categories will be populated by JavaScript -->
+        <!-- Zigzag Path -->
+        <div class="zigzag-path" id="zigzagPath">
+          <div class="path-container">
+            <div class="zigzag-container" id="zigzagContainer">
+              <!-- Task nodes will be populated by JavaScript -->
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Scripts -->
-    <script src="js/level-selection.js"></script>
+    <script src="js/task-selection.js"></script>
   </body>
 </html>

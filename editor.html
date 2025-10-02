@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Python Editörü - Bilişim Garajı Python Eğitim Platformu</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css"
+    />
+    <!-- Pyodide CDN -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+  </head>
+  <body>
+    <div class="app-container" id="appContainer">
+      <!-- Header -->
+      <header class="header">
+        <div class="header-left">
+          <button class="btn btn-secondary back-to-categories-btn" id="backToCategoriesBtn">
+            ← Kategoriler
+          </button>
+          <div class="logo">
+            <img src="Images and Logos/bilisim-garaj-logo.png" alt="Bilisim Garaj Logo" class="logo-image">
+            <span class="logo-text">Python Kod Editörü</span>
+          </div>
+        </div>
+        <div class="header-center">
+          <div class="level-info">
+            <div class="level-badge">
+              <span class="level-icon">🏆</span>
+              <span class="level-text">Seviye 1</span>
+            </div>
+            <div class="progress-container">
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 0%"></div>
+              </div>
+              <span class="progress-icon">📈</span>
+            </div>
+            <div class="points">
+              <span class="points-icon">⭐</span>
+              <span class="points-text">0 Puan</span>
+            </div>
+            <span class="next-level-info" id="nextLevelInfo">Sonraki seviye için: 75 puan</span>
+          </div>
+        </div>
+        <div class="header-right">
+          <button class="btn btn-secondary" id="themeBtn">🌙</button>
+          <button class="btn btn-secondary" id="profileBtn">👤 Profil</button>
+          <button class="btn btn-primary" id="helpBtn">❓ Yardım</button>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+          <div class="sidebar-section">
+            <div class="sidebar-header">
+              <h3>📚 Görevler</h3>
+            </div>
+            <div class="task-list" id="taskList">
+              <!-- Tasks will be populated by JavaScript -->
+            </div>
+          </div>
+        </aside>
+
+        <!-- Editor Area -->
+        <section class="editor-area">
+          <div class="editor-header">
+            <h2 id="currentTaskTitle">Görev Seçin</h2>
+            <div class="editor-controls">
+              <button class="btn btn-success" id="runBtn">▶️ Çalıştır</button>
+              <button class="btn btn-info" id="resetBtn">🔄 Sıfırla</button>
+              <button class="btn btn-warning" id="hintBtn">💡 İpucu</button>
+              <button class="btn btn-secondary" id="downloadBtn">💾 Kodumu İndir</button>
+            </div>
+          </div>
+
+          <div class="editor-container">
+            <textarea id="codeEditor"></textarea>
+          </div>
+        </section>
+
+        <!-- Output Panel -->
+        <section class="output-panel">
+          <div class="output-header">
+            <h3>📤 Çıktı</h3>
+            <button class="btn btn-sm" id="clearOutputBtn">Temizle</button>
+          </div>
+          <div class="output-content" id="outputContent">
+            <!-- Output will be displayed here -->
+          </div>
+        </section>
+      </main>
+      
+      <!-- GIF Animation Container -->
+      <div class="gif-container" id="gifContainer">
+        <div class="gif-animation" id="gifAnimation"></div>
+      </div>
+    </div>
+
+    <!-- Alert Modal -->
+    <div class="alert-modal" id="alertModal">
+      <div class="alert-content">
+        <div class="alert-header">
+          <h3>⚠️ Uyarı</h3>
+          <button class="alert-close" id="closeAlertModal">&times;</button>
+        </div>
+        <div class="alert-body">
+          <p id="alertMessage">Bir hata oluştu!</p>
+        </div>
+        <div class="alert-footer">
+          <button class="btn btn-primary" id="alertOkBtn">Tamam</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/python-hint.min.js"></script>
+    <script src="js/editor.js"></script>
+  </body>
+</html>
