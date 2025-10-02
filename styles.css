@@ -40,22 +40,130 @@ body {
   gap: 1rem;
 }
 
-.back-to-categories-btn {
-  background: linear-gradient(135deg, #6c757d, #495057);
-  border: 2px solid #6c757d;
-  color: white;
+/* Floating Back to Categories Button - Top Left */
+.back-to-categories-floating {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffc107 100%);
+  color: #1a1a1a;
+  border: none;
+  padding: 12px;
+  border-radius: 50%;
   font-weight: 600;
-  transition: all 0.3s ease;
-  border-radius: 12px;
-  padding: 10px 20px;
   font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 
+    0 4px 15px rgba(255, 215, 0, 0.4),
+    0 2px 8px rgba(0, 0, 0, 0.2);
+  text-transform: none;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.2);
 }
 
-.back-to-categories-btn:hover {
-  background: linear-gradient(135deg, #5a6268, #3d4043);
-  border-color: #5a6268;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(108, 117, 125, 0.4);
+.back-to-categories-floating:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 
+    0 6px 20px rgba(255, 215, 0, 0.6),
+    0 4px 12px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(135deg, #ffed4e 0%, #ffd700 50%, #ffc107 100%);
+}
+
+.back-to-categories-floating:active {
+  transform: translateY(0) scale(1.02);
+  box-shadow: 
+    0 3px 10px rgba(255, 215, 0, 0.5),
+    0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+.back-icon {
+  font-size: 1.8rem;
+  font-weight: 800;
+  transition: all 0.3s ease;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.back-to-categories-floating:hover .back-icon {
+  transform: translateX(-3px) scale(1.1);
+  text-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+}
+
+/* Tooltip */
+.back-to-categories-floating::before {
+  content: "Kategoriler'e Dön";
+  position: absolute;
+  right: -120px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  z-index: 1001;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.back-to-categories-floating::after {
+  content: "";
+  position: absolute;
+  right: -8px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 6px solid transparent;
+  border-right-color: rgba(0, 0, 0, 0.9);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  z-index: 1001;
+}
+
+.back-to-categories-floating:hover::before,
+.back-to-categories-floating:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+
+/* Mobile responsive for floating button */
+@media (max-width: 768px) {
+  .back-to-categories-floating {
+    top: 15px;
+    left: 15px;
+    padding: 10px;
+    font-size: 0.8rem;
+    width: 42px;
+    height: 42px;
+  }
+  
+  .back-icon {
+    font-size: 1.5rem;
+  }
+  
+  /* Hide tooltip on mobile */
+  .back-to-categories-floating::before,
+  .back-to-categories-floating::after {
+    display: none;
+  }
 }
 
 .header-left .logo {
@@ -2034,6 +2142,7 @@ body {
   line-height: 1.2;
 }
 
+
 @keyframes titleGlow {
   0%, 100% { 
     background-position: 0% 50%;
@@ -2074,6 +2183,11 @@ body {
     0 1px 3px rgba(0, 0, 0, 0.3);
   display: block;
   opacity: 0.85;
+}
+
+/* Task selection sayfası için özel margin */
+#levelSelectionScreen .level-subtitle {
+  margin: 0.3rem auto 0 auto;
 }
 
 @keyframes subtitleBounce {
@@ -2143,10 +2257,11 @@ body {
 
 .zigzag-container {
   position: relative;
-  min-height: 800px;
-  padding: 2rem 1rem;
+  min-height: 600px;
+  padding: 1rem;
   width: 100%;
   overflow: visible;
+  margin-top: 2rem;
 }
 
 /* Zigzag node tasarımı */
@@ -2155,6 +2270,12 @@ body {
   cursor: pointer;
   transition: all 0.3s ease;
   z-index: 2;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  text-align: left;
+  max-width: 300px;
+  gap: 15px;
 }
 
 .zigzag-node:hover {
@@ -2198,6 +2319,7 @@ body {
   align-items: center;
   justify-content: center;
   position: relative;
+  flex-shrink: 0;
   box-shadow: 
     0 6px 20px rgba(255, 215, 0, 0.4),
     0 3px 10px rgba(0, 0, 0, 0.3),
@@ -2207,53 +2329,57 @@ body {
   animation: nodePulse 2s ease-in-out infinite;
 }
 
+.node-content {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+  min-width: 0;
+}
+
 .node-icon {
   font-size: 1.8rem;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
 .node-title {
-  margin-top: 0.5rem;
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 600;
   color: #ffffff;
-  text-align: center;
-  max-width: 120px;
+  text-align: left;
   line-height: 1.2;
   text-shadow: 
     0 2px 8px rgba(0, 0, 0, 0.6),
     0 1px 4px rgba(0, 0, 0, 0.4);
+  margin: 0;
 }
 
 .node-description {
   color: #cccccc;
-  font-size: 0.75rem;
-  text-align: center;
-  margin-top: 0.3rem;
-  line-height: 1.2;
+  font-size: 0.8rem;
+  text-align: left;
+  line-height: 1.3;
   text-shadow: 
     0 1px 4px rgba(0, 0, 0, 0.5);
-  max-width: 120px;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0;
 }
 
 .node-points {
   color: #ffd700;
-  font-size: 0.7rem;
-  font-weight: 600;
-  text-align: center;
-  margin-top: 0.3rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-align: left;
   text-shadow: 
     0 1px 3px rgba(0, 0, 0, 0.6);
-  background: rgba(255, 215, 0, 0.1);
-  padding: 2px 6px;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 215, 0, 0.3);
-  max-width: 80px;
-  margin-left: auto;
-  margin-right: auto;
+  background: rgba(255, 215, 0, 0.15);
+  padding: 4px 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  margin: 0;
+  display: inline-block;
+  width: fit-content;
 }
+
 
 /* Zigzag bağlantı çizgileri */
 .zigzag-connector {
@@ -2474,6 +2600,23 @@ body {
       0 8px 25px rgba(255, 215, 0, 0.6),
       0 4px 15px rgba(0, 0, 0, 0.4),
       inset 0 3px 6px rgba(255, 255, 255, 0.4);
+  }
+}
+
+@keyframes badgePulse {
+  0%, 100% { 
+    transform: scale(1);
+    box-shadow: 
+      0 4px 12px rgba(255, 215, 0, 0.6),
+      0 2px 6px rgba(0, 0, 0, 0.4),
+      inset 0 1px 2px rgba(255, 255, 255, 0.3);
+  }
+  50% { 
+    transform: scale(1.1);
+    box-shadow: 
+      0 6px 16px rgba(255, 215, 0, 0.8),
+      0 3px 8px rgba(0, 0, 0, 0.5),
+      inset 0 2px 3px rgba(255, 255, 255, 0.4);
   }
 }
 

@@ -192,11 +192,23 @@ function getUrlParameter(name) {
 // Get Category Data
 function getCategoryData(categoryName) {
   const categories = {
-    "Temel": { title: "Python'a İlk Adım", icon: "🚀" },
-    "Orta": { title: "Orta Seviye Python", icon: "⚡" },
-    "İleri": { title: "İleri Seviye Python", icon: "🎯" }
+    "Temel": { 
+      title: "Python'a İlk Adım", 
+      icon: "🚀",
+      description: "Print, değişkenler ve temel kavramlarla Python'a giriş yapın. İlk adımlarınızı atın!"
+    },
+    "Orta": { 
+      title: "Orta Seviye Python", 
+      icon: "⚡",
+      description: "Döngüler, koşullar ve fonksiyonlarla Python'da daha karmaşık programlar yazın."
+    },
+    "İleri": { 
+      title: "İleri Seviye Python", 
+      icon: "🎯",
+      description: "Listeler, sözlükler ve projelerle Python'da uzmanlaşın. Gerçek uygulamalar geliştirin!"
+    }
   };
-  return categories[categoryName] || { title: categoryName, icon: "📝" };
+  return categories[categoryName] || { title: categoryName, icon: "📝", description: "Bu seviyedeki görevleri tamamlayarak Python becerilerinizi geliştirin!" };
 }
 
 // Get Task Icon
@@ -248,6 +260,7 @@ document.addEventListener("DOMContentLoaded", function () {
 function updateCategoryTitle(categoryName) {
   const categoryData = getCategoryData(categoryName);
   document.getElementById('categoryTitle').textContent = categoryData.title;
+  document.getElementById('categoryDescription').textContent = categoryData.description;
 }
 
 // Render Zigzag Path
@@ -255,8 +268,8 @@ function renderZigzagPath(categoryName) {
   const zigzagContainer = document.getElementById("zigzagContainer");
   zigzagContainer.innerHTML = "";
   
-  // Get tasks for this level (Temel, Orta, İleri)
-  const categoryTasks = tasks.filter(task => task.level === categoryName);
+  // Get tasks for this level (Temel, Orta, İleri) - reverse order so first task is at bottom
+  const categoryTasks = tasks.filter(task => task.level === categoryName).reverse();
   
   if (categoryTasks.length === 0) {
     zigzagContainer.innerHTML = "<p>Bu kategoride henüz görev bulunmuyor.</p>";
@@ -307,7 +320,7 @@ function renderZigzagPath(categoryName) {
     const randomOffset = (Math.sin(index * 2.3) * 20);
     
     const x = centerX + curveOffset + randomOffset;
-    const y = (zigzagContainer.offsetHeight || 600) - 80 - (index * verticalSpacing);
+    const y = 50 + (index * verticalSpacing);
     
     node.style.left = `${x}px`;
     node.style.top = `${y}px`;
@@ -329,9 +342,11 @@ function renderZigzagPath(categoryName) {
       <div class="node-circle">
         <span class="node-icon">${getTaskIcon(task)}</span>
       </div>
-      <div class="node-title">${task.title}</div>
-      <div class="node-description">${shortDescription}</div>
-      <div class="node-points">${points} puan</div>
+      <div class="node-content">
+        <div class="node-title">${task.title}</div>
+        <div class="node-description">${shortDescription}</div>
+        <div class="node-points">⭐${points} Puan</div>
+      </div>
     `;
     
     // Add click event
@@ -342,15 +357,13 @@ function renderZigzagPath(categoryName) {
     zigzagContainer.appendChild(node);
   });
   
-  // Create smooth curved path connecting all nodes (from bottom to top)
+  // Create smooth curved path connecting all nodes (from top to bottom)
   if (nodePositions.length > 1) {
-    // Reverse the order to go from bottom to top
-    const reversedPositions = [...nodePositions].reverse();
-    pathData = `M ${reversedPositions[0].x} ${reversedPositions[0].y}`;
+    pathData = `M ${nodePositions[0].x} ${nodePositions[0].y}`;
     
-    for (let i = 1; i < reversedPositions.length; i++) {
-      const prev = reversedPositions[i - 1];
-      const current = reversedPositions[i];
+    for (let i = 1; i < nodePositions.length; i++) {
+      const prev = nodePositions[i - 1];
+      const current = nodePositions[i];
       
       // Calculate control points for more dramatic curves
       const midX = (prev.x + current.x) / 2;
