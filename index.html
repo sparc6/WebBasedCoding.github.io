@@ -21,10 +21,53 @@
     <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
   </head>
   <body>
-    <div class="app-container">
+    <!-- Level Selection Screen -->
+    <div class="level-selection-screen" id="levelSelectionScreen">
+      <div class="level-selection-container">
+        <div class="level-header">
+          <div class="level-logo">
+            <img src="Images and Logos/bilisim-garaj-logo.png" alt="Bilisim Garaj Logo" class="logo-image">
+            <h1>Bilişim Garajı Python Eğitim Platformu</h1>
+          </div>
+          <p class="level-subtitle">
+            <span class="subtitle-main">Profesyonel Python programlama eğitimi ile kodlama becerilerinizi geliştirin!</span><br>
+            <span class="subtitle-secondary">Hangi seviyeden başlamak istiyorsunuz?</span>
+          </p>
+        </div>
+        
+        <!-- Kategori Kartları -->
+        <div class="categories-grid" id="categoriesGrid">
+          <!-- Categories will be populated by JavaScript -->
+        </div>
+        
+        <!-- Zigzag Yol (Gizli) -->
+        <div class="zigzag-path" id="zigzagPath" style="display: none;">
+          <div class="path-container">
+            <div class="path-header">
+              <h3 id="selectedCategoryTitle">Kategori Seçildi</h3>
+              <button class="btn btn-secondary" id="backToCategoriesBtn">← Kategoriler</button>
+            </div>
+            <div class="zigzag-container" id="zigzagContainer">
+              <!-- Zigzag yol buraya gelecek -->
+            </div>
+          </div>
+        </div>
+        
+        <div class="level-footer">
+          <button class="btn btn-secondary" id="backToEditorBtn" style="display: none;">
+            ← Editöre Dön
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="app-container" id="appContainer" style="display: none;">
       <!-- Header -->
       <header class="header">
         <div class="header-left">
+          <button class="btn btn-secondary back-to-categories-btn" id="backToCategoriesBtn" style="display: none;">
+            ← Kategoriler
+          </button>
           <div class="logo">
             <img src="Images and Logos/bilisim-garaj-logo.png" alt="Bilisim Garaj Logo" class="logo-image">
             <span class="logo-text">Python Kod Editörü</span>
@@ -63,28 +106,16 @@
           <div class="sidebar-section">
             <div class="sidebar-header">
               <h3>📚 Görevler</h3>
-              <button class="btn btn-sm btn-secondary" id="categorySelectBtn">🏷️ Kategori Seç</button>
             </div>
             <div class="task-list" id="taskList">
               <!-- Tasks will be populated by JavaScript -->
             </div>
           </div>
 
-          <div class="sidebar-section">
-            <h3>🗺️ İlerleme Haritası</h3>
-            <div class="progress-map" id="progressMap">
-              <!-- Progress map will be populated by JavaScript -->
-            </div>
-          </div>
         </aside>
 
         <!-- Editor Area -->
         <section class="editor-area">
-          <!-- Task Description Display -->
-          <div class="task-description-display" id="taskDescriptionDisplay" style="display: none;">
-            <p id="taskDescriptionText"></p>
-          </div>
-          
           <div class="editor-header">
             <h2 id="currentTaskTitle">Görev Seçin</h2>
             <div class="editor-controls">
@@ -225,11 +256,27 @@
     <!-- Confetti Container -->
     <div id="confettiContainer"></div>
 
+    <!-- Alert Modal -->
+    <div class="modal" id="alertModal">
+      <div class="modal-content alert-modal">
+        <div class="modal-header">
+          <h3 id="alertTitle">⚠️ Uyarı</h3>
+          <button class="close-btn" id="closeAlertModal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p id="alertMessage">Mesaj burada görünecek</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" id="alertOkBtn">Tamam</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Loading Panel -->
     <div class="loading-panel" id="loadingPanel">
       <div class="loading-content">
         <div class="loading-spinner"></div>
-        <h3>🐍 Python Kodu Çalıştırılıyor...</h3>
+        <h3>▶️ Python Kodu Çalıştırılıyor...</h3>
         <p>Lütfen bekleyin, kodunuz işleniyor...</p>
         <div class="loading-progress">
           <div class="progress-bar">

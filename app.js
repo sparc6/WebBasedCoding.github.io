@@ -11,6 +11,7 @@ let userProgress = {
   completedTasks: [],
   achievements: [],
 };
+let currentScreen = "levelSelection"; // "levelSelection" or "editor"
 
 // Helper function to calculate total available points
 function getTotalAvailablePoints() {
@@ -481,7 +482,7 @@ function showAutocompleteStatus() {
   console.log('===========================');
   
   // Show in output panel
-  showOutput('info', `🔍 Autocomplete Status:\n🐍 Pyodide: ${status.pyodideLoaded ? 'Loaded' : 'Not loaded'}\n📦 Cache: ${status.cacheSize} items\n🎯 Task: ${status.currentTask}\n🎨 Theme: ${status.theme}`);
+  showOutput('info', `🔍 Autocomplete Status:\n▶️ Pyodide: ${status.pyodideLoaded ? 'Loaded' : 'Not loaded'}\n📦 Cache: ${status.cacheSize} items\n🎯 Task: ${status.currentTask}\n🎨 Theme: ${status.theme}`);
 }
 
 // Manual autocomplete trigger for testing
@@ -538,6 +539,7 @@ const tasks = [
     description: "İlk Python programınızı yazın ve 'Merhaba Dünya' yazdırın.",
     difficulty: 1,
     category: "Temel",
+    level: "Temel",
     starterCode:
       'print("Merhaba Dünya")',
     expectedOutput: "Merhaba Dünya",
@@ -573,6 +575,7 @@ Bu görevde sadece "Merhaba Dünya" yazdırmanız yeterli!`,
     description: "İki sayıyı toplayan bir program yazın.",
     difficulty: 1,
     category: "Temel",
+    level: "Temel",
     starterCode:
       "sayi1 = 5\nsayi2 = 3",
     expectedOutput: "8",
@@ -620,6 +623,7 @@ print(sayi1 + sayi2)
     description: "1'den 5'e kadar olan sayıları yazdırın.",
     difficulty: 2,
     category: "Döngüler",
+    level: "Orta",
     starterCode:
       "for i in range(1, 6):\n    print(i)",
     expectedOutput: "1\n2\n3\n4\n5",
@@ -677,6 +681,7 @@ while i <= 5:
       "1-10 arası rastgele bir sayı üretin ve kullanıcıdan tahmin etmesini isteyin.",
     difficulty: 3,
     category: "Oyunlar",
+    level: "İleri",
     starterCode:
       'import random\n\nsayi = random.randint(1, 10)\nprint(f"1-10 arası bir sayı tahmin edin: {sayi}")',
     expectedOutput: /1-10 arası bir sayı tahmin edin: \d+/,
@@ -691,6 +696,7 @@ while i <= 5:
     description: "Turtle kullanarak bir kare çizin.",
     difficulty: 2,
     category: "Çizim",
+    level: "Orta",
     starterCode:
       "import turtle\n\nt = turtle.Turtle()\n\nfor i in range(4):\n    t.forward(100)\n    t.right(90)\n\nturtle.done()",
     expectedOutput: "Kare çizildi",
@@ -708,6 +714,7 @@ while i <= 5:
     description: "Bir liste oluşturun ve elemanlarını toplayın.",
     difficulty: 2,
     category: "Veri Yapıları",
+    level: "Orta",
     starterCode:
       'sayilar = [1, 2, 3, 4, 5]\n\ntoplam = sum(sayilar)\nprint(f"Toplam: {toplam}")',
     expectedOutput: "Toplam: 15",
@@ -722,6 +729,7 @@ while i <= 5:
     description: "İki sayıyı çarpan bir fonksiyon yazın.",
     difficulty: 3,
     category: "Fonksiyonlar",
+    level: "İleri",
     starterCode:
       'def carp(a, b):\n    return a * b\n\nsonuc = carp(4, 5)\nprint(f"4 x 5 = {sonuc}")',
     expectedOutput: "4 x 5 = 20",
@@ -737,6 +745,7 @@ while i <= 5:
       "Bir sayının pozitif, negatif veya sıfır olduğunu kontrol edin.",
     difficulty: 2,
     category: "Koşullar",
+    level: "Orta",
     starterCode:
       'sayi = 7\n\nif sayi > 0:\n    print("Pozitif")\nelif sayi < 0:\n    print("Negatif")\nelse:\n    print("Sıfır")',
     expectedOutput: "Pozitif",
@@ -751,6 +760,7 @@ while i <= 5:
     description: "Karmaşık matematik işlemleri yapın.",
     difficulty: 2,
     category: "Temel",
+    level: "Temel",
     starterCode:
       "import math\n\nr = 5\nalan = math.pi * r ** 2\nprint(f'Yarıçapı {r} olan dairenin alanı: {alan:.2f}')",
     expectedOutput: /Yarıçapı 5 olan dairenin alanı: 78\.54/,
@@ -765,6 +775,7 @@ while i <= 5:
     description: "String metodlarını kullanarak metin işlemleri yapın.",
     difficulty: 2,
     category: "Temel",
+    level: "Temel",
     starterCode:
       'metin = "Python Programlama Dili"\n\nbuyuk = metin.upper()\nprint(buyuk)\n\nkelime_sayisi = len(metin.split())\nprint(f"Kelime sayısı: {kelime_sayisi}")',
     expectedOutput: "PYTHON PROGRAMLAMA DİLİ\nKelime sayısı: 3",
@@ -817,24 +828,446 @@ const achievements = [
 
 // Initialize Application
 document.addEventListener("DOMContentLoaded", function () {
-  initializeEditor();
   loadUserProgress();
-  renderTasks();
-  renderProgressMap();
   setupEventListeners();
-  updateUI();
-  initializePyodide(); // Pyodide'i başlat
+  initializeLevelSelection();
   
-  // Ensure editor shows "bir görev seçin" when no task is selected
+  // Show level selection screen by default
+  showLevelSelectionScreen();
+});
+
+// Level Selection Functions
+function initializeLevelSelection() {
+  renderCategoryCards();
+}
+
+function showLevelSelectionScreen() {
+  currentScreen = "levelSelection";
+  document.getElementById("levelSelectionScreen").style.display = "flex";
+  document.getElementById("appContainer").style.display = "none";
+  
+  // Hide back to categories button
+  document.getElementById("backToCategoriesBtn").style.display = "none";
+}
+
+function showEditorScreen() {
+  currentScreen = "editor";
+  document.getElementById("levelSelectionScreen").style.display = "none";
+  document.getElementById("appContainer").style.display = "block";
+  
+  // Show back to categories button
+  document.getElementById("backToCategoriesBtn").style.display = "inline-block";
+  
+  // Initialize editor components when switching to editor
+  if (!editor) {
+    initializeEditor();
+    renderTasks();
+    updateUI();
+    initializePyodide();
+  }
+  
   if (!currentTask) {
     resetEditorToNoTask();
   }
-});
+}
+
+function renderCategoryCards() {
+  const categoriesGrid = document.getElementById("categoriesGrid");
+  if (!categoriesGrid) {
+    console.error("categoriesGrid element bulunamadı!");
+    return;
+  }
+  categoriesGrid.innerHTML = "";
+  
+  const categories = [
+    {
+      name: "Temel",
+      icon: "🚀",
+      title: "Python'a İlk Adım",
+      description: "Print, değişkenler ve temel kavramlar",
+      difficulty: 1,
+      level: "Temel",
+      color: "#4CAF50",
+      tasks: 5
+    },
+    {
+      name: "Orta",
+      icon: "⚡",
+      title: "Orta Seviye Python",
+      description: "Döngüler, koşullar ve turtle çizim",
+      difficulty: 2,
+      level: "Orta",
+      color: "#FF9800",
+      tasks: 8
+    },
+    {
+      name: "İleri",
+      icon: "🎯",
+      title: "İleri Seviye Python",
+      description: "Fonksiyonlar, oyunlar ve projeler",
+      difficulty: 3,
+      level: "İleri",
+      color: "#E91E63",
+      tasks: 10
+    }
+  ];
+  
+  categories.forEach((category, index) => {
+    const categoryCard = document.createElement("div");
+    categoryCard.className = "category-card";
+    categoryCard.dataset.category = category.name;
+    
+    // Calculate progress for this category
+    const categoryTasks = tasks.filter(task => task.category === category.name);
+    const completedTasks = categoryTasks.filter(task => 
+      userProgress.completedTasks.includes(task.id)
+    );
+    
+    const progressPercentage = categoryTasks.length > 0 
+      ? (completedTasks.length / categoryTasks.length) * 100 
+      : 0;
+    
+    // Create filled stars based on level
+    let difficultyStars = "";
+    if (category.name === "Temel") {
+      difficultyStars = "★★☆☆☆"; // 2 stars filled
+    } else if (category.name === "Orta") {
+      difficultyStars = "★★★☆☆"; // 3 stars filled
+    } else if (category.name === "İleri") {
+      difficultyStars = "★★★★★"; // 5 stars filled
+    }
+    
+    categoryCard.innerHTML = `
+      <div class="category-content">
+        <div class="card-top">
+          <div class="card-header">
+            <span class="category-icon">${category.icon}</span>
+            <h3 class="category-title">${category.title}</h3>
+            <p class="category-description">${category.description}</p>
+          </div>
+          
+          <div class="card-footer">
+            <div class="category-stats">
+              <div class="category-difficulty">
+                <span class="difficulty-stars">${difficultyStars}</span>
+              </div>
+              <div class="category-tasks">
+                ${categoryTasks.length} görev
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="button-container">
+          <button class="start-button">
+            ${progressPercentage > 0 ? 'Devam Et' : 'Başla'} →
+          </button>
+        </div>
+      </div>
+    `;
+    
+    // Add animation delay
+    categoryCard.style.animationDelay = `${index * 0.1}s`;
+    
+    categoryCard.addEventListener("click", () => selectCategory(category.name));
+    
+    categoriesGrid.appendChild(categoryCard);
+  });
+}
+
+function updateNodeProgress() {
+  const pathNodes = document.querySelectorAll('.path-node');
+  
+  pathNodes.forEach(node => {
+    const category = node.dataset.category;
+    const categoryTasks = tasks.filter(task => task.category === category);
+    const completedTasks = categoryTasks.filter(task => 
+      userProgress.completedTasks.includes(task.id)
+    );
+    
+    const progressPercentage = categoryTasks.length > 0 
+      ? (completedTasks.length / categoryTasks.length) * 100 
+      : 0;
+    
+    // Tamamlanmış node'ları işaretle
+    if (progressPercentage === 100) {
+      node.classList.add('completed');
+      const nodeCircle = node.querySelector('.node-circle');
+      nodeCircle.style.background = 'linear-gradient(145deg, #4CAF50, #45a049)';
+      
+      // Crown ekle
+      const crown = document.createElement('div');
+      crown.className = 'node-crown';
+      crown.innerHTML = '👑';
+      crown.style.cssText = `
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        font-size: 1.2rem;
+        z-index: 3;
+      `;
+      nodeCircle.appendChild(crown);
+    } else if (progressPercentage > 0) {
+      node.classList.add('in-progress');
+    }
+  });
+}
+
+function selectCategory(categoryName) {
+  selectedCategory = categoryName;
+  
+  // Add selection animation
+  const cards = document.querySelectorAll('.category-card');
+  cards.forEach(card => {
+    card.classList.remove('selected');
+    if (card.dataset.category === categoryName) {
+      card.classList.add('selected');
+    }
+  });
+  
+  // Show zigzag path instead of categories
+  showZigzagPath(categoryName);
+}
+
+function showZigzagPath(categoryName) {
+  // Hide categories grid
+  document.getElementById("categoriesGrid").style.display = "none";
+  
+  // Show zigzag path
+  const zigzagPath = document.getElementById("zigzagPath");
+  zigzagPath.style.display = "block";
+  
+  // Update category title
+  const categoryTitle = document.getElementById("selectedCategoryTitle");
+  const categoryData = getCategoryData(categoryName);
+  categoryTitle.textContent = categoryData.title;
+  
+  // Render zigzag path
+  renderZigzagPath(categoryName);
+}
+
+function getCategoryData(categoryName) {
+  const categories = {
+    "Temel": { title: "Python'a İlk Adım", icon: "🚀" },
+    "Koşullar": { title: "Karar Verme", icon: "🎲" },
+    "Döngüler": { title: "Tekrarlayan İşlemler", icon: "🔄" },
+    "Çizim": { title: "Turtle ile Sanat", icon: "🎨" },
+    "Veri Yapıları": { title: "Listeler ve Sözlükler", icon: "📈" },
+    "Fonksiyonlar": { title: "Kod Parçacıkları", icon: "⚡" },
+    "Oyunlar": { title: "Eğlenceli Projeler", icon: "🎯" }
+  };
+  return categories[categoryName] || { title: categoryName, icon: "📝" };
+}
+
+function renderZigzagPath(categoryName) {
+  const zigzagContainer = document.getElementById("zigzagContainer");
+  zigzagContainer.innerHTML = "";
+  
+  // Get tasks for this level (Temel, Orta, İleri)
+  const categoryTasks = tasks.filter(task => task.level === categoryName);
+  
+  if (categoryTasks.length === 0) {
+    zigzagContainer.innerHTML = "<p>Bu kategoride henüz görev bulunmuyor.</p>";
+    return;
+  }
+  
+  // Create curved path layout
+  const nodeSpacing = 180;
+  const curveIntensity = 150; // How much the curve bends - increased for more dramatic curves
+  
+  // Create SVG for connections
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.style.width = "100%";
+  svg.style.height = "100%";
+  svg.style.position = "absolute";
+  svg.style.top = "0";
+  svg.style.left = "0";
+  svg.style.zIndex = "1";
+  
+  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  let pathData = "";
+  
+  // Store node positions for curved path
+  const nodePositions = [];
+  
+  // Create nodes in curved path pattern
+  categoryTasks.forEach((task, index) => {
+    const node = document.createElement("div");
+    node.className = "zigzag-node";
+    node.dataset.taskId = task.id;
+    
+    // Calculate position in curved path
+    const totalWidth = zigzagContainer.offsetWidth || 800;
+    const centerX = totalWidth / 2;
+    const verticalSpacing = nodeSpacing;
+    
+    // Create a more dramatic zigzag pattern with curves
+    const progress = index / (categoryTasks.length - 1);
+    
+    // Create a more complex wave pattern - multiple sine waves for more curves
+    const wave1 = Math.sin(progress * Math.PI * 3) * curveIntensity;
+    const wave2 = Math.sin(progress * Math.PI * 1.5) * (curveIntensity * 0.6);
+    const wave3 = Math.sin(progress * Math.PI * 0.8) * (curveIntensity * 0.3);
+    
+    const curveOffset = wave1 + wave2 + wave3;
+    
+    // Add some randomness for more natural look
+    const randomOffset = (Math.sin(index * 2.3) * 20);
+    
+    const x = centerX + curveOffset + randomOffset;
+    const y = (zigzagContainer.offsetHeight || 600) - 80 - (index * verticalSpacing);
+    
+    node.style.left = `${x}px`;
+    node.style.top = `${y}px`;
+    
+    // Store center position for path
+    nodePositions.push({ x: x + 30, y: y + 30 });
+    
+    // Check if task is completed
+    const isCompleted = userProgress.completedTasks.includes(task.id);
+    if (isCompleted) {
+      node.classList.add("completed");
+    }
+    
+    // Create node content
+    const shortDescription = getShortDescription(task);
+    const points = getTaskPoints(task);
+    
+    node.innerHTML = `
+      <div class="node-circle">
+        <span class="node-icon">${getTaskIcon(task)}</span>
+      </div>
+      <div class="node-title">${task.title}</div>
+      <div class="node-description">${shortDescription}</div>
+      <div class="node-points">${points} puan</div>
+    `;
+    
+    // Add click event
+    node.addEventListener("click", () => {
+      selectTask(task.id);
+    });
+    
+    zigzagContainer.appendChild(node);
+  });
+  
+  // Create smooth curved path connecting all nodes (from bottom to top)
+  if (nodePositions.length > 1) {
+    // Reverse the order to go from bottom to top
+    const reversedPositions = [...nodePositions].reverse();
+    pathData = `M ${reversedPositions[0].x} ${reversedPositions[0].y}`;
+    
+    for (let i = 1; i < reversedPositions.length; i++) {
+      const prev = reversedPositions[i - 1];
+      const current = reversedPositions[i];
+      
+      // Calculate control points for more dramatic curves
+      const midX = (prev.x + current.x) / 2;
+      const midY = (prev.y + current.y) / 2;
+      
+      // Create more dramatic control points
+      const controlPoint1X = prev.x + (current.x - prev.x) * 0.2;
+      const controlPoint1Y = prev.y + (current.y - prev.y) * 0.2 + Math.sin(i * 0.5) * 30;
+      const controlPoint2X = prev.x + (current.x - prev.x) * 0.8;
+      const controlPoint2Y = prev.y + (current.y - prev.y) * 0.8 + Math.cos(i * 0.7) * 25;
+      
+      // Use cubic bezier curves for smooth path
+      pathData += ` C ${controlPoint1X} ${controlPoint1Y}, ${controlPoint2X} ${controlPoint2Y}, ${current.x} ${current.y}`;
+    }
+  }
+  
+  // Set path data
+  path.setAttribute("d", pathData);
+  svg.appendChild(path);
+  zigzagContainer.appendChild(svg);
+}
+
+function getTaskIcon(task) {
+  // Return appropriate icon based on task type or difficulty
+  const icons = ["📝", "💻", "🎯", "⚡", "🔧", "🎨", "📊", "🎮"];
+  return icons[task.id % icons.length];
+}
+
+function getShortDescription(task) {
+  const descriptions = {
+    "Merhaba Dünya": "İlk Python programınızı yazın",
+    "Değişkenler": "Veri saklama ve kullanma",
+    "Hesaplamalar": "Matematiksel işlemler",
+    "Kullanıcı Girişi": "Kullanıcıdan veri alma",
+    "Koşullu İfadeler": "Karar verme yapıları",
+    "Döngüler": "Tekrarlayan işlemler",
+    "Fonksiyonlar": "Kod parçacıkları oluşturma",
+    "Listeler": "Veri koleksiyonları",
+    "Sözlükler": "Anahtar-değer çiftleri",
+    "Turtle Çizim": "Grafik programlama",
+    "Oyun Projesi": "Eğlenceli proje geliştirme"
+  };
+  return descriptions[task.title] || "Python öğrenme görevi";
+}
+
+function getTaskPoints(task) {
+  const points = {
+    "Merhaba Dünya": 10,
+    "Değişkenler": 15,
+    "Hesaplamalar": 20,
+    "Kullanıcı Girişi": 25,
+    "Koşullu İfadeler": 30,
+    "Döngüler": 35,
+    "Fonksiyonlar": 40,
+    "Listeler": 45,
+    "Sözlükler": 50,
+    "Turtle Çizim": 55,
+    "Oyun Projesi": 60
+  };
+  return points[task.title] || 10;
+}
+
+function selectTask(taskId) {
+  // Find and select the task
+  const task = tasks.find(t => t.id === taskId);
+  if (task) {
+    currentTask = task;
+    
+    // Show editor screen
+    showEditorScreen();
+    
+    // Wait for editor to be initialized, then load task code
+    setTimeout(() => {
+      if (editor) {
+        // Load saved code or use starter code
+        const savedCode = loadSavedCode(task.id);
+        editor.setValue(savedCode || task.starterCode);
+        
+        // Update task title
+        const taskTitleElement = document.getElementById("currentTaskTitle");
+        if (taskTitleElement) {
+          taskTitleElement.textContent = task.title;
+        }
+        
+        // Update active task in sidebar
+        document.querySelectorAll(".task-item").forEach((item) => {
+          item.classList.remove("active");
+        });
+        const activeTaskElement = document.querySelector(`[data-task-id="${task.id}"]`);
+        if (activeTaskElement) {
+          activeTaskElement.classList.add("active");
+        }
+      }
+    }, 100);
+  }
+}
+
+function backToCategories() {
+  // Hide zigzag path
+  document.getElementById("zigzagPath").style.display = "none";
+  
+  // Show categories grid
+  document.getElementById("categoriesGrid").style.display = "grid";
+}
 
 // Initialize Pyodide
 async function initializePyodide() {
   try {
-    showOutput("info", "🐍 Python runtime yükleniyor...");
+    showOutput("info", "▶️ Python runtime yükleniyor...");
 
     // Clear any existing cache
     clearPyodideCache();
@@ -984,10 +1417,8 @@ function renderTasks() {
   const taskList = document.getElementById("taskList");
   taskList.innerHTML = "";
 
-  // Filter tasks based on selected category
-  const filteredTasks = selectedCategory === "Tümü" 
-    ? tasks 
-    : tasks.filter(task => task.category === selectedCategory);
+  // Show only tasks from selected category
+  const filteredTasks = tasks.filter(task => task.category === selectedCategory);
 
   filteredTasks.forEach((task) => {
     const taskElement = document.createElement("div");
@@ -1016,35 +1447,7 @@ function renderTasks() {
   });
 }
 
-// Render Progress Map
-function renderProgressMap() {
-  const progressMap = document.getElementById("progressMap");
-  progressMap.innerHTML = "";
-
-  const categories = [...new Set(tasks.map((task) => task.category))];
-
-  categories.forEach((category) => {
-    const categoryTasks = tasks.filter((task) => task.category === category);
-    const completedTasks = categoryTasks.filter((task) =>
-      userProgress.completedTasks.includes(task.id)
-    );
-
-    const progressNode = document.createElement("div");
-    progressNode.className = `progress-node ${
-      completedTasks.length === categoryTasks.length ? "completed" : ""
-    }`;
-
-    progressNode.innerHTML = `
-            <span>${getCategoryIcon(category)}</span>
-            <div>
-                <div>${category}</div>
-                <small>${completedTasks.length}/${categoryTasks.length} tamamlandı</small>
-            </div>
-        `;
-
-    progressMap.appendChild(progressNode);
-  });
-}
+// Progress Map removed
 
 // Get Category Icon
 function getCategoryIcon(category) {
@@ -1084,10 +1487,7 @@ function setupEventListeners() {
     .getElementById("clearOutputBtn")
     .addEventListener("click", clearOutput);
 
-  // Category select button
-  document
-    .getElementById("categorySelectBtn")
-    .addEventListener("click", showCategorySelect);
+  // Category select button removed
 
   // Modal buttons
   document
@@ -1118,6 +1518,22 @@ function setupEventListeners() {
     .getElementById("closeHintModal")
     .addEventListener("click", () => hideModal("hintModal"));
 
+  // Alert modal buttons
+  document
+    .getElementById("closeAlertModal")
+    .addEventListener("click", hideAlert);
+  document
+    .getElementById("alertOkBtn")
+    .addEventListener("click", hideAlert);
+
+  // Level selection buttons
+  document
+    .getElementById("backToEditorBtn")
+    .addEventListener("click", showLevelSelectionScreen);
+  document
+    .getElementById("backToCategoriesBtn")
+    .addEventListener("click", backToCategories);
+
   // Close modal on outside click
   document.querySelectorAll(".modal").forEach((modal) => {
     modal.addEventListener("click", (e) => {
@@ -1135,7 +1551,7 @@ function setupEventListeners() {
 // Run Python Code
 function runCode() {
   if (!currentTask) {
-    showOutput("error", "❌ Lütfen önce bir görev seçin!");
+    showAlert("Görev Seçilmedi", "Lütfen önce bir görev seçin!", "error");
     return;
   }
 
@@ -1339,7 +1755,6 @@ function completeTask(task) {
   // Update UI
   updateUI();
   renderTasks();
-  renderProgressMap();
 
   // Show success animation
   showSuccessAnimation();
@@ -1482,7 +1897,7 @@ function formatHintMarkdown(text) {
 // Download Code as Python File
 function downloadCode() {
   if (!currentTask) {
-    showOutput("error", "❌ Önce bir görev seçin!");
+    showAlert("Görev Seçilmedi", "Önce bir görev seçin!", "error");
     return;
   }
 
@@ -1802,6 +2217,40 @@ function hideLoadingPanel() {
   }
 }
 
+// Show Alert Modal
+function showAlert(title, message, type = "warning") {
+  const alertModal = document.getElementById("alertModal");
+  const alertTitle = document.getElementById("alertTitle");
+  const alertMessage = document.getElementById("alertMessage");
+  
+  // Set title with appropriate icon
+  const icons = {
+    warning: "⚠️",
+    error: "❌",
+    info: "ℹ️",
+    success: "✅"
+  };
+  
+  alertTitle.innerHTML = `${icons[type] || icons.warning} ${title}`;
+  alertMessage.textContent = message;
+  
+  // Show modal
+  alertModal.classList.add("show");
+  
+  // Auto-hide after 5 seconds for non-error alerts
+  if (type !== "error") {
+    setTimeout(() => {
+      hideAlert();
+    }, 5000);
+  }
+}
+
+// Hide Alert Modal
+function hideAlert() {
+  const alertModal = document.getElementById("alertModal");
+  alertModal.classList.remove("show");
+}
+
 // Show Output
 function showOutput(type, message, showStatusLabel = false) {
   const outputContent = document.getElementById("outputContent");
@@ -1990,10 +2439,10 @@ function updateUI() {
   const runBtn = document.getElementById("runBtn");
   if (runBtn) {
     if (isPyodideLoaded) {
-      runBtn.innerHTML = "🐍 Çalıştır";
+      runBtn.innerHTML = "▶️ Çalıştır";
       runBtn.title = "Gerçek Python runtime ile çalıştır";
     } else {
-      runBtn.innerHTML = "🐍 Çalıştır";
+      runBtn.innerHTML = "▶️ Çalıştır";
       runBtn.title = "Simülasyon modunda çalıştır";
     }
   }
@@ -2122,40 +2571,6 @@ function loadSavedCode(taskId) {
   return null;
 }
 
-// Enhanced task selection with saved code
-function selectTask(task) {
-  console.log("selectTask called for:", task.title);
-  
-  currentTask = task;
-
-  // Update active task in sidebar
-  document.querySelectorAll(".task-item").forEach((item) => {
-    item.classList.remove("active");
-  });
-  document.querySelector(`[data-task-id="${task.id}"]`).classList.add("active");
-
-  // Load saved code or use starter code
-  const savedCode = loadSavedCode(task.id);
-  editor.setValue(savedCode || task.starterCode);
-
-  // Update task title
-  document.getElementById("currentTaskTitle").textContent = task.title;
-
-  // Show task description
-  const taskDescriptionDisplay = document.getElementById("taskDescriptionDisplay");
-  const taskDescriptionText = document.getElementById("taskDescriptionText");
-  taskDescriptionText.textContent = task.description;
-  taskDescriptionDisplay.style.display = "block";
-
-  // Clear output
-  clearOutput();
-
-  // Show welcome message - removed
-
-  // Update pinned hint if it exists
-  updatePinnedHint(task);
-}
-
 // Function to reset editor when no task is selected
 function resetEditorToNoTask() {
   currentTask = null;
@@ -2168,9 +2583,7 @@ function resetEditorToNoTask() {
   // Update task title
   document.getElementById("currentTaskTitle").textContent = "Görev Seçin";
 
-  // Hide task description
-  const taskDescriptionDisplay = document.getElementById("taskDescriptionDisplay");
-  taskDescriptionDisplay.style.display = "none";
+  // Task description is now shown in the sidebar task list
 
   // Set editor content to "# Bir görev seçin"
   editor.setValue("# Bir görev seçin");

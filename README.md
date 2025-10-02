@@ -1,4 +1,4 @@
-# 🐍 Python Kod Editörü - Oyunlaştırma Platformu
+# ▶️ Python Kod Editörü - Oyunlaştırma Platformu
 
 Ortaokul ve lise öğrencilerine yönelik, web tabanlı Python kod editörü ve oyunlaştırma platformu. Öğrencilerin programlama becerilerini geliştirirken motivasyonlarını artırmak için tasarlanmıştır.
 
