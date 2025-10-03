@@ -6,6 +6,7 @@ let isDarkTheme = false;
 let pyodide = null;
 let isPyodideLoaded = false;
 let editor = null;
+let isFreeMode = false;
 
 // User Progress Data
 let userProgress = {
@@ -445,9 +446,591 @@ function getUrlParameter(name) {
   return urlParams.get(name);
 }
 
+// Hide Analysis Popup
+function hideAnalysisPopup() {
+  const popup = document.getElementById('analyzingPopup');
+  if (popup) {
+    popup.remove();
+    console.log("Analiz popup kaldırıldı");
+  }
+}
+
+// Show Free Mode Analysis Popup
+function showFreeModeAnalysisPopup() {
+  console.log("showFreeModeAnalysisPopup çağrıldı");
+  
+  // Use the same popup as task mode
+  showAnalysisPopup();
+}
+
+// Show Free Mode Error Modal
+function showFreeModeErrorModal(errorMessage) {
+  console.log("showFreeModeErrorModal çağrıldı, hata:", errorMessage);
+  
+  const popup = document.createElement('div');
+  popup.id = 'failurePopup';
+  popup.innerHTML = `
+    <div class="failure-background"></div>
+    <div class="failure-content">
+      <div class="failure-icon">
+        <div class="failure-circle">
+          <div class="failure-x">✕</div>
+        </div>
+      </div>
+      <h2>❌ Kod Doğru Değil</h2>
+      <p>Kodunuzda bir hata var!</p>
+      
+      <div class="failure-details">
+        <div class="error-info">
+          <h3>🔍 Hata Detayı:</h3>
+          <div class="expected-output">
+            <span class="output-text">${errorMessage}</span>
+          </div>
+          <p class="hint-text">Lütfen kodunuzu kontrol edin ve tekrar deneyin.</p>
+        </div>
+      </div>
+      
+      <div class="failure-actions">
+        <button class="btn btn-retry" onclick="closeFreeModeFailurePopup()">Tekrar Dene</button>
+      </div>
+    </div>
+  `;
+  
+  // Add the same styles as task mode
+  popup.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  `;
+  
+  // Add CSS styles
+  const style = document.createElement('style');
+  style.textContent = `
+    .failure-background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
+    }
+    
+    .failure-content {
+      position: relative;
+      background: white;
+      border-radius: 20px;
+      padding: 2rem;
+      text-align: center;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+      animation: failureSlideIn 0.5s ease;
+      z-index: 1;
+      overflow: hidden;
+    }
+    
+    .failure-icon {
+      margin: 0 auto 1rem;
+      width: 60px;
+      height: 60px;
+    }
+    
+    .failure-circle {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: failureShake 0.6s ease;
+      box-shadow: 0 8px 25px rgba(220, 53, 69, 0.4);
+      border: 4px solid #fff;
+    }
+    
+    .failure-x {
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: white;
+      font-weight: 900;
+      animation: failurePulse 0.5s ease 0.3s both;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    }
+    
+    @keyframes failureShake {
+      0%, 100% { transform: scale(1); }
+      25% { transform: scale(1.1) rotate(-5deg); }
+      75% { transform: scale(1.1) rotate(5deg); }
+    }
+    
+    @keyframes failurePulse {
+      0% { transform: scale(0); opacity: 0; }
+      50% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    
+    @keyframes failureSlideIn {
+      0% { transform: translateY(-50px) scale(0.8); opacity: 0; }
+      100% { transform: translateY(0) scale(1); opacity: 1; }
+    }
+    
+    .failure-content h2 {
+      color: #dc3545;
+      font-size: 1.8rem;
+      margin: 0 0 0.5rem 0;
+      font-weight: 700;
+    }
+    
+    .failure-content p {
+      color: #666;
+      font-size: 1.1rem;
+      margin: 0 0 1.5rem 0;
+    }
+    
+    .failure-details {
+      background: #f8f9fa;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      border-left: 4px solid #dc3545;
+    }
+    
+    .error-info h3 {
+      color: #dc3545;
+      font-size: 1.1rem;
+      margin: 0 0 1rem 0;
+      font-weight: 600;
+    }
+    
+    .expected-output {
+      background: #fff;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 1rem 0;
+    }
+    
+    .output-text {
+      font-family: 'Courier New', monospace;
+      color: #dc3545;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    
+    .hint-text {
+      color: #6c757d;
+      font-size: 0.95rem;
+      margin: 1rem 0 0 0;
+    }
+    
+    .failure-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 1.5rem;
+    }
+    
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+    
+    .btn-retry {
+      background: linear-gradient(135deg, #dc3545, #c82333);
+      color: white;
+      box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+    }
+    
+    .btn-retry:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+    }
+  `;
+  
+  document.head.appendChild(style);
+  document.body.appendChild(popup);
+  console.log("Hata modal'ı eklendi");
+}
+
+// Close Free Mode Failure Popup
+function closeFreeModeFailurePopup() {
+  const popup = document.getElementById('failurePopup');
+  if (popup) {
+    popup.remove();
+  }
+}
+
+// Show Free Mode Success Modal
+function showFreeModeSuccessModal() {
+  console.log("showFreeModeSuccessModal çağrıldı");
+  
+  const popup = document.createElement('div');
+  popup.id = 'successPopup';
+  popup.innerHTML = `
+    <div class="success-background"></div>
+    <div class="confetti-container">
+      <div class="confetti"></div>
+      <div class="confetti"></div>
+      <div class="confetti"></div>
+      <div class="confetti"></div>
+      <div class="confetti"></div>
+      <div class="confetti"></div>
+      <div class="confetti"></div>
+      <div class="confetti"></div>
+      <div class="confetti"></div>
+    </div>
+    <div class="success-content">
+      <div class="success-checkmark">
+        <div class="checkmark-circle">
+          <div class="checkmark"></div>
+        </div>
+      </div>
+      <h2>🎉 Tebrikler!</h2>
+      <p>Kodunuz başarıyla çalıştı!</p>
+      
+      <div class="success-details">
+        <div class="task-info">
+          <h3>✅ Serbest Mod'da Kod Yazdınız!</h3>
+          <div class="points-earned">
+            <span class="points-icon">💻</span>
+            <span class="points-text">Python kodunuz çalışıyor!</span>
+          </div>
+          <div class="level-info">
+            <span class="level-text">Mod: Serbest</span>
+            <span class="total-points">Sınırsız Kod Yazma</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="success-actions">
+        <button class="btn btn-continue" onclick="closeFreeModeSuccessPopup()">Devam Et</button>
+        <button class="btn btn-close" onclick="closeFreeModeSuccessPopup()">Tamam</button>
+      </div>
+    </div>
+  `;
+  
+  // Add the same styles as task mode
+  popup.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10001;
+    color: white;
+    font-family: 'Inter', sans-serif;
+    animation: fadeIn 0.3s ease;
+  `;
+  
+  // Add CSS for success animation (same as task mode)
+  const style = document.createElement('style');
+  style.textContent = `
+    .success-background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
+      z-index: 1;
+    }
+    
+    .confetti-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      pointer-events: none;
+    }
+    
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: #ff6b6b;
+      animation: confetti-fall 3s linear infinite;
+    }
+    
+    .confetti:nth-child(1) { left: 10%; animation-delay: 0s; background: #ff6b6b; }
+    .confetti:nth-child(2) { left: 20%; animation-delay: 0.5s; background: #4ecdc4; }
+    .confetti:nth-child(3) { left: 30%; animation-delay: 1s; background: #45b7d1; }
+    .confetti:nth-child(4) { left: 40%; animation-delay: 1.5s; background: #96ceb4; }
+    .confetti:nth-child(5) { left: 50%; animation-delay: 2s; background: #feca57; }
+    .confetti:nth-child(6) { left: 60%; animation-delay: 2.5s; background: #ff9ff3; }
+    
+    @keyframes confetti-fall {
+      0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100px) rotate(360deg); opacity: 0; }
+    }
+    
+    .success-checkmark {
+      margin: 0 auto 1rem;
+      width: 60px;
+      height: 60px;
+    }
+    
+    .checkmark-circle {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: checkmark-bounce 0.6s ease;
+      box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+      border: 4px solid #fff;
+    }
+    
+    .checkmark {
+      width: 30px;
+      height: 30px;
+      border: 3px solid white;
+      border-top: none;
+      border-right: none;
+      transform: rotate(-45deg);
+      animation: checkmark-draw 0.5s ease 0.3s both;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    }
+    
+    @keyframes checkmark-bounce {
+      0% { transform: scale(0); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+    
+    @keyframes checkmark-draw {
+      0% { width: 0; height: 0; }
+      100% { width: 30px; height: 30px; }
+    }
+    
+    .success-content {
+      position: relative;
+      background: white;
+      border-radius: 20px;
+      padding: 2rem;
+      text-align: center;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+      z-index: 3;
+    }
+    
+    .success-content h2 {
+      margin: 0 0 0.3rem 0;
+      font-size: 2rem;
+      font-weight: 800;
+      color: #28a745;
+      letter-spacing: 0.5px;
+    }
+    
+    .success-content p {
+      margin: 0 0 1.5rem 0;
+      font-size: 1.1rem;
+      color: #666;
+      font-weight: 500;
+    }
+    
+    .success-details {
+      background: #f8f9fa;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      border-left: 4px solid #28a745;
+    }
+    
+    .task-info h3 {
+      color: #28a745;
+      font-size: 1.2rem;
+      margin: 0 0 1rem 0;
+      font-weight: 600;
+    }
+    
+    .points-earned {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+    
+    .points-icon {
+      font-size: 1.2rem;
+    }
+    
+    .points-text {
+      color: #28a745;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    
+    .level-info {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+    }
+    
+    .level-text, .total-points {
+      color: #6c757d;
+    }
+    
+    .success-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 1.5rem;
+    }
+    
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+    
+    .btn-continue {
+      background: linear-gradient(135deg, #28a745, #20c997);
+      color: white;
+      box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+    }
+    
+    .btn-continue:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+    }
+    
+    .btn-close {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .btn-close:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  `;
+  
+  document.head.appendChild(style);
+  document.body.appendChild(popup);
+  console.log("Başarılı modal eklendi");
+}
+
+// Close Free Mode Success Popup
+function closeFreeModeSuccessPopup() {
+  const popup = document.getElementById('successPopup');
+  if (popup) {
+    popup.remove();
+  }
+}
+
+// Setup Free Mode
+function setupFreeMode() {
+  // Hide sidebar
+  const sidebar = document.querySelector('.sidebar');
+  if (sidebar) {
+    sidebar.style.display = 'none';
+  }
+  
+  // Update header
+  const header = document.querySelector('.header-center');
+  if (header) {
+    header.innerHTML = `
+      <div class="level-info">
+        <div class="level-badge">
+          <span class="level-icon">💻</span>
+          <span class="level-text">Serbest Mod</span>
+        </div>
+        <div class="points">
+          <span class="points-icon">∞</span>
+          <span class="points-text">Sınırsız</span>
+        </div>
+      </div>
+    `;
+  }
+  
+  // Update task title
+  const taskTitle = document.getElementById('currentTaskTitle');
+  if (taskTitle) {
+    taskTitle.textContent = 'Serbest Kod Yazma';
+  }
+  
+  // Update task description
+  const taskDescription = document.getElementById('taskDescription');
+  if (taskDescription) {
+    taskDescription.textContent = 'İstediğiniz Python kodunu yazın ve çalıştırın. Görevler ve kısıtlamalar yok!';
+  }
+  
+  // Hide task difficulty and points
+  const taskDifficulty = document.getElementById('taskDifficulty');
+  const taskPoints = document.getElementById('taskPoints');
+  if (taskDifficulty) taskDifficulty.style.display = 'none';
+  if (taskPoints) taskPoints.style.display = 'none';
+  
+  // Hide hint button in free mode
+  const hintBtn = document.getElementById('hintBtn');
+  if (hintBtn) {
+    hintBtn.style.display = 'none';
+    console.log("İpucu butonu gizlendi");
+  }
+  
+  // Update back button
+  const backBtn = document.getElementById('backToCategoriesBtn');
+  if (backBtn) {
+    backBtn.textContent = '← Ana Sayfa';
+  }
+}
+
 // Initialize Application
 document.addEventListener("DOMContentLoaded", function () {
   console.log("DOM yüklendi, uygulama başlatılıyor...");
+  
+  // Check if it's free mode
+  const mode = getUrlParameter('mode');
+  isFreeMode = mode === 'free';
+  console.log("Mode parametresi:", mode);
+  console.log("isFreeMode:", isFreeMode);
+
+  if (isFreeMode) {
+    console.log("Serbest Mod aktif!");
+    setupFreeMode();
+  }
   
   try {
     console.log("1. loadUserProgress çağrılıyor...");
@@ -521,7 +1104,11 @@ function setupEventListeners() {
   
   // Back to categories button
   document.getElementById("backToCategoriesBtn").addEventListener("click", () => {
-    window.location.href = 'index.html';
+    if (isFreeMode) {
+      window.location.href = 'index.html';
+    } else {
+      window.location.href = 'index.html';
+    }
   });
   
   // Theme button
@@ -564,6 +1151,11 @@ function initializeEditor() {
 
 // Render Tasks
 function renderTasks() {
+  // Skip rendering tasks in free mode
+  if (isFreeMode) {
+    return;
+  }
+  
   const taskList = document.getElementById("taskList");
   taskList.innerHTML = "";
   
@@ -726,10 +1318,14 @@ async function runCode() {
   console.log("runCode çağrıldı");
   
   try {
-    if (!currentTask) {
+    if (!isFreeMode && !currentTask) {
       console.log("currentTask yok!");
       showAlert("Lütfen önce bir görev seçin!");
       return;
+    }
+    
+    if (isFreeMode && !currentTask) {
+      console.log("Serbest mod - currentTask kontrolü atlandı");
     }
     
     console.log("currentTask:", currentTask);
@@ -748,7 +1344,8 @@ async function runCode() {
     // Show loading message
     showOutput("🔄 Kod çalıştırılıyor...");
     
-    // Show analysis popup
+    // Show analysis popup for both modes
+    console.log("Analiz popup gösteriliyor");
     showAnalysisPopup();
     
     if (isPyodideLoaded) {
@@ -759,10 +1356,10 @@ async function runCode() {
       runWithSimulation(code);
     }
     
-    // Check if task is completed
+    // Check if task is completed after analysis popup
     setTimeout(() => {
       checkTaskCompletion(code);
-    }, 500);
+    }, 3000);
     
     console.log("runCode başarıyla tamamlandı");
   } catch (error) {
@@ -799,14 +1396,65 @@ sys.stdout = captured_output = StringIO()
     
     // Show output or result
     if (output && output.trim()) {
-      showOutput(output);
+      if (isFreeMode) {
+        showOutput(output);
+        // Show success modal for free mode after analysis popup
+        setTimeout(() => {
+          hideAnalysisPopup();
+          showFreeModeSuccessModal();
+        }, 3000);
+      } else {
+        showOutput(output);
+        // Hide analysis popup after 3 seconds
+        setTimeout(() => {
+          hideAnalysisPopup();
+        }, 3000);
+      }
     } else if (result !== undefined && result !== null) {
-      showOutput(result.toString());
+      if (isFreeMode) {
+        showOutput(result.toString());
+        // Show success modal for free mode after analysis popup
+        setTimeout(() => {
+          hideAnalysisPopup();
+          showFreeModeSuccessModal();
+        }, 3000);
+      } else {
+        showOutput(result.toString());
+        // Hide analysis popup after 3 seconds
+        setTimeout(() => {
+          hideAnalysisPopup();
+        }, 3000);
+      }
     } else {
-      showOutput("✅ Kod başarıyla çalıştırıldı!\n\nNot: Bu kod herhangi bir çıktı üretmedi. Eğer sonucu görmek istiyorsanız, print() fonksiyonu kullanın.");
+      if (isFreeMode) {
+        showOutput("✅ Kod başarıyla çalıştırıldı!\n\nNot: Bu kod herhangi bir çıktı üretmedi. Eğer sonucu görmek istiyorsanız, print() fonksiyonu kullanın.");
+        // Show success modal for free mode after analysis popup
+        setTimeout(() => {
+          hideAnalysisPopup();
+          showFreeModeSuccessModal();
+        }, 3000);
+      } else {
+        showOutput("✅ Kod başarıyla çalıştırıldı!\n\nNot: Bu kod herhangi bir çıktı üretmedi. Eğer sonucu görmek istiyorsanız, print() fonksiyonu kullanın.");
+        // Hide analysis popup after 3 seconds
+        setTimeout(() => {
+          hideAnalysisPopup();
+        }, 3000);
+      }
     }
   } catch (error) {
-    showOutput(`Hata: ${error.message}`);
+    if (isFreeMode) {
+      // Show error modal for free mode after analysis popup
+      setTimeout(() => {
+        hideAnalysisPopup();
+        showFreeModeErrorModal(error.message);
+      }, 3000);
+    } else {
+      showOutput(`Hata: ${error.message}`);
+      // Hide analysis popup after 3 seconds
+      setTimeout(() => {
+        hideAnalysisPopup();
+      }, 3000);
+    }
   }
 }
 
@@ -851,20 +1499,117 @@ function runWithSimulation(code) {
     } else {
       showOutput("Kod çalıştırıldı (simülasyon modu)");
     }
+    
+    // Hide analysis popup after 3 seconds
+    setTimeout(() => {
+      hideAnalysisPopup();
+    }, 3000);
   } catch (error) {
-    showOutput(`Hata: ${error.message}`);
+    if (isFreeMode) {
+      // Show error modal for free mode after analysis popup
+      setTimeout(() => {
+        hideAnalysisPopup();
+        showFreeModeErrorModal(error.message);
+      }, 3000);
+    } else {
+      showOutput(`Hata: ${error.message}`);
+      // Hide analysis popup after 3 seconds
+      setTimeout(() => {
+        hideAnalysisPopup();
+      }, 3000);
+    }
   }
 }
 
 // Show Output
 function showOutput(content) {
   const outputContent = document.getElementById("outputContent");
-  outputContent.innerHTML = `<pre>${content}</pre>`;
+  
+  // Format the output with modern styling
+  const formattedContent = formatOutput(content);
+  outputContent.innerHTML = formattedContent;
   
   // Check if task is completed
   if (currentTask && content.includes(currentTask.expectedOutput)) {
     completeTask(currentTask);
   }
+}
+
+// Format Output with Modern Styling
+function formatOutput(content) {
+  if (!content || content.trim() === '') {
+    return '<div class="empty-output">Çıktı yok</div>';
+  }
+  
+  // Check if it's a loading message
+  if (content.includes('🔄 Kod çalıştırılıyor...')) {
+    return '<div class="output-header">Çıktı</div><div class="output-line output-info">🔄 Kod çalıştırılıyor...</div>';
+  }
+  
+  // Check if it's an error message
+  if (content.includes('Hata:') || content.includes('Error') || content.includes('Exception')) {
+    return '<div class="output-header">Çıktı</div><div class="output-line output-error">❌ Hatalı kod</div>';
+  }
+  
+  // Add output header
+  let formatted = '<div class="output-header">Çıktı</div>';
+  
+  // Split content into lines
+  const lines = content.split('\n');
+  
+  lines.forEach(line => {
+    if (line.trim() === '') {
+      formatted += '<div class="output-line"></div>';
+      return;
+    }
+    
+    // Determine line type and apply appropriate styling
+    let lineClass = 'output-line';
+    let formattedLine = line;
+    
+    // Check for different types of output
+    if (line.includes('✅') || line.includes('başarıyla') || line.includes('success')) {
+      lineClass += ' output-success';
+    } else if (line.includes('❌') || line.includes('Hata') || line.includes('Error') || line.includes('Exception')) {
+      lineClass += ' output-error';
+    } else if (line.includes('⚠️') || line.includes('Uyarı') || line.includes('Warning')) {
+      lineClass += ' output-warning';
+    } else if (line.includes('🔄') || line.includes('çalıştırılıyor') || line.includes('loading')) {
+      lineClass += ' output-info';
+    }
+    
+    // Apply syntax highlighting
+    formattedLine = applySyntaxHighlighting(formattedLine);
+    
+    formatted += `<div class="${lineClass}">${formattedLine}</div>`;
+  });
+  
+  return formatted;
+}
+
+// Apply Syntax Highlighting
+function applySyntaxHighlighting(line) {
+  // String highlighting
+  line = line.replace(/"([^"]*)"/g, '<span class="string">"$1"</span>');
+  line = line.replace(/'([^']*)'/g, '<span class="string">\'$1\'</span>');
+  
+  // Number highlighting
+  line = line.replace(/\b(\d+\.?\d*)\b/g, '<span class="number">$1</span>');
+  
+  // Boolean highlighting
+  line = line.replace(/\b(True|False|None)\b/g, '<span class="boolean">$1</span>');
+  
+  // Error highlighting
+  if (line.includes('Error') || line.includes('Exception') || line.includes('Traceback')) {
+    line = line.replace(/(Error|Exception|Traceback)/g, '<span class="error">$1</span>');
+  }
+  
+  // Success highlighting
+  if (line.includes('✅') || line.includes('başarıyla')) {
+    line = line.replace(/(✅|başarıyla)/g, '<span class="success">$1</span>');
+  }
+  
+  return line;
 }
 
 // Show Alert (removed - using console.log instead)
@@ -935,16 +1680,30 @@ function completeTask(task) {
 
 // Update UI
 function updateUI() {
+  // Skip UI update in free mode
+  if (isFreeMode) {
+    console.log("Serbest mod - UI güncellemesi atlandı");
+    return;
+  }
+  
   // Update level
-  document.querySelector(".level-text").textContent = `Seviye ${userProgress.level}`;
+  const levelText = document.querySelector(".level-text");
+  if (levelText) {
+    levelText.textContent = `Seviye ${userProgress.level}`;
+  }
   
   // Update points
-  document.querySelector(".points-text").textContent = `${userProgress.points} Puan`;
+  const pointsText = document.querySelector(".points-text");
+  if (pointsText) {
+    pointsText.textContent = `${userProgress.points} Puan`;
+  }
   
   // Update progress
   const progressFill = document.querySelector(".progress-fill");
-  const progressPercentage = (userProgress.points % 100);
-  progressFill.style.width = `${progressPercentage}%`;
+  if (progressFill) {
+    const progressPercentage = (userProgress.points % 100);
+    progressFill.style.width = `${progressPercentage}%`;
+  }
   
   // Update next level info
   const nextLevelPoints = 100 - (userProgress.points % 100);
@@ -1347,6 +2106,9 @@ function showAnalysisPopup() {
 // Check Task Completion
 function checkTaskCompletion(code) {
   if (!currentTask) return;
+  
+  // Hide analysis popup first
+  hideAnalysisPopup();
   
   const output = document.getElementById("outputContent").textContent.trim();
   const expectedOutput = currentTask.expectedOutput.trim();

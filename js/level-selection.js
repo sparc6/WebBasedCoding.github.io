@@ -233,6 +233,17 @@ function renderCategoryCards() {
       level: "İleri",
       color: "#E91E63",
       tasks: 2
+    },
+    {
+      name: "Serbest",
+      icon: "💻",
+      title: "Serbest Mod",
+      description: "İstediğiniz kodu yazın ve çalıştırın",
+      difficulty: 0,
+      level: "Serbest",
+      color: "#9C27B0",
+      tasks: 0,
+      isFreeMode: true
     }
   ];
   
@@ -259,6 +270,8 @@ function renderCategoryCards() {
       difficultyStars = "★★★☆☆"; // 3 stars filled
     } else if (category.name === "İleri") {
       difficultyStars = "★★★★★"; // 5 stars filled
+    } else if (category.name === "Serbest") {
+      difficultyStars = "∞"; // Infinity symbol for free mode
     }
     
     categoryCard.innerHTML = `
@@ -276,7 +289,7 @@ function renderCategoryCards() {
                 <span class="difficulty-stars">${difficultyStars}</span>
               </div>
               <div class="category-tasks">
-                ${categoryTasks.length} görev
+                ${category.isFreeMode ? "Sınırsız" : categoryTasks.length + " görev"}
               </div>
             </div>
           </div>
@@ -284,7 +297,7 @@ function renderCategoryCards() {
         
         <div class="button-container">
           <button class="start-button">
-            ${progressPercentage > 0 ? 'Devam Et' : 'Başla'} →
+            ${category.isFreeMode ? 'Serbest Mod' : (progressPercentage > 0 ? 'Devam Et' : 'Başla')} →
           </button>
         </div>
       </div>
@@ -301,6 +314,11 @@ function renderCategoryCards() {
 
 // Select Category
 function selectCategory(categoryName) {
-  // Redirect to task selection page with category parameter
-  window.location.href = `task-selection.html?category=${encodeURIComponent(categoryName)}`;
+  if (categoryName === "Serbest") {
+    // Redirect to free mode editor
+    window.location.href = "editor.html?mode=free";
+  } else {
+    // Redirect to task selection page with category parameter
+    window.location.href = `task-selection.html?category=${encodeURIComponent(categoryName)}`;
+  }
 }
