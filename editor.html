@@ -108,6 +108,37 @@
       </div>
     </div>
 
+    <!-- Hint Modal -->
+    <div class="hint-modal" id="hintModal">
+      <div class="hint-modal-header" id="hintModalHeader">
+        <div class="hint-modal-title">
+          <span class="hint-icon">💡</span>
+          <span class="hint-title">İpucu</span>
+        </div>
+        <div class="hint-modal-controls">
+          <button class="hint-pin-btn" id="hintPinBtn" title="Sabitle/Çöz">📌</button>
+          <button class="hint-close-btn" id="hintCloseBtn">×</button>
+        </div>
+      </div>
+      <div class="hint-modal-content">
+        <div class="hint-tabs">
+          <button class="hint-tab active" id="shortHintTab">Kısa İpucu</button>
+          <button class="hint-tab" id="longHintTab">Uzun İpucu</button>
+        </div>
+        <div class="hint-content">
+          <div class="hint-tab-content active" id="shortHintContent">
+            <div class="hint-text" id="shortHintText">
+              <!-- Short hint content will be loaded here -->
+            </div>
+          </div>
+          <div class="hint-tab-content" id="longHintContent">
+            <div class="hint-text" id="longHintText">
+              <!-- Long hint content will be loaded here -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>

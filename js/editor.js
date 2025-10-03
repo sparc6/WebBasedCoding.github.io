@@ -29,15 +29,30 @@ const tasks = [
     shortHint: "print() fonksiyonunu kullanın ve tırnak işaretlerini unutmayın.",
     longHint: `# Python'da Metin Yazdırma
 
-Python'da metin yazdırmak için print() fonksiyonu kullanılır.
+Python'da metin yazdırmak için **print()** fonksiyonu kullanılır.
 
 ## Temel Kullanım:
+\`\`\`python
 print("Merhaba Dünya")
+\`\`\`
 
 ## Önemli Noktalar:
-• Tırnak işaretleri ("" veya '') kullanılmalı
-• Metin tırnak içinde yazılmalı
-• print() fonksiyonu parantez içinde çağrılmalı`,
+• **Tırnak işaretleri** ("" veya '') kullanılmalı
+• **Metin** tırnak içinde yazılmalı
+• **print()** fonksiyonu parantez içinde çağrılmalı
+
+## Adım Adım:
+1. **print** yazın
+2. **Açık parantez** ( yazın
+3. **Tırnak** " yazın
+4. **Merhaba Dünya** yazın
+5. **Kapanış tırnağı** " yazın
+6. **Kapanış parantezi** ) yazın
+
+## Örnek Çıktı:
+\`\`\`
+Merhaba Dünya
+\`\`\``,
     points: 10
   },
   {
@@ -52,13 +67,36 @@ print("Merhaba Dünya")
     shortHint: "Değişkenleri toplayın ve sonucu print() ile yazdırın.",
     longHint: `# Python'da Değişkenler ve Hesaplama
 
+**Değişkenler** veri saklamak için kullanılır. Python'da değişken tanımlamak çok kolaydır!
+
 ## Değişken Tanımlama:
+\`\`\`python
 sayi1 = 5
 sayi2 = 3
+\`\`\`
 
-## Hesaplama:
+## Hesaplama ve Yazdırma:
+\`\`\`python
 toplam = sayi1 + sayi2
-print(toplam)`,
+print(toplam)
+\`\`\`
+
+## Adım Adım:
+1. **İlk sayıyı** değişkene atayın: \`sayi1 = 5\`
+2. **İkinci sayıyı** değişkene atayın: \`sayi2 = 3\`
+3. **Toplamı hesaplayın**: \`toplam = sayi1 + sayi2\`
+4. **Sonucu yazdırın**: \`print(toplam)\`
+
+## Önemli Noktalar:
+• **=** işareti atama operatörüdür
+• **+** işareti toplama operatörüdür
+• Değişken isimleri **harf** ile başlamalı
+• **print()** ile sonucu ekrana yazdırın
+
+## Örnek Çıktı:
+\`\`\`
+8
+\`\`\``,
     points: 15
   },
   {
@@ -73,11 +111,39 @@ print(toplam)`,
     shortHint: "input() fonksiyonunu kullanın ve f-string ile birleştirin.",
     longHint: `# Kullanıcı Girişi
 
-## input() Fonksiyonu:
+**input()** fonksiyonu kullanıcıdan veri almak için kullanılır. **F-string** ise metinleri birleştirmek için harika bir yöntemdir!
+
+## Kullanıcıdan Veri Alma:
+\`\`\`python
 isim = input("İsminizi girin: ")
+\`\`\`
 
 ## F-string ile Birleştirme:
-print(f"Merhaba {isim}")`,
+\`\`\`python
+print(f"Merhaba {isim}")
+\`\`\`
+
+## Adım Adım:
+1. **input()** ile kullanıcıdan isim alın
+2. **F-string** kullanarak metinleri birleştirin
+3. **print()** ile sonucu yazdırın
+
+## F-string Nedir?
+• **f** harfi ile başlar
+• **{değişken}** şeklinde değişkenleri kullanır
+• **Tırnak** içinde yazılır
+
+## Örnek Kullanım:
+\`\`\`python
+isim = input("İsminizi girin: ")
+print(f"Merhaba {isim}")
+\`\`\`
+
+## Örnek Çıktı:
+\`\`\`
+İsminizi girin: Ali
+Merhaba Ali
+\`\`\``,
     points: 20
   },
   {
@@ -90,13 +156,44 @@ print(f"Merhaba {isim}")`,
     starterCode: "yas = 18",
     expectedOutput: "Reşit",
     shortHint: "if-else yapısını kullanın ve yaşı kontrol edin.",
-    longHint: `# Koşullu İfadeler
+    longHint: `# Koşullu İfadeler (if-else)
 
-## if-else Yapısı:
+**Koşullu ifadeler** programın farklı durumlarda farklı davranmasını sağlar. **if-else** yapısı en temel koşullu ifadedir!
+
+## Temel Yapı:
+\`\`\`python
 if yas >= 18:
     print("Reşit")
 else:
-    print("Reşit değil")`,
+    print("Reşit değil")
+\`\`\`
+
+## Adım Adım:
+1. **Yaş değişkenini** tanımlayın: \`yas = 18\`
+2. **if** ile koşulu başlatın: \`if yas >= 18:\`
+3. **İki nokta** (:) unutmayın!
+4. **Girinti** ile kod bloğunu yazın: \`print("Reşit")\`
+5. **else** ile alternatif durumu yazın: \`else:\`
+6. **Girinti** ile else bloğunu yazın: \`print("Reşit değil")\`
+
+## Önemli Noktalar:
+• **if** ve **else** sonunda **:** (iki nokta) olmalı
+• **Girinti** (4 boşluk) çok önemli!
+• **>=** "büyük eşit" anlamına gelir
+• **print()** fonksiyonları girintili olmalı
+
+## Karşılaştırma Operatörleri:
+• **==** eşit mi?
+• **!=** eşit değil mi?
+• **>** büyük mü?
+• **<** küçük mü?
+• **>=** büyük eşit mi?
+• **<=** küçük eşit mi?
+
+## Örnek Çıktı:
+\`\`\`
+Reşit
+\`\`\``,
     points: 25
   },
   {
@@ -109,14 +206,48 @@ else:
     starterCode: "# for döngüsü kullanın",
     expectedOutput: "1\n2\n3\n4\n5\n6\n7\n8\n9\n10",
     shortHint: "for döngüsü ve range() fonksiyonunu kullanın.",
-    longHint: `# Döngüler
+    longHint: `# Döngüler (for loop)
 
-## for Döngüsü:
+**Döngüler** aynı işlemi birden fazla kez yapmak için kullanılır. **for** döngüsü en yaygın döngü türüdür!
+
+## Temel Yapı:
+\`\`\`python
 for i in range(1, 11):
     print(i)
+\`\`\`
+
+## Adım Adım:
+1. **for** ile döngüyü başlatın
+2. **i** değişken adı (istediğiniz olabilir)
+3. **in** anahtar kelimesi
+4. **range(1, 11)** ile sayı aralığını belirleyin
+5. **:** (iki nokta) unutmayın!
+6. **Girinti** ile döngü içindeki kodu yazın
 
 ## range() Fonksiyonu:
-# range(1, 11) -> 1'den 10'a kadar (11 dahil değil)`,
+• **range(1, 11)** → 1'den 10'a kadar (11 dahil değil!)
+• **range(5)** → 0'dan 4'e kadar
+• **range(0, 10, 2)** → 0, 2, 4, 6, 8
+
+## Önemli Noktalar:
+• **Girinti** (4 boşluk) çok önemli!
+• **range(1, 11)** 1'den 10'a kadar sayar
+• **print(i)** her sayıyı ayrı satırda yazdırır
+• **i** değişkeni her döngüde farklı değer alır
+
+## Örnek Çıktı:
+\`\`\`
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+\`\`\``,
     points: 30
   },
   {
@@ -129,15 +260,47 @@ for i in range(1, 11):
     starterCode: "# def ile fonksiyon tanımlayın",
     expectedOutput: "15",
     shortHint: "def ile fonksiyon tanımlayın ve return kullanın.",
-    longHint: `# Fonksiyonlar
+    longHint: `# Fonksiyonlar (Functions)
+
+**Fonksiyonlar** kod parçacıklarını tekrar kullanılabilir hale getirir. **def** anahtar kelimesi ile fonksiyon tanımlanır!
 
 ## Fonksiyon Tanımlama:
+\`\`\`python
 def topla(a, b):
     return a + b
+\`\`\`
 
 ## Fonksiyon Çağırma:
+\`\`\`python
 sonuc = topla(5, 10)
-print(sonuc)`,
+print(sonuc)
+\`\`\`
+
+## Adım Adım:
+1. **def** ile fonksiyonu başlatın
+2. **topla** fonksiyon adı (istediğiniz olabilir)
+3. **(a, b)** parametreler (giriş değerleri)
+4. **:** (iki nokta) unutmayın!
+5. **Girinti** ile fonksiyon içindeki kodu yazın
+6. **return** ile sonucu döndürün
+
+## Önemli Noktalar:
+• **def** fonksiyon tanımlama anahtar kelimesi
+• **return** fonksiyondan değer döndürür
+• **Girinti** (4 boşluk) çok önemli!
+• **Parametreler** fonksiyonun giriş değerleridir
+• **Fonksiyon çağırma** ile kullanılır
+
+## Fonksiyon Avantajları:
+• **Tekrar kullanılabilir** kod
+• **Daha temiz** program yapısı
+• **Hata ayıklama** kolaylığı
+• **Modüler** programlama
+
+## Örnek Çıktı:
+\`\`\`
+15
+\`\`\``,
     points: 35
   },
   {
@@ -150,14 +313,54 @@ print(sonuc)`,
     starterCode: "# Liste oluşturun ve for döngüsü ile yazdırın",
     expectedOutput: "elma\narmut\nmuz",
     shortHint: "[] ile liste oluşturun ve for döngüsü ile yazdırın.",
-    longHint: `# Listeler
+    longHint: `# Listeler (Lists)
+
+**Listeler** birden fazla veriyi tek bir değişkende saklamak için kullanılır. **[]** köşeli parantezler ile oluşturulur!
 
 ## Liste Oluşturma:
+\`\`\`python
 meyveler = ["elma", "armut", "muz"]
+\`\`\`
 
 ## Liste Elemanlarını Yazdırma:
+\`\`\`python
 for meyve in meyveler:
-    print(meyve)`,
+    print(meyve)
+\`\`\`
+
+## Adım Adım:
+1. **[]** ile listeyi başlatın
+2. **Elemanları** tırnak içinde yazın
+3. **Virgül** ile ayırın
+4. **]** ile listeyi kapatın
+5. **for** döngüsü ile elemanları gezin
+6. **print()** ile her elemanı yazdırın
+
+## Liste Özellikleri:
+• **Sıralı** veri yapısı
+• **Değiştirilebilir** (mutable)
+• **Tekrarlanabilir** elemanlar
+• **Farklı veri türleri** içerebilir
+
+## Liste İndeksleri:
+• **0** ilk eleman
+• **1** ikinci eleman
+• **-1** son eleman
+• **len()** liste uzunluğu
+
+## Örnek Kullanım:
+\`\`\`python
+meyveler = ["elma", "armut", "muz"]
+for meyve in meyveler:
+    print(meyve)
+\`\`\`
+
+## Örnek Çıktı:
+\`\`\`
+elma
+armut
+muz
+\`\`\``,
     points: 40
   },
   {
@@ -170,14 +373,55 @@ for meyve in meyveler:
     starterCode: "# Sözlük oluşturun ve elemanları yazdırın",
     expectedOutput: "Ali: 85",
     shortHint: "{} ile sözlük oluşturun ve items() ile yazdırın.",
-    longHint: `# Sözlükler
+    longHint: `# Sözlükler (Dictionaries)
+
+**Sözlükler** anahtar-değer çiftleri ile veri saklamak için kullanılır. **{}** süslü parantezler ile oluşturulur!
 
 ## Sözlük Oluşturma:
+\`\`\`python
 ogrenci = {"isim": "Ali", "not": 85}
+\`\`\`
 
 ## Sözlük Elemanlarını Yazdırma:
+\`\`\`python
 for anahtar, deger in ogrenci.items():
-    print(f"{anahtar}: {deger}")`,
+    print(f"{anahtar}: {deger}")
+\`\`\`
+
+## Adım Adım:
+1. **{}** ile sözlüğü başlatın
+2. **"anahtar": "değer"** formatında yazın
+3. **Virgül** ile ayırın
+4. **}** ile sözlüğü kapatın
+5. **.items()** ile anahtar-değer çiftlerini alın
+6. **for** döngüsü ile gezin
+7. **f-string** ile yazdırın
+
+## Sözlük Özellikleri:
+• **Anahtar-değer** çiftleri
+• **Sırasız** veri yapısı
+• **Değiştirilebilir** (mutable)
+• **Benzersiz** anahtarlar
+• **Farklı veri türleri** içerebilir
+
+## Sözlük Metodları:
+• **.keys()** anahtarları döndürür
+• **.values()** değerleri döndürür
+• **.items()** anahtar-değer çiftlerini döndürür
+• **len()** sözlük uzunluğu
+
+## Örnek Kullanım:
+\`\`\`python
+ogrenci = {"isim": "Ali", "not": 85}
+for anahtar, deger in ogrenci.items():
+    print(f"{anahtar}: {deger}")
+\`\`\`
+
+## Örnek Çıktı:
+\`\`\`
+isim: Ali
+not: 85
+\`\`\``,
     points: 45
   }
 ];
@@ -221,6 +465,22 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log("5. updateUI çağrılıyor...");
     updateUI();
     
+    console.log("6. Task yükleme kontrol ediliyor...");
+    // Load task from URL parameter
+    const taskId = getUrlParameter('task');
+    if (taskId) {
+      console.log("Task ID bulundu:", taskId);
+      const task = tasks.find(t => t.id == taskId);
+      if (task) {
+        console.log("Task bulundu:", task);
+        selectTask(task);
+      } else {
+        console.error("Task bulunamadı:", taskId);
+      }
+    } else {
+      console.log("Task ID bulunamadı");
+    }
+    
     // Disable run button initially
     const runBtn = document.getElementById("runBtn");
     if (runBtn) {
@@ -232,20 +492,6 @@ document.addEventListener("DOMContentLoaded", function () {
     // Initialize Pyodide
     initializePyodide();
     
-    // Load task from URL parameter
-    const taskId = getUrlParameter('task');
-    console.log("Task ID:", taskId);
-    if (taskId) {
-      const task = tasks.find(t => t.id == taskId);
-      console.log("Bulunan task:", task);
-      if (task) {
-        console.log("7. selectTask çağrılıyor...");
-        selectTask(task);
-      } else {
-        console.log("Task bulunamadı!");
-        showAlert("Görev bulunamadı!");
-      }
-    }
     
     console.log("Uygulama başarıyla başlatıldı!");
   } catch (error) {
@@ -286,6 +532,9 @@ function setupEventListeners() {
   
   // Help button
   document.getElementById("helpBtn").addEventListener("click", showHelp);
+  
+  // Initialize hint modal event listeners
+  initializeHintModalEventListeners();
 }
 
 // Initialize Editor
@@ -319,11 +568,11 @@ function renderTasks() {
   taskList.innerHTML = "";
   
   // Get task ID from URL parameter
-  const taskId = getUrlParameter('task');
+  const urlTaskId = getUrlParameter('task');
   
-  if (taskId) {
+  if (urlTaskId) {
     // Show only the selected task
-    const task = tasks.find(t => t.id == taskId);
+    const task = tasks.find(t => t.id == urlTaskId);
     if (task) {
       const taskItem = document.createElement("div");
       taskItem.className = "task-item active";
@@ -643,9 +892,7 @@ function resetCode() {
 // Show Hint
 function showHint() {
   console.log("İpucu butonuna tıklandı");
-  if (currentTask) {
-    console.log("İpucu içeriği:", currentTask.longHint);
-  }
+  showHintModal();
 }
 
 // Download Code
@@ -1698,5 +1945,254 @@ function closeFailurePopup() {
 // Show Hint and Close
 function showHintAndClose() {
   closeFailurePopup();
-  console.log("İpucu:", currentTask.longHint);
+  showHintModal();
+}
+
+// ========================================
+// HINT MODAL FUNCTIONS
+// ========================================
+
+// Show Hint Modal
+function showHintModal() {
+  if (!currentTask) {
+    console.error("No current task available for hints");
+    return;
+  }
+
+  const modal = document.getElementById('hintModal');
+  if (!modal) {
+    console.error("Hint modal not found");
+    return;
+  }
+
+  // Load hint content
+  loadHintContent();
+
+  // Show modal
+  modal.style.display = 'block';
+  modal.classList.add('show');
+
+  // Initialize drag functionality
+  initializeHintModalDrag();
+
+  // Initialize tab switching
+  initializeHintModalTabs();
+
+  // Initialize pin functionality
+  initializeHintModalPin();
+}
+
+// Load Hint Content
+function loadHintContent() {
+  console.log("loadHintContent çağrıldı");
+  console.log("currentTask:", currentTask);
+  
+  const shortHintText = document.getElementById('shortHintText');
+  const longHintText = document.getElementById('longHintText');
+
+  if (shortHintText) {
+    // Statik kısa ipucu verisi
+    shortHintText.innerHTML = `
+      <p><strong>💡 Hızlı İpucu:</strong></p>
+      <p>Bu görevde <code>input()</code> fonksiyonunu kullanarak kullanıcıdan veri almanız gerekiyor.</p>
+      <p><strong>Adımlar:</strong></p>
+      <ul>
+        <li>1. <code>input("İsminizi girin: ")</code> ile isim alın</li>
+        <li>2. <code>f"Merhaba {isim}"</code> ile birleştirin</li>
+        <li>3. <code>print()</code> ile yazdırın</li>
+      </ul>
+      <p><em>💡 F-string kullanmayı unutmayın!</em></p>
+    `;
+  }
+
+  if (longHintText && currentTask) {
+    console.log("Long hint:", currentTask.longHint);
+    longHintText.innerHTML = formatHintText(currentTask.longHint);
+  }
+}
+
+// Format Hint Text (convert markdown-like syntax to HTML)
+function formatHintText(text) {
+  if (!text) return '';
+
+  console.log("formatHintText input:", text);
+
+  // Simple formatting - just convert line breaks to <br> and wrap in <p>
+  let formatted = text
+    .replace(/\n/g, '<br>')
+    .replace(/^(.+)$/gm, '<p>$1</p>')
+    .replace(/<p><br><\/p>/g, '')
+    .replace(/<p>(<h[1-6]>.*<\/h[1-6]>)<\/p>/g, '$1')
+    .replace(/<p>(<ul>.*<\/ul>)<\/p>/gs, '$1')
+    .replace(/<p>(<pre>.*<\/pre>)<\/p>/gs, '$1');
+
+  console.log("formatHintText output:", formatted);
+  return formatted;
+}
+
+// Initialize Hint Modal Drag
+function initializeHintModalDrag() {
+  const modal = document.getElementById('hintModal');
+  const header = document.getElementById('hintModalHeader');
+  
+  if (!modal || !header) return;
+
+  // Remove existing listeners to prevent duplicates
+  header.removeEventListener('mousedown', modal.dragStart);
+  document.removeEventListener('mousemove', modal.drag);
+  document.removeEventListener('mouseup', modal.dragEnd);
+
+  let isDragging = false;
+  let currentX;
+  let currentY;
+  let initialX;
+  let initialY;
+  let xOffset = 0;
+  let yOffset = 0;
+
+  // Store functions on modal for cleanup
+  modal.dragStart = function(e) {
+    if (modal.classList.contains('pinned')) return;
+    
+    initialX = e.clientX - xOffset;
+    initialY = e.clientY - yOffset;
+
+    if (e.target === header || header.contains(e.target)) {
+      isDragging = true;
+      header.style.cursor = 'grabbing';
+      e.preventDefault();
+    }
+  };
+
+  modal.drag = function(e) {
+    if (isDragging) {
+      e.preventDefault();
+      currentX = e.clientX - initialX;
+      currentY = e.clientY - initialY;
+
+      xOffset = currentX;
+      yOffset = currentY;
+
+      modal.style.transform = `translate(${currentX}px, ${currentY}px)`;
+    }
+  };
+
+  modal.dragEnd = function(e) {
+    if (isDragging) {
+      initialX = currentX;
+      initialY = currentY;
+      isDragging = false;
+      header.style.cursor = 'move';
+    }
+  };
+
+  header.addEventListener('mousedown', modal.dragStart);
+  document.addEventListener('mousemove', modal.drag);
+  document.addEventListener('mouseup', modal.dragEnd);
+}
+
+// Initialize Hint Modal Tabs
+function initializeHintModalTabs() {
+  const shortTab = document.getElementById('shortHintTab');
+  const longTab = document.getElementById('longHintTab');
+  const shortContent = document.getElementById('shortHintContent');
+  const longContent = document.getElementById('longHintContent');
+
+  if (!shortTab || !longTab || !shortContent || !longContent) return;
+
+  shortTab.addEventListener('click', () => {
+    // Update tab states
+    shortTab.classList.add('active');
+    longTab.classList.remove('active');
+    
+    // Update content states
+    shortContent.classList.add('active');
+    longContent.classList.remove('active');
+  });
+
+  longTab.addEventListener('click', () => {
+    // Update tab states
+    longTab.classList.add('active');
+    shortTab.classList.remove('active');
+    
+    // Update content states
+    longContent.classList.add('active');
+    shortContent.classList.remove('active');
+  });
+}
+
+// Initialize Hint Modal Pin
+function initializeHintModalPin() {
+  const pinBtn = document.getElementById('hintPinBtn');
+  const modal = document.getElementById('hintModal');
+
+  if (!pinBtn || !modal) return;
+
+  pinBtn.addEventListener('click', () => {
+    modal.classList.toggle('pinned');
+    pinBtn.classList.toggle('pinned');
+    
+    if (modal.classList.contains('pinned')) {
+      // Pin to top-right corner
+      modal.style.position = 'fixed';
+      modal.style.top = '20px';
+      modal.style.right = '20px';
+      modal.style.left = 'auto';
+      modal.style.transform = 'none';
+      pinBtn.title = 'Çöz';
+      pinBtn.textContent = '📌';
+    } else {
+      // Reset to center
+      modal.style.position = 'fixed';
+      modal.style.top = '50%';
+      modal.style.left = '50%';
+      modal.style.right = 'auto';
+      modal.style.transform = 'translate(-50%, -50%)';
+      pinBtn.title = 'Sabitle';
+      pinBtn.textContent = '📌';
+    }
+  });
+}
+
+// Close Hint Modal
+function closeHintModal() {
+  const modal = document.getElementById('hintModal');
+  if (modal) {
+    modal.classList.remove('show');
+    // Delay hiding to allow animation to complete
+    setTimeout(() => {
+      modal.style.display = 'none';
+    }, 300);
+    
+    // Reset position if not pinned
+    if (!modal.classList.contains('pinned')) {
+      modal.style.transform = 'translate(-50%, -50%)';
+    }
+  }
+}
+
+// Initialize Hint Modal Event Listeners
+function initializeHintModalEventListeners() {
+  const closeBtn = document.getElementById('hintCloseBtn');
+  const modal = document.getElementById('hintModal');
+
+  if (closeBtn) {
+    closeBtn.addEventListener('click', closeHintModal);
+  }
+
+  // Close modal when clicking outside
+  if (modal) {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeHintModal();
+      }
+    });
+  }
+
+  // Close modal with Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal && modal.classList.contains('show')) {
+      closeHintModal();
+    }
+  });
 }
