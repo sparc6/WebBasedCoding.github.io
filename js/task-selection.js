@@ -180,6 +180,14 @@ function loadUserProgress() {
   const saved = localStorage.getItem("pythonEditorProgress");
   if (saved) {
     userProgress = JSON.parse(saved);
+  } else {
+    // Test için geçici veri
+    userProgress = {
+      level: 1,
+      points: 20,
+      completedTasks: [1, 2],
+      achievements: []
+    };
   }
 }
 
@@ -195,7 +203,7 @@ function getCategoryData(categoryName) {
     "Temel": { 
       title: "Python'a İlk Adım", 
       icon: "🚀",
-      description: "Print, değişkenler ve temel kavramlarla Python'a giriş yapın. İlk adımlarınızı atın!"
+      description: "Print, değişkenler ve temel kavramlarla Python'a giriş yapın.<br>İlk adımlarınızı atın!"
     },
     "Orta": { 
       title: "Orta Seviye Python", 
@@ -260,7 +268,7 @@ document.addEventListener("DOMContentLoaded", function () {
 function updateCategoryTitle(categoryName) {
   const categoryData = getCategoryData(categoryName);
   document.getElementById('categoryTitle').textContent = categoryData.title;
-  document.getElementById('categoryDescription').textContent = categoryData.description;
+  document.getElementById('categoryDescription').innerHTML = categoryData.description;
 }
 
 // Render Zigzag Path
@@ -339,13 +347,25 @@ function renderZigzagPath(categoryName) {
     const points = getTaskPoints(task);
     
     node.innerHTML = `
-      <div class="node-circle">
+      <div class="node-circle ${isCompleted ? 'completed' : ''}">
         <span class="node-icon">${getTaskIcon(task)}</span>
+        ${isCompleted ? '<div class="completion-checkmark">✓</div>' : ''}
       </div>
       <div class="node-content">
         <div class="node-title">${task.title}</div>
         <div class="node-description">${shortDescription}</div>
         <div class="node-points">⭐${points} Puan</div>
+        ${isCompleted ? `
+          <div class="completion-info">
+            <div class="earned-points">🎉 +${points} Puan Kazandınız!</div>
+            <div class="total-points">💎 Toplam: ${userProgress.points} Puan</div>
+          </div>
+        ` : `
+          <div class="pending-info">
+            <div class="pending-points">🚀 ${points} Puan Kazanacaksınız</div>
+            <div class="motivation-text">Hemen başlayın!</div>
+          </div>
+        `}
       </div>
     `;
     
@@ -393,6 +413,8 @@ function renderZigzagPath(categoryName) {
 
 // Select Task
 function selectTask(taskId) {
-  // Redirect to editor page with task parameter
-  window.location.href = `editor.html?task=${taskId}`;
+  // Get current category from URL
+  const categoryName = getUrlParameter('category');
+  // Redirect to editor page with both task and category parameters
+  window.location.href = `editor.html?task=${taskId}&category=${encodeURIComponent(categoryName)}`;
 }

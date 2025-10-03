@@ -318,35 +318,69 @@ function renderTasks() {
   const taskList = document.getElementById("taskList");
   taskList.innerHTML = "";
   
-  tasks.forEach(task => {
-    const taskItem = document.createElement("div");
-    taskItem.className = "task-item";
-    taskItem.dataset.taskId = task.id;
-    
-    if (currentTask && currentTask.id === task.id) {
-      taskItem.classList.add("active");
-    }
-    
-    const isCompleted = userProgress.completedTasks.includes(task.id);
-    if (isCompleted) {
-      taskItem.classList.add("completed");
-    }
-    
-    taskItem.innerHTML = `
-      <div class="task-icon">${getTaskIcon(task)}</div>
-      <div class="task-content">
-        <h4>${task.title}</h4>
-        <p>${task.description}</p>
-        <div class="task-meta">
-          <span class="task-difficulty">${getDifficultyStars(task.difficulty)}</span>
-          <span class="task-points">${task.points} puan</span>
+  // Get task ID from URL parameter
+  const taskId = getUrlParameter('task');
+  
+  if (taskId) {
+    // Show only the selected task
+    const task = tasks.find(t => t.id == taskId);
+    if (task) {
+      const taskItem = document.createElement("div");
+      taskItem.className = "task-item active";
+      taskItem.dataset.taskId = task.id;
+      
+      const isCompleted = userProgress.completedTasks.includes(task.id);
+      if (isCompleted) {
+        taskItem.classList.add("completed");
+      }
+      
+      taskItem.innerHTML = `
+        <div class="task-icon">${getTaskIcon(task)}</div>
+        <div class="task-content">
+          <h4>${task.title}</h4>
+          <p>${task.description}</p>
+          <div class="task-meta">
+            <span class="task-difficulty">${getDifficultyStars(task.difficulty)}</span>
+            <span class="task-points">${task.points} puan</span>
+          </div>
         </div>
-      </div>
-    `;
-    
-    taskItem.addEventListener("click", () => selectTask(task));
-    taskList.appendChild(taskItem);
-  });
+      `;
+      
+      taskItem.addEventListener("click", () => selectTask(task));
+      taskList.appendChild(taskItem);
+    }
+  } else {
+    // If no task ID in URL, show all tasks (fallback)
+    tasks.forEach(task => {
+      const taskItem = document.createElement("div");
+      taskItem.className = "task-item";
+      taskItem.dataset.taskId = task.id;
+      
+      if (currentTask && currentTask.id === task.id) {
+        taskItem.classList.add("active");
+      }
+      
+      const isCompleted = userProgress.completedTasks.includes(task.id);
+      if (isCompleted) {
+        taskItem.classList.add("completed");
+      }
+      
+      taskItem.innerHTML = `
+        <div class="task-icon">${getTaskIcon(task)}</div>
+        <div class="task-content">
+          <h4>${task.title}</h4>
+          <p>${task.description}</p>
+          <div class="task-meta">
+            <span class="task-difficulty">${getDifficultyStars(task.difficulty)}</span>
+            <span class="task-points">${task.points} puan</span>
+          </div>
+        </div>
+      `;
+      
+      taskItem.addEventListener("click", () => selectTask(task));
+      taskList.appendChild(taskItem);
+    });
+  }
 }
 
 // Get Task Icon
@@ -1417,7 +1451,10 @@ function closeSuccessPopup() {
 // Go to Task Selection
 function goToTaskSelection() {
   closeSuccessPopup();
-  window.location.href = 'task-selection.html?category=' + currentTask.level.toLowerCase();
+  // Get category from URL parameter or use currentTask.category
+  const urlParams = new URLSearchParams(window.location.search);
+  const category = urlParams.get('category') || currentTask.category;
+  window.location.href = 'task-selection.html?category=' + encodeURIComponent(category);
 }
 
 // Show Failure Message

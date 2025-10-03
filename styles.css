@@ -2310,6 +2310,137 @@ body {
   font-weight: bold;
 }
 
+/* New completion styles */
+.node-circle.completed {
+  background: linear-gradient(145deg, #4CAF50, #45a049) !important;
+  box-shadow: 
+    0 8px 25px rgba(76, 175, 80, 0.4),
+    0 4px 15px rgba(0, 0, 0, 0.2),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3);
+}
+
+.completion-checkmark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 2.2rem;
+  font-weight: 900;
+  text-shadow: 
+    0 3px 6px rgba(0, 0, 0, 0.5),
+    0 0 10px rgba(255, 255, 255, 0.3);
+  z-index: 2;
+  animation: checkmarkGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes checkmarkGlow {
+  0% {
+    text-shadow: 
+      0 3px 6px rgba(0, 0, 0, 0.5),
+      0 0 10px rgba(255, 255, 255, 0.3);
+  }
+  100% {
+    text-shadow: 
+      0 3px 6px rgba(0, 0, 0, 0.5),
+      0 0 15px rgba(255, 255, 255, 0.6),
+      0 0 20px rgba(76, 175, 80, 0.4);
+  }
+}
+
+.completion-info {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(69, 160, 73, 0.1));
+  border-radius: 8px;
+  border: 1px solid rgba(76, 175, 80, 0.3);
+  text-align: center;
+}
+
+.earned-points {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #2e7d32;
+  margin-bottom: 0.2rem;
+}
+
+.total-points {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #388e3c;
+  opacity: 0.8;
+}
+
+/* Pending task styles */
+.pending-info {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 152, 0, 0.1));
+  border-radius: 8px;
+  border: 1px solid rgba(255, 193, 7, 0.3);
+  text-align: center;
+}
+
+.pending-points {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #f57c00;
+  margin-bottom: 0.2rem;
+}
+
+.motivation-text {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #ff8f00;
+  opacity: 0.9;
+  font-style: italic;
+}
+
+/* Hover effects for completed tasks */
+.zigzag-node.completed:hover .node-circle {
+  transform: scale(1.1);
+  box-shadow: 
+    0 12px 35px rgba(76, 175, 80, 0.6),
+    0 6px 25px rgba(0, 0, 0, 0.3),
+    inset 0 3px 6px rgba(255, 255, 255, 0.4);
+  animation: completedPulse 1.5s ease-in-out infinite;
+}
+
+.zigzag-node.completed:hover .completion-info {
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.2), rgba(69, 160, 73, 0.2));
+  border-color: rgba(76, 175, 80, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
+}
+
+@keyframes completedPulse {
+  0%, 100% { 
+    box-shadow: 
+      0 8px 25px rgba(76, 175, 80, 0.4),
+      0 4px 15px rgba(0, 0, 0, 0.2),
+      inset 0 2px 4px rgba(255, 255, 255, 0.3);
+  }
+  50% { 
+    box-shadow: 
+      0 12px 35px rgba(76, 175, 80, 0.6),
+      0 6px 25px rgba(0, 0, 0, 0.3),
+      inset 0 3px 6px rgba(255, 255, 255, 0.4);
+  }
+}
+
+/* Hover effects for pending tasks */
+.zigzag-node:not(.completed):hover .pending-info {
+  background: linear-gradient(135deg, rgba(255, 193, 7, 0.2), rgba(255, 152, 0, 0.2));
+  border-color: rgba(255, 193, 7, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.2);
+}
+
+.zigzag-node:not(.completed):hover .motivation-text {
+  color: #ff6f00;
+  font-weight: 600;
+}
+
 .node-circle {
   width: 70px;
   height: 70px;
