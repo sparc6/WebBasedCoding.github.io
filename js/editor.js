@@ -679,6 +679,126 @@ function closeFreeModeFailurePopup() {
   }
 }
 
+// Close Failure Modal for Task Mode
+function closeFailureModal() {
+  const popup = document.getElementById('failurePopup');
+  if (popup) {
+    popup.remove();
+  }
+}
+
+// Show Empty Code Modal for Free Mode
+function showFreeModeEmptyCodeModal() {
+  console.log("showFreeModeEmptyCodeModal çağrıldı");
+  
+  const popup = document.createElement('div');
+  popup.id = 'failurePopup';
+  popup.innerHTML = `
+    <div class="failure-background"></div>
+    <div class="failure-content">
+      <div class="failure-icon">
+        <div class="failure-circle">
+          <div class="failure-x">✕</div>
+        </div>
+      </div>
+      <h2>❌ Kod Yazılmamış</h2>
+      <p>Lütfen önce kod yazın!</p>
+      
+      <div class="failure-details">
+        <div class="error-info">
+          <h3>💡 Ne Yapmalısınız:</h3>
+          <div class="expected-output">
+            <span class="output-text">Kodlama alanına Python kodunuzu yazın, sonra "Çalıştır" butonuna tıklayın.</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="failure-actions">
+        <button class="btn btn-retry" onclick="closeFreeModeFailurePopup()">Tamam</button>
+      </div>
+    </div>
+  `;
+  
+  // Add the same styles as task mode
+  popup.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  `;
+  
+  document.body.appendChild(popup);
+  
+  // Show popup with animation
+  setTimeout(() => {
+    popup.style.opacity = '1';
+    popup.querySelector('.failure-content').style.transform = 'translateY(0)';
+  }, 100);
+}
+
+// Show Empty Code Modal for Task Mode
+function showEmptyCodeModal() {
+  console.log("showEmptyCodeModal çağrıldı");
+  
+  const popup = document.createElement('div');
+  popup.id = 'failurePopup';
+  popup.innerHTML = `
+    <div class="failure-background"></div>
+    <div class="failure-content">
+      <div class="failure-icon">
+        <div class="failure-circle">
+          <div class="failure-x">✕</div>
+        </div>
+      </div>
+      <h2>❌ Kod Alanı Boş</h2>
+      <p>Kod alanı boş lütfen öncesinde kod yazın</p>
+      
+      <div class="failure-details">
+        <div class="error-info">
+          <h3>💡 Ne Yapmalısınız:</h3>
+          <div class="expected-output">
+            <span class="output-text">Kodlama alanına Python kodunuzu yazın, sonra "Çalıştır" butonuna tıklayın.</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="failure-actions">
+        <button class="btn btn-retry" onclick="closeFailurePopup()">Tamam</button>
+      </div>
+    </div>
+  `;
+  popup.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  `;
+  
+  document.body.appendChild(popup);
+  
+  // Show popup with animation
+  setTimeout(() => {
+    popup.style.opacity = '1';
+    popup.querySelector('.failure-content').style.transform = 'translateY(0)';
+  }, 100);
+}
+
 // Show Free Mode Success Modal
 function showFreeModeSuccessModal() {
   console.log("showFreeModeSuccessModal çağrıldı");
@@ -1335,7 +1455,23 @@ async function runCode() {
     
     if (!code.trim()) {
       console.log("Kod boş!");
-      showAlert("Lütfen kod yazın!");
+      
+      // Show analysis popup first
+      if (isFreeMode) {
+        showFreeModeAnalysisPopup();
+      } else {
+        showAnalysisPopup();
+      }
+      
+      // After 1.5 seconds, show empty code error modal
+      setTimeout(() => {
+        if (isFreeMode) {
+          showFreeModeEmptyCodeModal();
+        } else {
+          showEmptyCodeModal();
+        }
+      }, 1500);
+      
       return;
     }
     
@@ -2110,7 +2246,12 @@ function checkTaskCompletion(code) {
   // Hide analysis popup first
   hideAnalysisPopup();
   
-  const output = document.getElementById("outputContent").textContent.trim();
+  // Get only the actual output content (skip the "Çıktı" header)
+  const outputElement = document.getElementById("outputContent");
+  const outputText = outputElement.textContent;
+  
+  // Remove "Çıktı" header from the beginning
+  const output = outputText.replace(/^Çıktı\s*/, '').trim();
   const expectedOutput = currentTask.expectedOutput.trim();
   
   // Check for exact match
