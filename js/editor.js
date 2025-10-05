@@ -7,6 +7,7 @@ let pyodide = null;
 let isPyodideLoaded = false;
 let editor = null;
 let isFreeMode = false;
+let currentFontSize = 14;
 
 // User Progress Data
 let userProgress = {
@@ -1220,6 +1221,18 @@ function setupEventListeners() {
   // Clear output button
   document.getElementById("clearOutputBtn").addEventListener("click", clearOutput);
   
+  // Font control buttons
+  const fontDecreaseBtn = document.getElementById('fontDecreaseBtn');
+  const fontIncreaseBtn = document.getElementById('fontIncreaseBtn');
+  
+  if (fontDecreaseBtn) {
+    fontDecreaseBtn.addEventListener('click', decreaseFontSize);
+  }
+  
+  if (fontIncreaseBtn) {
+    fontIncreaseBtn.addEventListener('click', increaseFontSize);
+  }
+  
   // Alert modal removed
   
   // Back to categories button
@@ -1267,6 +1280,9 @@ function initializeEditor() {
       saveCode(currentTask.id, editor.getValue());
     }
   });
+  
+  // Load saved font size
+  loadFontSize();
 }
 
 // Render Tasks
@@ -3098,4 +3114,49 @@ function initializeHintModalEventListeners() {
       closeHintModal();
     }
   });
+}
+
+// Font Control Functions
+function decreaseFontSize() {
+  if (currentFontSize > 10) {
+    currentFontSize -= 2;
+    updateFontSize();
+    saveFontSize();
+  }
+}
+
+function increaseFontSize() {
+  if (currentFontSize < 24) {
+    currentFontSize += 2;
+    updateFontSize();
+    saveFontSize();
+  }
+}
+
+function updateFontSize() {
+  // Update editor font size using CSS
+  if (editor) {
+    const editorElement = editor.getWrapperElement();
+    if (editorElement) {
+      editorElement.style.fontSize = currentFontSize + 'px';
+    }
+  }
+  
+  // Update display
+  const fontSizeDisplay = document.getElementById('fontSizeDisplay');
+  if (fontSizeDisplay) {
+    fontSizeDisplay.textContent = currentFontSize + 'px';
+  }
+}
+
+function saveFontSize() {
+  localStorage.setItem('editorFontSize', currentFontSize.toString());
+}
+
+function loadFontSize() {
+  const savedFontSize = localStorage.getItem('editorFontSize');
+  if (savedFontSize) {
+    currentFontSize = parseInt(savedFontSize);
+    updateFontSize();
+  }
 }
