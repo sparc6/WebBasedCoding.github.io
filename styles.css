@@ -40,6 +40,700 @@ body {
   gap: 1rem;
 }
 
+/* Editor Header Section */
+.editor-header-section {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #000000 100%);
+  background-size: 400% 400%;
+  color: white;
+  padding: 2rem 0;
+  position: relative;
+  z-index: 100;
+  animation: backgroundShift 8s ease infinite;
+  overflow: hidden;
+}
+
+.editor-header-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 193, 7, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(255, 237, 78, 0.08) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.editor-header-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+/* Ultra Modern Editor Info Panel */
+.editor-info-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.25) 0%, 
+    rgba(255, 255, 255, 0.15) 30%,
+    rgba(255, 255, 255, 0.08) 70%,
+    rgba(255, 255, 255, 0.05) 100%);
+  padding: 0.8rem 1.5rem;
+  border-radius: 20px;
+  backdrop-filter: blur(30px);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  margin-top: 0.5rem;
+  box-shadow: 
+    0 15px 45px rgba(0, 0, 0, 0.12),
+    0 6px 20px rgba(255, 255, 255, 0.08),
+    0 2px 6px rgba(255, 255, 255, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
+  min-height: 70px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.editor-info-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(255, 215, 0, 0.3) 20%,
+    rgba(255, 237, 78, 0.8) 50%, 
+    rgba(255, 215, 0, 0.3) 80%,
+    transparent 100%);
+  animation: shimmer 4s ease-in-out infinite;
+}
+
+.editor-info-panel::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(255, 215, 0, 0.08) 0%, transparent 60%),
+    radial-gradient(circle at 80% 70%, rgba(255, 193, 7, 0.06) 0%, transparent 60%),
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* Stats Section */
+.editor-stats-section {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  justify-content: center;
+}
+
+/* Ultra Modern Level Card */
+.level-card {
+  background: linear-gradient(135deg, 
+    rgba(255, 215, 0, 0.2) 0%, 
+    rgba(255, 215, 0, 0.1) 50%,
+    rgba(255, 215, 0, 0.05) 100%);
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  border-radius: 14px;
+  padding: 0.6rem 1rem;
+  position: relative;
+  overflow: hidden;
+  min-width: 90px;
+  box-shadow: 
+    0 6px 20px rgba(255, 215, 0, 0.12),
+    0 2px 8px rgba(255, 215, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.level-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, 
+    transparent 30%, 
+    rgba(255, 255, 255, 0.1) 50%, 
+    transparent 70%);
+  animation: cardShimmer 4s ease-in-out infinite;
+}
+
+.level-icon-container {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.level-icon-bg {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffc107 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 
+    0 4px 15px rgba(255, 215, 0, 0.25),
+    0 2px 6px rgba(255, 215, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+  animation: levelIconPulse 2.5s ease-in-out infinite;
+  position: relative;
+  overflow: hidden;
+}
+
+.level-icon-bg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, 
+    transparent 30%, 
+    rgba(255, 255, 255, 0.2) 50%, 
+    transparent 70%);
+  animation: iconShimmer 3s ease-in-out infinite;
+}
+
+.level-icon {
+  font-size: 1rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.level-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.level-label {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.level-number {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #ffd700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Progress Card */
+.progress-card {
+  background: linear-gradient(145deg, 
+    rgba(255, 255, 255, 0.1) 0%, 
+    rgba(255, 255, 255, 0.05) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 14px;
+  padding: 0.6rem 0.9rem;
+  position: relative;
+  overflow: hidden;
+  min-width: 140px;
+  box-shadow: 
+    0 3px 12px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.4rem;
+}
+
+.progress-label {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.progress-percentage {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #ffd700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.progress-bar-container {
+  margin-bottom: 0.4rem;
+}
+
+.progress-bar {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffc107 100%);
+  background-size: 200% 100%;
+  border-radius: 10px;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  animation: progressGradient 3s ease infinite;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+}
+
+.progress-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.4), 
+    transparent);
+  animation: progressShimmer 2s infinite;
+}
+
+.progress-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.completed-tasks {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.progress-icon {
+  font-size: 1.2rem;
+  animation: progressIconBounce 2s infinite;
+  color: #ffd700;
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+}
+
+/* Points Card */
+.points-card {
+  background: linear-gradient(145deg, 
+    rgba(255, 193, 7, 0.15) 0%, 
+    rgba(255, 193, 7, 0.05) 100%);
+  border: 1px solid rgba(255, 193, 7, 0.3);
+  border-radius: 14px;
+  padding: 0.6rem 1rem;
+  position: relative;
+  overflow: hidden;
+  min-width: 90px;
+  box-shadow: 
+    0 3px 12px rgba(255, 193, 7, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.points-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, 
+    transparent 30%, 
+    rgba(255, 255, 255, 0.1) 50%, 
+    transparent 70%);
+  animation: cardShimmer 4s ease-in-out infinite;
+}
+
+.points-icon-container {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.points-icon-bg {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(145deg, #ffc107, #ffed4e);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 
+    0 4px 15px rgba(255, 193, 7, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  animation: pointsIconPulse 2s ease-in-out infinite;
+}
+
+.points-icon {
+  font-size: 1rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.points-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.points-label {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.points-number {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #ffc107;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Top Right Actions */
+.top-right-actions {
+  position: absolute;
+  top: 1.5rem;
+  right: 2rem;
+  display: flex;
+  gap: 0.8rem;
+  z-index: 1000;
+}
+
+.top-action-btn {
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.25) 0%, 
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0.08) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(20px);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.08),
+    0 3px 10px rgba(255, 255, 255, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.top-action-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.2), 
+    transparent);
+  transition: left 0.5s ease;
+}
+
+.top-action-btn:hover {
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.35) 0%, 
+    rgba(255, 255, 255, 0.25) 50%,
+    rgba(255, 255, 255, 0.15) 100%);
+  transform: translateY(-3px) scale(1.1);
+  box-shadow: 
+    0 12px 35px rgba(0, 0, 0, 0.12),
+    0 6px 20px rgba(255, 255, 255, 0.2),
+    0 2px 8px rgba(255, 255, 255, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.top-action-btn:hover::before {
+  left: 100%;
+}
+
+.top-action-btn .btn-icon {
+  font-size: 1.3rem;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.2));
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 2;
+}
+
+.top-action-btn:hover .btn-icon {
+  transform: scale(1.15);
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+/* Actions Section */
+.editor-actions-section {
+  display: flex;
+  align-items: center;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.action-btn {
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.25) 0%, 
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0.08) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 16px;
+  padding: 0.9rem 1.1rem;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(20px);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.08),
+    0 3px 10px rgba(255, 255, 255, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 75px;
+  height: 75px;
+}
+
+.action-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.2), 
+    transparent);
+  transition: left 0.5s ease;
+}
+
+.action-btn:hover {
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.35) 0%, 
+    rgba(255, 255, 255, 0.25) 50%,
+    rgba(255, 255, 255, 0.15) 100%);
+  transform: translateY(-4px) scale(1.08);
+  box-shadow: 
+    0 15px 40px rgba(0, 0, 0, 0.15),
+    0 6px 20px rgba(255, 255, 255, 0.2),
+    0 2px 8px rgba(255, 255, 255, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.action-btn:hover::before {
+  left: 100%;
+}
+
+.btn-icon {
+  font-size: 1.4rem;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.2));
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 2;
+}
+
+.btn-label {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1;
+  position: relative;
+  z-index: 2;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.action-btn:hover .btn-icon {
+  transform: scale(1.1);
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+.action-btn:hover .btn-label {
+  color: rgba(255, 255, 255, 1);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+/* Animations */
+@keyframes cardShimmer {
+  0%, 100% { transform: translateX(-100%); }
+  50% { transform: translateX(100%); }
+}
+
+@keyframes levelIconPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+@keyframes pointsIconPulse {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.1) rotate(5deg); }
+}
+
+@keyframes progressGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes progressShimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+@keyframes progressIconBounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-3px) scale(1.1); }
+}
+
+@keyframes shimmer {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+@keyframes iconShimmer {
+  0%, 100% { transform: translateX(-100%) rotate(45deg); }
+  50% { transform: translateX(100%) rotate(45deg); }
+}
+
+/* Editor Buttons */
+.editor-controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.task-title-section h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  color: #333;
+}
+
+.task-description {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 0;
+  font-weight: 400;
+}
+
+.btn-run {
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.btn-run:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+}
+
+.btn-reset {
+  background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+}
+
+.btn-reset:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+}
+
+.btn-hint {
+  background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
+}
+
+.btn-hint:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 152, 0, 0.4);
+}
+
+.btn-download {
+  background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%);
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 12px rgba(156, 39, 176, 0.3);
+}
+
+.btn-download:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(156, 39, 176, 0.4);
+}
+
 /* Floating Back to Categories Button - Top Left */
 .back-to-categories-floating {
   position: fixed;
@@ -237,33 +931,72 @@ body {
 .progress-container {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 1rem;
+  width: 250px;
+  min-width: 200px;
 }
 
 .progress-bar {
-  width: 150px;
-  height: 8px;
+  flex: 1;
+  height: 12px;
   background: rgba(255, 255, 255, 0.3);
-  border-radius: 4px;
+  border-radius: 8px;
   overflow: hidden;
   position: relative;
+  box-shadow: 
+    inset 0 2px 4px rgba(0, 0, 0, 0.3),
+    0 1px 2px rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  min-width: 150px;
 }
 
 .progress-icon {
-  font-size: 1rem;
-  animation: progressIconBounce 1.5s ease-in-out infinite;
+  font-size: 1.2rem;
+  animation: progressIconBounce 2s infinite;
+  color: #ffd700;
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
 }
 
 @keyframes progressIconBounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-2px); }
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-3px) scale(1.1); }
 }
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #00d2ff, #3a7bd5);
-  border-radius: 4px;
-  transition: width 0.3s ease;
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffc107 100%);
+  background-size: 200% 100%;
+  border-radius: 8px;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  animation: progressGradient 3s ease infinite;
+  box-shadow: 
+    0 0 15px rgba(255, 215, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  width: 25% !important;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  animation: progressShimmer 2s infinite;
+}
+
+@keyframes progressGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes progressShimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
 }
 
 .points {
@@ -2156,7 +2889,7 @@ body {
 }
 
 .level-header {
-  margin-bottom: 3rem;
+  margin-bottom: 1rem;
 }
 
 .level-logo {
@@ -2170,13 +2903,13 @@ body {
 }
 
 .level-logo .logo-image {
-  width: 120px;
-  height: 120px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   box-shadow: 
-    0 8px 30px rgba(0, 0, 0, 0.4),
-    0 0 20px rgba(255, 215, 0, 0.3);
-  border: 3px solid rgba(255, 215, 0, 0.5);
+    0 6px 20px rgba(0, 0, 0, 0.3),
+    0 0 15px rgba(255, 215, 0, 0.2);
+  border: 2px solid rgba(255, 215, 0, 0.4);
   transition: all 0.3s ease;
 }
 
@@ -2191,20 +2924,20 @@ body {
 .level-logo h1 {
   color: var(--yellow-primary);
   font-family: 'Inter', 'Segoe UI', 'Roboto', sans-serif;
-  font-size: 2.5rem;
+  font-size: 1.8rem;
   font-weight: 700;
   margin: 0;
   text-shadow: 
-    0 3px 15px rgba(0, 0, 0, 0.7),
-    0 2px 8px rgba(255, 215, 0, 0.4),
-    0 0 25px rgba(255, 215, 0, 0.2);
+    0 2px 10px rgba(0, 0, 0, 0.5),
+    0 1px 5px rgba(255, 215, 0, 0.3),
+    0 0 15px rgba(255, 215, 0, 0.1);
   background: linear-gradient(45deg, #ffd700, #ffed4e, #ffc107, #ffd700);
   background-size: 200% 200%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   animation: titleGradient 3s ease infinite;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
   line-height: 1.2;
 }
 

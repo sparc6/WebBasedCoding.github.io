@@ -1089,6 +1089,12 @@ function setupFreeMode() {
     sidebar.style.display = 'none';
   }
   
+  // Hide editor info panel
+  const editorInfoPanel = document.querySelector('.editor-info-panel');
+  if (editorInfoPanel) {
+    editorInfoPanel.style.display = 'none';
+  }
+  
   // Update header
   const header = document.querySelector('.header-center');
   if (header) {
@@ -1240,7 +1246,15 @@ function setupEventListeners() {
     if (isFreeMode) {
       window.location.href = 'index.html';
     } else {
-      window.location.href = 'index.html';
+      // URL'den category parametresini al
+      const urlParams = new URLSearchParams(window.location.search);
+      const category = urlParams.get('category');
+      
+      if (category) {
+        window.location.href = `task-selection.html?category=${category}`;
+      } else {
+        window.location.href = 'index.html';
+      }
     }
   });
   
@@ -1414,14 +1428,23 @@ function selectTask(task) {
       }, 100);
     }
     
-    // Update task title
+    // Update task title and description
     console.log("Task title güncelleniyor...");
     const titleElement = document.getElementById("currentTaskTitle");
+    const descriptionElement = document.getElementById("currentTaskDescription");
+    
     if (titleElement) {
       titleElement.textContent = task.title;
       console.log("Task title güncellendi:", task.title);
     } else {
       console.log("Task title element bulunamadı!");
+    }
+    
+    if (descriptionElement) {
+      descriptionElement.textContent = task.description;
+      console.log("Task description güncellendi:", task.description);
+    } else {
+      console.log("Task description element bulunamadı!");
     }
     
     // Clear output
@@ -1858,8 +1881,11 @@ function updateUI() {
   }
   
   // Update next level info
-  const nextLevelPoints = 100 - (userProgress.points % 100);
-  document.getElementById("nextLevelInfo").textContent = `Sonraki seviye için: ${nextLevelPoints} puan`;
+  const nextLevelInfo = document.getElementById("nextLevelInfo");
+  if (nextLevelInfo) {
+    const nextLevelPoints = 100 - (userProgress.points % 100);
+    nextLevelInfo.textContent = `Sonraki seviye için: ${nextLevelPoints} puan`;
+  }
 }
 
 // Initialize Pyodide

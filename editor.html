@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Python Editörü - Bilişim Garajı Python Eğitim Platformu</title>
+    <title>Bilişim Garajı Python Eğitim Platformu</title>
     <link rel="stylesheet" href="styles.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
@@ -22,42 +22,82 @@
   </head>
   <body>
     <div class="app-container" id="appContainer">
+      <!-- Back to Categories Button - Top Left -->
+      <button class="back-to-categories-floating" id="backToCategoriesBtn">
+        <div class="back-icon">‹</div>
+      </button>
+
       <!-- Header -->
-      <header class="header">
-        <div class="header-left">
-          <button class="btn btn-secondary back-to-categories-btn" id="backToCategoriesBtn">
-            ← Kategoriler
-          </button>
-          <div class="logo">
-            <img src="Images and Logos/bilisim-garaj-logo.png" alt="Bilisim Garaj Logo" class="logo-image">
-            <span class="logo-text">Python Kod Editörü</span>
-          </div>
-        </div>
-        <div class="header-center">
-          <div class="level-info">
-            <div class="level-badge">
-              <span class="level-icon">🏆</span>
-              <span class="level-text">Seviye 1</span>
+      <div class="editor-header-section">
+        <div class="editor-header-container">
+          <div class="level-header">
+            <div class="level-logo">
+              <img src="Images and Logos/bilisim-garaj-logo.png" alt="Bilisim Garaj Logo" class="logo-image">
+              <h1>Bilişim Garajı Python Eğitim Platformu</h1>
             </div>
-            <div class="progress-container">
-              <div class="progress-bar">
-                <div class="progress-fill" style="width: 0%"></div>
+          </div>
+          
+          <!-- Editor Info Panel -->
+          <div class="editor-info-panel">
+            <!-- Stats Section: Level, Progress & Points -->
+            <div class="editor-stats-section">
+              <div class="level-card">
+                <div class="level-icon-container">
+                  <div class="level-icon-bg">
+                    <span class="level-icon">🏆</span>
+                  </div>
+                  <div class="level-info">
+                    <span class="level-label">Görev</span>
+                    <span class="level-number">1</span>
+                  </div>
+                </div>
               </div>
-              <span class="progress-icon">📈</span>
+              
+              <div class="progress-card">
+                <div class="progress-header">
+                  <span class="progress-label">İlerleme</span>
+                  <span class="progress-percentage">0%</span>
+                </div>
+                <div class="progress-bar-container">
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                    <div class="progress-glow"></div>
+                  </div>
+                </div>
+                <div class="progress-stats">
+                  <span class="completed-tasks">Tamamlanan: 0/10</span>
+                  <span class="progress-icon">📈</span>
+                </div>
+              </div>
+              
+              <div class="points-card">
+                <div class="points-icon-container">
+                  <div class="points-icon-bg">
+                    <span class="points-icon">⭐</span>
+                  </div>
+                  <div class="points-info">
+                    <span class="points-label">Toplam Puan</span>
+                    <span class="points-number">0</span>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="points">
-              <span class="points-icon">⭐</span>
-              <span class="points-text">0 Puan</span>
-            </div>
-            <span class="next-level-info" id="nextLevelInfo">Sonraki seviye için: 75 puan</span>
+          </div>
+          
+          <!-- Top Right Actions -->
+          <div class="top-right-actions">
+            <button class="top-action-btn theme-btn" id="themeBtn" title="Tema Değiştir">
+              <span class="btn-icon">🌙</span>
+            </button>
+            <button class="top-action-btn profile-btn" id="profileBtn" title="Profil">
+              <span class="btn-icon">👤</span>
+            </button>
+            <button class="top-action-btn help-btn" id="helpBtn" title="Yardım">
+              <span class="btn-icon">❓</span>
+            </button>
           </div>
         </div>
-        <div class="header-right">
-          <button class="btn btn-secondary" id="themeBtn">🌙</button>
-          <button class="btn btn-secondary" id="profileBtn">👤 Profil</button>
-          <button class="btn btn-primary" id="helpBtn">❓ Yardım</button>
-        </div>
-      </header>
+      </div>
 
       <!-- Main Content -->
       <main class="main-content">
@@ -76,12 +116,35 @@
         <!-- Editor Area -->
         <section class="editor-area">
           <div class="editor-header">
-            <h2 id="currentTaskTitle">Görev Seçin</h2>
+            <div class="task-title-section">
+              <h2 id="currentTaskTitle">Görev Seçin</h2>
+              <p class="task-description" id="currentTaskDescription">Bir görev seçerek başlayın</p>
+            </div>
             <div class="editor-controls">
-              <button class="btn btn-success" id="runBtn">▶️ Çalıştır</button>
-              <button class="btn btn-info" id="resetBtn">🔄 Sıfırla</button>
-              <button class="btn btn-warning" id="hintBtn">💡 İpucu</button>
-              <button class="btn btn-secondary" id="downloadBtn">💾 Kodumu İndir</button>
+              <button class="btn btn-run" id="runBtn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+                Çalıştır
+              </button>
+              <button class="btn btn-reset" id="resetBtn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+                </svg>
+                Sıfırla
+              </button>
+              <button class="btn btn-hint" id="hintBtn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-6h2v6zm0-8h-2V7h2v4z"/>
+                </svg>
+                İpucu
+              </button>
+              <button class="btn btn-download" id="downloadBtn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                </svg>
+                İndir
+              </button>
             </div>
           </div>
 
