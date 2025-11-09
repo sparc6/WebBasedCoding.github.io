@@ -235,12 +235,12 @@ function renderCategoryCards() {
       tasks: 2
     },
     {
-      name: "Serbest",
+      name: "Geliştirici",
       icon: "💻",
-      title: "Serbest Mod",
+      title: "Geliştirici Modu",
       description: "İstediğiniz kodu yazın ve çalıştırın",
       difficulty: 0,
-      level: "Serbest",
+      level: "Geliştirici",
       color: "#9C27B0",
       tasks: 0,
       isFreeMode: true
@@ -270,7 +270,7 @@ function renderCategoryCards() {
       difficultyStars = "★★★☆☆"; // 3 stars filled
     } else if (category.name === "İleri") {
       difficultyStars = "★★★★★"; // 5 stars filled
-    } else if (category.name === "Serbest") {
+    } else if (category.name === "Geliştirici") {
       difficultyStars = "∞"; // Infinity symbol for free mode
     }
     
@@ -297,7 +297,7 @@ function renderCategoryCards() {
         
         <div class="button-container">
           <button class="start-button">
-            ${category.isFreeMode ? 'Serbest Mod' : (progressPercentage > 0 ? 'Devam Et' : 'Başla')} →
+            ${category.isFreeMode ? 'Geliştirici Modu' : (progressPercentage > 0 ? 'Devam Et' : 'Başla')} →
           </button>
         </div>
       </div>
@@ -314,7 +314,7 @@ function renderCategoryCards() {
 
 // Select Category
 function selectCategory(categoryName) {
-  if (categoryName === "Serbest") {
+  if (categoryName === "Geliştirici") {
     // Redirect to free mode editor
     window.location.href = "editor.html?mode=free";
   } else {

@@ -8,6 +8,9 @@ let isPyodideLoaded = false;
 let editor = null;
 let isFreeMode = false;
 let currentFontSize = 14;
+// Track original points and hint usage for tasks
+let taskOriginalPoints = {}; // Store original points for each task
+let taskHintUsed = {}; // Track if hint has been used for each task
 
 // User Progress Data
 let userProgress = {
@@ -830,13 +833,13 @@ function showFreeModeSuccessModal() {
       
       <div class="success-details">
         <div class="task-info">
-          <h3>✅ Serbest Mod'da Kod Yazdınız!</h3>
+          <h3>✅ Geliştirici Modu'nda Kod Yazdınız!</h3>
           <div class="points-earned">
             <span class="points-icon">💻</span>
             <span class="points-text">Python kodunuz çalışıyor!</span>
           </div>
           <div class="level-info">
-            <span class="level-text">Mod: Serbest</span>
+            <span class="level-text">Mod: Geliştirici</span>
             <span class="total-points">Sınırsız Kod Yazma</span>
           </div>
         </div>
@@ -1102,7 +1105,7 @@ function setupFreeMode() {
       <div class="level-info">
         <div class="level-badge">
           <span class="level-icon">💻</span>
-          <span class="level-text">Serbest Mod</span>
+          <span class="level-text">Geliştirici Modu</span>
         </div>
         <div class="points">
           <span class="points-icon">∞</span>
@@ -1112,11 +1115,7 @@ function setupFreeMode() {
     `;
   }
   
-  // Update task title
-  const taskTitle = document.getElementById('currentTaskTitle');
-  if (taskTitle) {
-    taskTitle.textContent = 'Serbest Kod Yazma';
-  }
+  // Task title is now shown in sidebar, not in editor header
   
   // Update task description
   const taskDescription = document.getElementById('taskDescription');
@@ -1142,6 +1141,12 @@ function setupFreeMode() {
   if (backBtn) {
     backBtn.textContent = '← Ana Sayfa';
   }
+  
+  // Show upload button in developer mode
+  const uploadBtn = document.getElementById("uploadBtn");
+  if (uploadBtn) {
+    uploadBtn.style.display = "inline-flex";
+  }
 }
 
 // Initialize Application
@@ -1155,7 +1160,7 @@ document.addEventListener("DOMContentLoaded", function () {
   console.log("isFreeMode:", isFreeMode);
 
   if (isFreeMode) {
-    console.log("Serbest Mod aktif!");
+    console.log("Geliştirici Modu aktif!");
     setupFreeMode();
   }
   
@@ -1191,6 +1196,11 @@ document.addEventListener("DOMContentLoaded", function () {
       console.log("Task ID bulunamadı");
     }
     
+    // Update hint button display after initialization
+    setTimeout(() => {
+      updateHintButtonDisplay();
+    }, 200);
+    
     // Disable run button initially
     const runBtn = document.getElementById("runBtn");
     if (runBtn) {
@@ -1224,12 +1234,21 @@ function setupEventListeners() {
   // Download button
   document.getElementById("downloadBtn").addEventListener("click", downloadCode);
   
+  // Upload button (only in developer mode)
+  const uploadBtn = document.getElementById("uploadBtn");
+  const fileInput = document.getElementById("fileInput");
+  if (uploadBtn && fileInput) {
+    uploadBtn.addEventListener("click", () => fileInput.click());
+    fileInput.addEventListener("change", handleFileUpload);
+  }
+  
   // Clear output button
   document.getElementById("clearOutputBtn").addEventListener("click", clearOutput);
   
   // Font control buttons
   const fontDecreaseBtn = document.getElementById('fontDecreaseBtn');
   const fontIncreaseBtn = document.getElementById('fontIncreaseBtn');
+  const fontResetBtn = document.getElementById('fontResetBtn');
   
   if (fontDecreaseBtn) {
     fontDecreaseBtn.addEventListener('click', decreaseFontSize);
@@ -1238,6 +1257,11 @@ function setupEventListeners() {
   if (fontIncreaseBtn) {
     fontIncreaseBtn.addEventListener('click', increaseFontSize);
   }
+  
+  if (fontResetBtn) {
+    fontResetBtn.addEventListener('click', resetFontSize);
+  }
+  
   
   // Alert modal removed
   
@@ -1325,6 +1349,11 @@ function renderTasks() {
         taskItem.classList.add("completed");
       }
       
+      // Get the correct points (reduced if hint was used)
+      const displayPoints = taskHintUsed[task.id] && taskOriginalPoints[task.id] 
+        ? taskOriginalPoints[task.id] - Math.round(taskOriginalPoints[task.id] * 0.3)
+        : task.points;
+      
       taskItem.innerHTML = `
         <div class="task-icon">${getTaskIcon(task)}</div>
         <div class="task-content">
@@ -1332,7 +1361,7 @@ function renderTasks() {
           <p>${task.description}</p>
           <div class="task-meta">
             <span class="task-difficulty">${getDifficultyStars(task.difficulty)}</span>
-            <span class="task-points">${task.points} puan</span>
+            <span class="task-points">${displayPoints} puan</span>
           </div>
         </div>
       `;
@@ -1356,6 +1385,11 @@ function renderTasks() {
         taskItem.classList.add("completed");
       }
       
+      // Get the correct points (reduced if hint was used)
+      const displayPoints = taskHintUsed[task.id] && taskOriginalPoints[task.id] 
+        ? taskOriginalPoints[task.id] - Math.round(taskOriginalPoints[task.id] * 0.3)
+        : task.points;
+      
       taskItem.innerHTML = `
         <div class="task-icon">${getTaskIcon(task)}</div>
         <div class="task-content">
@@ -1363,7 +1397,7 @@ function renderTasks() {
           <p>${task.description}</p>
           <div class="task-meta">
             <span class="task-difficulty">${getDifficultyStars(task.difficulty)}</span>
-            <span class="task-points">${task.points} puan</span>
+            <span class="task-points">${displayPoints} puan</span>
           </div>
         </div>
       `;
@@ -1392,6 +1426,19 @@ function selectTask(task) {
   try {
     currentTask = task;
     console.log("currentTask set edildi");
+    
+    // Initialize original points if not already stored
+    if (!taskOriginalPoints[task.id]) {
+      taskOriginalPoints[task.id] = task.points;
+    }
+    
+    // Restore original points if hint was not used yet
+    if (!taskHintUsed[task.id]) {
+      task.points = taskOriginalPoints[task.id];
+    }
+    
+    // Update hint button display
+    updateHintButtonDisplay();
     
     // Update active task in sidebar
     console.log("Sidebar güncelleniyor...");
@@ -1428,24 +1475,7 @@ function selectTask(task) {
       }, 100);
     }
     
-    // Update task title and description
-    console.log("Task title güncelleniyor...");
-    const titleElement = document.getElementById("currentTaskTitle");
-    const descriptionElement = document.getElementById("currentTaskDescription");
-    
-    if (titleElement) {
-      titleElement.textContent = task.title;
-      console.log("Task title güncellendi:", task.title);
-    } else {
-      console.log("Task title element bulunamadı!");
-    }
-    
-    if (descriptionElement) {
-      descriptionElement.textContent = task.description;
-      console.log("Task description güncellendi:", task.description);
-    } else {
-      console.log("Task description element bulunamadı!");
-    }
+    // Task title and description are now shown in sidebar, not in editor header
     
     // Clear output
     console.log("Output temizleniyor...");
@@ -1484,7 +1514,7 @@ async function runCode() {
     }
     
     if (isFreeMode && !currentTask) {
-      console.log("Serbest mod - currentTask kontrolü atlandı");
+      console.log("Geliştirici modu - currentTask kontrolü atlandı");
     }
     
     console.log("currentTask:", currentTask);
@@ -1809,15 +1839,109 @@ function resetCode() {
   }
 }
 
+// Update hint button display with reduction amount
+function updateHintButtonDisplay() {
+  const hintBtn = document.getElementById("hintBtn");
+  if (!hintBtn || !currentTask) return;
+  
+  // Initialize original points if not already stored
+  if (!taskOriginalPoints[currentTask.id]) {
+    taskOriginalPoints[currentTask.id] = currentTask.points;
+  }
+  
+  if (taskHintUsed[currentTask.id]) {
+    // Hint already used, show normal button without number
+    hintBtn.innerHTML = `
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-6h2v6zm0-8h-2V7h2v4z"/>
+      </svg>
+      İpucu
+    `;
+  } else {
+    // Hint not used yet, show the reduction amount as warning
+    const originalPoints = taskOriginalPoints[currentTask.id] || currentTask.points;
+    const reduction = Math.round(originalPoints * 0.3);
+    hintBtn.innerHTML = `
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-6h2v6zm0-8h-2V7h2v4z"/>
+      </svg>
+      İpucu <span class="hint-reduction">-${reduction}</span>
+    `;
+  }
+}
+
+// Animate points display when hint is used
+function animatePointsReduction() {
+  // Find the task points display in the sidebar
+  const activeTaskElement = document.querySelector(`[data-task-id="${currentTask.id}"]`);
+  if (!activeTaskElement) return;
+  
+  const pointsElement = activeTaskElement.querySelector('.task-points');
+  if (!pointsElement) return;
+  
+  // Add animation class
+  pointsElement.classList.add('points-reduction-animation');
+  
+  // After animation completes, remove the class
+  setTimeout(() => {
+    pointsElement.classList.remove('points-reduction-animation');
+  }, 1000);
+}
+
+// Update task points display in sidebar
+function updateTaskPointsDisplay() {
+  if (!currentTask) return;
+  
+  const activeTaskElement = document.querySelector(`[data-task-id="${currentTask.id}"]`);
+  if (!activeTaskElement) return;
+  
+  const pointsElement = activeTaskElement.querySelector('.task-points');
+  if (pointsElement) {
+    pointsElement.textContent = `${currentTask.points} puan`;
+  }
+}
+
 // Show Hint
 function showHint() {
   console.log("İpucu butonuna tıklandı");
+  
+  if (!currentTask) {
+    showAlert("Lütfen önce bir görev seçin!");
+    return;
+  }
+
+  // Check if hint was already used for this task
+  if (!taskHintUsed[currentTask.id]) {
+    // Initialize original points if not already stored
+    if (!taskOriginalPoints[currentTask.id]) {
+      taskOriginalPoints[currentTask.id] = currentTask.points;
+    }
+    
+    // Reduce points by 30%
+    const originalPoints = taskOriginalPoints[currentTask.id];
+    const reduction = Math.round(originalPoints * 0.3);
+    currentTask.points = originalPoints - reduction;
+    
+    // Mark hint as used
+    taskHintUsed[currentTask.id] = true;
+    
+    // Update hint button display
+    updateHintButtonDisplay();
+    
+    // Update task points display in sidebar
+    updateTaskPointsDisplay();
+    
+    // Animate the points reduction
+    animatePointsReduction();
+  }
+  
+  // Show hint modal
   showHintModal();
 }
 
 // Download Code
 function downloadCode() {
-  if (!currentTask) {
+  if (!isFreeMode && !currentTask) {
     showAlert("Lütfen önce bir görev seçin!");
     return;
   }
@@ -1827,16 +1951,66 @@ function downloadCode() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `${currentTask.title}.py`;
+  const fileName = isFreeMode ? "kod.py" : `${currentTask.title}.py`;
+  a.download = fileName;
   a.click();
   URL.revokeObjectURL(url);
+}
+
+// Handle File Upload
+function handleFileUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  
+  // Check if it's a Python or text file
+  const fileName = file.name.toLowerCase();
+  if (!fileName.endsWith('.py') && !fileName.endsWith('.txt')) {
+    showAlert("Lütfen bir Python (.py) veya metin (.txt) dosyası seçin!");
+    event.target.value = ''; // Reset file input
+    return;
+  }
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const content = e.target.result;
+    if (editor) {
+      editor.setValue(content);
+      showOutput(`✅ Dosya başarıyla yüklendi: ${file.name}`);
+      
+      // Add animation to upload button
+      const uploadBtn = document.getElementById("uploadBtn");
+      if (uploadBtn) {
+        uploadBtn.classList.add("upload-active");
+        setTimeout(() => uploadBtn.classList.remove("upload-active"), 600);
+      }
+    }
+  };
+  
+  reader.onerror = function() {
+    showAlert("Dosya okunurken bir hata oluştu!");
+    event.target.value = ''; // Reset file input
+  };
+  
+  reader.readAsText(file);
+  
+  // Reset file input so same file can be selected again
+  event.target.value = '';
 }
 
 // Complete Task
 function completeTask(task) {
   if (!userProgress.completedTasks.includes(task.id)) {
     userProgress.completedTasks.push(task.id);
-    userProgress.points += task.points;
+    
+    // Calculate points to award (reduced if hint was used)
+    let pointsToAward = task.points;
+    if (taskHintUsed[task.id] && taskOriginalPoints[task.id]) {
+      // Use the reduced points if hint was used
+      pointsToAward = taskOriginalPoints[task.id] - Math.round(taskOriginalPoints[task.id] * 0.3);
+    }
+    
+    // Add the calculated points to total
+    userProgress.points += pointsToAward;
     
     // Check for level up
     const newLevel = Math.floor(userProgress.points / 100) + 1;
@@ -1849,7 +2023,7 @@ function completeTask(task) {
     updateUI();
     renderTasks();
     
-    // showAlert(`🎉 Tebrikler! "${task.title}" görevini tamamladınız! +${task.points} puan`);
+    // showAlert(`🎉 Tebrikler! "${task.title}" görevini tamamladınız! +${pointsToAward} puan`);
   }
 }
 
@@ -1857,7 +2031,7 @@ function completeTask(task) {
 function updateUI() {
   // Skip UI update in free mode
   if (isFreeMode) {
-    console.log("Serbest mod - UI güncellemesi atlandı");
+    console.log("Geliştirici modu - UI güncellemesi atlandı");
     return;
   }
   
@@ -1871,6 +2045,12 @@ function updateUI() {
   const pointsText = document.querySelector(".points-text");
   if (pointsText) {
     pointsText.textContent = `${userProgress.points} Puan`;
+  }
+  
+  // Update points number (Toplam Puan display)
+  const pointsNumber = document.querySelector(".points-number");
+  if (pointsNumber) {
+    pointsNumber.textContent = userProgress.points;
   }
   
   // Update progress
@@ -2344,7 +2524,9 @@ function showSuccessAnimation() {
           <h3>✅ "${currentTask.title}" Görevini Tamamladınız!</h3>
           <div class="points-earned">
             <span class="points-icon">⭐</span>
-            <span class="points-text">+${currentTask.points} Puan Kazandınız!</span>
+            <span class="points-text">+${taskHintUsed[currentTask.id] && taskOriginalPoints[currentTask.id] 
+              ? taskOriginalPoints[currentTask.id] - Math.round(taskOriginalPoints[currentTask.id] * 0.3)
+              : currentTask.points} Puan Kazandınız!</span>
           </div>
           <div class="level-info">
             <span class="level-text">Seviye: ${userProgress.level}</span>
@@ -2353,9 +2535,10 @@ function showSuccessAnimation() {
         </div>
       </div>
       
+      <button class="success-close-btn" onclick="closeSuccessPopup()">×</button>
       <div class="success-actions">
-        <button class="btn btn-continue" onclick="goToTaskSelection()">Devam Et</button>
-        <button class="btn btn-close" onclick="closeSuccessPopup()">Tamam</button>
+        <button class="btn btn-task-list" onclick="goToTaskSelection()">Görev Listesi</button>
+        <button class="btn btn-next-task" onclick="goToNextTask()">Sonraki Görev</button>
       </div>
     </div>
   `;
@@ -2400,6 +2583,33 @@ function showSuccessAnimation() {
       position: relative;
       z-index: 1;
       overflow: hidden;
+    }
+    
+    .success-close-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      font-size: 1.5rem;
+      line-height: 1;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      opacity: 0.7;
+    }
+    
+    .success-close-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      opacity: 1;
+      transform: scale(1.1);
     }
     
     .confetti-container {
@@ -2580,44 +2790,50 @@ function showSuccessAnimation() {
     
     .success-actions {
       display: flex;
-      gap: 0.8rem;
+      gap: 1rem;
       justify-content: center;
-      margin-top: 1rem;
+      margin-top: 2rem;
+      padding: 0 0.5rem;
     }
     
-    .btn-continue {
+    .btn-task-list {
+      background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(108, 117, 125, 0.4);
+      min-width: 160px;
+      letter-spacing: 0.3px;
+    }
+    
+    .btn-task-list:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(108, 117, 125, 0.5);
+    }
+    
+    .btn-next-task {
       background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
       color: white;
       border: none;
-      padding: 0.6rem 1.5rem;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      font-weight: 600;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 700;
       cursor: pointer;
       transition: all 0.3s ease;
-      box-shadow: 0 3px 12px rgba(40, 167, 69, 0.3);
+      box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+      min-width: 160px;
+      letter-spacing: 0.3px;
     }
     
-    .btn-continue:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
-    }
-    
-    .btn-close {
-      background: rgba(255, 255, 255, 0.2);
-      color: white;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      padding: 0.6rem 1.5rem;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    
-    .btn-close:hover {
-      background: rgba(255, 255, 255, 0.3);
-      transform: translateY(-1px);
+    .btn-next-task:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(40, 167, 69, 0.5);
     }
   `;
   document.head.appendChild(style);
@@ -2647,6 +2863,48 @@ function goToTaskSelection() {
   const urlParams = new URLSearchParams(window.location.search);
   const category = urlParams.get('category') || currentTask.category;
   window.location.href = 'task-selection.html?category=' + encodeURIComponent(category);
+}
+
+// Go to Next Task
+function goToNextTask() {
+  if (!currentTask) return;
+  
+  closeSuccessPopup();
+  
+  // Find all tasks in the same category
+  const categoryTasks = tasks.filter(task => task.category === currentTask.category);
+  
+  // Find current task index
+  const currentIndex = categoryTasks.findIndex(task => task.id === currentTask.id);
+  
+  // Find next incomplete task
+  let nextTask = null;
+  for (let i = currentIndex + 1; i < categoryTasks.length; i++) {
+    if (!userProgress.completedTasks.includes(categoryTasks[i].id)) {
+      nextTask = categoryTasks[i];
+      break;
+    }
+  }
+  
+  // If no next task in category, try to find first incomplete task in any category
+  if (!nextTask) {
+    for (const task of tasks) {
+      if (!userProgress.completedTasks.includes(task.id)) {
+        nextTask = task;
+        break;
+      }
+    }
+  }
+  
+  if (nextTask) {
+    // Get category from URL parameter or use next task's category
+    const urlParams = new URLSearchParams(window.location.search);
+    const category = urlParams.get('category') || nextTask.category;
+    window.location.href = `editor.html?task=${nextTask.id}&category=${encodeURIComponent(category)}`;
+  } else {
+    // All tasks completed, go to task selection
+    goToTaskSelection();
+  }
 }
 
 // Show Failure Message
@@ -3152,11 +3410,17 @@ function decreaseFontSize() {
 }
 
 function increaseFontSize() {
-  if (currentFontSize < 24) {
+  if (currentFontSize < 32) {
     currentFontSize += 2;
     updateFontSize();
     saveFontSize();
   }
+}
+
+function resetFontSize() {
+  currentFontSize = 14;
+  updateFontSize();
+  saveFontSize();
 }
 
 function updateFontSize() {
@@ -3168,10 +3432,10 @@ function updateFontSize() {
     }
   }
   
-  // Update display
-  const fontSizeDisplay = document.getElementById('fontSizeDisplay');
-  if (fontSizeDisplay) {
-    fontSizeDisplay.textContent = currentFontSize + 'px';
+  // Update output content font size
+  const outputContent = document.getElementById('outputContent');
+  if (outputContent) {
+    outputContent.style.fontSize = currentFontSize + 'px';
   }
 }
 
@@ -3186,3 +3450,4 @@ function loadFontSize() {
     updateFontSize();
   }
 }
+

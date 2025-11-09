@@ -12,6 +12,9 @@ let userProgress = {
   achievements: [],
 };
 let currentScreen = "levelSelection"; // "levelSelection" or "editor"
+// Track original points and hint usage for tasks
+let taskOriginalPoints = {}; // Store original points for each task
+let taskHintUsed = {}; // Track if hint has been used for each task
 
 // Helper function to calculate total available points
 function getTotalAvailablePoints() {
@@ -866,6 +869,11 @@ function showEditorScreen() {
     initializePyodide();
   }
   
+  // Update hint button display after screen is shown
+  setTimeout(() => {
+    updateHintButtonDisplay();
+  }, 100);
+  
   if (!currentTask) {
     resetEditorToNoTask();
   }
@@ -1227,6 +1235,19 @@ function selectTask(taskId) {
   if (task) {
     currentTask = task;
     
+    // Initialize original points if not already stored
+    if (!taskOriginalPoints[task.id]) {
+      taskOriginalPoints[task.id] = task.points;
+    }
+    
+    // Restore original points if hint was not used yet
+    if (!taskHintUsed[task.id]) {
+      task.points = taskOriginalPoints[task.id];
+    }
+    
+    // Update hint button display
+    updateHintButtonDisplay();
+    
     // Show editor screen
     showEditorScreen();
     
@@ -1433,12 +1454,17 @@ function renderTasks() {
     // Add star icon for first 3 tasks
     const starIcon = task.id <= 3 ? "⭐ " : "";
 
+    // Get the correct points (reduced if hint was used)
+    const displayPoints = taskHintUsed[task.id] && taskOriginalPoints[task.id] 
+      ? taskOriginalPoints[task.id] - Math.round(taskOriginalPoints[task.id] * 0.3)
+      : task.points;
+    
     taskElement.innerHTML = `
             <div class="task-title">${starIcon}${task.title}</div>
             <div class="task-description">${task.description}</div>
             <div class="task-meta">
             <div class="task-difficulty">${difficultyDots}</div>
-                <div class="task-points">🏆 ${task.points} Puan</div>
+                <div class="task-points">🏆 ${displayPoints} Puan</div>
             </div>
         `;
 
@@ -1784,6 +1810,50 @@ function resetCode() {
   }
 }
 
+// Update hint button display with reduction amount
+function updateHintButtonDisplay() {
+  const hintBtn = document.getElementById("hintBtn");
+  if (!hintBtn || !currentTask) return;
+  
+  if (taskHintUsed[currentTask.id]) {
+    // Hint already used, show the reduction amount
+    const originalPoints = taskOriginalPoints[currentTask.id] || currentTask.points;
+    const reduction = Math.round(originalPoints * 0.3);
+    hintBtn.innerHTML = `
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-6h2v6zm0-8h-2V7h2v4z"/>
+      </svg>
+      İpucu <span class="hint-reduction">-${reduction}</span>
+    `;
+  } else {
+    // Hint not used yet, show normal button
+    hintBtn.innerHTML = `
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-6h2v6zm0-8h-2V7h2v4z"/>
+      </svg>
+      İpucu
+    `;
+  }
+}
+
+// Animate points display when hint is used
+function animatePointsReduction() {
+  // Find the task points display in the sidebar
+  const activeTaskElement = document.querySelector(`[data-task-id="${currentTask.id}"]`);
+  if (!activeTaskElement) return;
+  
+  const pointsElement = activeTaskElement.querySelector('.task-points');
+  if (!pointsElement) return;
+  
+  // Add animation class
+  pointsElement.classList.add('points-reduction-animation');
+  
+  // After animation completes, remove the class
+  setTimeout(() => {
+    pointsElement.classList.remove('points-reduction-animation');
+  }, 1000);
+}
+
 // Show Hint
 function showHint() {
   if (!currentTask) {
@@ -1798,6 +1868,31 @@ function showHint() {
     const hintModal = document.getElementById("hintModal");
     hintModal.classList.add("show");
     return;
+  }
+
+  // Check if hint was already used for this task
+  if (!taskHintUsed[currentTask.id]) {
+    // Initialize original points if not already stored
+    if (!taskOriginalPoints[currentTask.id]) {
+      taskOriginalPoints[currentTask.id] = currentTask.points;
+    }
+    
+    // Reduce points by 30%
+    const originalPoints = taskOriginalPoints[currentTask.id];
+    const reduction = Math.round(originalPoints * 0.3);
+    currentTask.points = originalPoints - reduction;
+    
+    // Mark hint as used
+    taskHintUsed[currentTask.id] = true;
+    
+    // Update hint button display
+    updateHintButtonDisplay();
+    
+    // Update task points display in sidebar
+    updateTaskPointsDisplay();
+    
+    // Animate the points reduction
+    animatePointsReduction();
   }
 
   // Add animation to hint button
@@ -1836,6 +1931,19 @@ function showHint() {
   // Show hint modal
   const hintModal = document.getElementById("hintModal");
   hintModal.classList.add("show");
+}
+
+// Update task points display in sidebar
+function updateTaskPointsDisplay() {
+  if (!currentTask) return;
+  
+  const activeTaskElement = document.querySelector(`[data-task-id="${currentTask.id}"]`);
+  if (!activeTaskElement) return;
+  
+  const pointsElement = activeTaskElement.querySelector('.task-points');
+  if (pointsElement) {
+    pointsElement.textContent = `🏆 ${currentTask.points} Puan`;
+  }
 }
 
 // Toggle between short and long hints

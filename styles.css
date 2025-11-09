@@ -640,11 +640,32 @@ body {
   align-items: center;
 }
 
-.task-title-section h2 {
+.task-title-section {
+  display: flex;
+  align-items: center;
+}
+
+.editor-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.code-icon {
+  flex-shrink: 0;
+  color: #495057;
+}
+
+.dark-theme .code-icon {
+  color: var(--text-primary);
+}
+
+.editor-title {
   font-size: 1.5rem;
   font-weight: 700;
-  margin: 0 0 0.5rem 0;
+  margin: 0;
   color: #333;
+  font-family: 'Inter', sans-serif;
 }
 
 .task-description {
@@ -734,6 +755,43 @@ body {
   box-shadow: 0 6px 20px rgba(156, 39, 176, 0.4);
 }
 
+.btn-upload {
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.btn-upload:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+}
+
+.btn-upload.upload-active {
+  background: linear-gradient(135deg, #45a049 0%, #4CAF50 100%);
+  animation: uploadPulse 0.6s ease;
+}
+
+@keyframes uploadPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 /* Floating Back to Categories Button - Top Left */
 .back-to-categories-floating {
   position: fixed;
@@ -743,8 +801,8 @@ body {
   background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffc107 100%);
   color: #1a1a1a;
   border: none;
-  padding: 12px;
-  border-radius: 50%;
+  padding: 10px 18px;
+  border-radius: 25px;
   font-weight: 600;
   font-size: 0.9rem;
   cursor: pointer;
@@ -757,10 +815,11 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
+  min-width: auto;
+  height: auto;
   backdrop-filter: blur(10px);
   border: 2px solid rgba(255, 255, 255, 0.2);
+  white-space: nowrap;
 }
 
 .back-to-categories-floating:hover {
@@ -778,64 +837,21 @@ body {
     0 1px 4px rgba(0, 0, 0, 0.2);
 }
 
-.back-icon {
-  font-size: 1.8rem;
-  font-weight: 800;
+.button-text {
+  font-size: 0.9rem;
+  font-weight: 600;
   transition: all 0.3s ease;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  height: 100%;
 }
 
-.back-to-categories-floating:hover .back-icon {
-  transform: translateX(-3px) scale(1.1);
-  text-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+.back-to-categories-floating:hover .button-text {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* Tooltip */
-.back-to-categories-floating::before {
-  content: "Kategoriler'e Dön";
-  position: absolute;
-  right: -120px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.9);
-  color: white;
-  padding: 8px 12px;
-  border-radius: 8px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  white-space: nowrap;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.3s ease;
-  z-index: 1001;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(10px);
-}
-
-.back-to-categories-floating::after {
-  content: "";
-  position: absolute;
-  right: -8px;
-  top: 50%;
-  transform: translateY(-50%);
-  border: 6px solid transparent;
-  border-right-color: rgba(0, 0, 0, 0.9);
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.3s ease;
-  z-index: 1001;
-}
-
-.back-to-categories-floating:hover::before,
-.back-to-categories-floating:hover::after {
-  opacity: 1;
-  visibility: visible;
-}
+/* Tooltip removed - button text is now visible */
 
 
 /* Mobile responsive for floating button */
@@ -843,20 +859,12 @@ body {
   .back-to-categories-floating {
     top: 15px;
     left: 15px;
-    padding: 10px;
+    padding: 8px 14px;
     font-size: 0.8rem;
-    width: 42px;
-    height: 42px;
   }
   
-  .back-icon {
-    font-size: 1.5rem;
-  }
-  
-  /* Hide tooltip on mobile */
-  .back-to-categories-floating::before,
-  .back-to-categories-floating::after {
-    display: none;
+  .button-text {
+    font-size: 0.8rem;
   }
 }
 
@@ -1061,44 +1069,104 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-radius: 12px;
-  padding: 8px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  gap: 6px;
+  background: transparent;
+  backdrop-filter: none;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+  border: none;
   pointer-events: all;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .font-control-panel:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+  box-shadow: none;
 }
 
 .font-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  width: 36px;
-  height: 36px;
+  background: transparent;
+  color: #6c757d;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+  transition: all 0.2s ease;
+  box-shadow: none;
+}
+
+.font-btn svg {
+  opacity: 0.75;
+  transition: opacity 0.2s ease;
+  width: 20px;
+  height: 20px;
 }
 
 .font-btn:hover {
-  transform: scale(1.1);
-  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+  background: transparent;
+  color: #495057;
+  border-color: rgba(0, 0, 0, 0.2);
+  box-shadow: none;
+  transform: translateY(-1px);
+}
+
+.font-btn:hover svg {
+  opacity: 0.9;
 }
 
 .font-btn:active {
-  transform: scale(0.95);
+  transform: translateY(0);
+}
+
+.font-btn:active svg {
+  opacity: 1;
+}
+
+/* Dark theme font buttons */
+.dark-theme .font-control-panel {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.dark-theme .font-control-panel:hover {
+  box-shadow: none;
+}
+
+.dark-theme .font-btn {
+  background: transparent;
+  color: #b0b0b0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: none;
+}
+
+.dark-theme .font-btn svg {
+  opacity: 0.75;
+  width: 20px;
+  height: 20px;
+}
+
+.dark-theme .font-btn:hover {
+  background: transparent;
+  color: #d0d0d0;
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: none;
+}
+
+.dark-theme .font-btn:hover svg {
+  opacity: 0.9;
+}
+
+.dark-theme .font-btn:active {
+  box-shadow: none;
+}
+
+.dark-theme .font-btn:active svg {
+  opacity: 1;
 }
 
 .font-size-indicator {
@@ -1480,6 +1548,38 @@ body {
   background: linear-gradient(45deg, #ffed4e, #ffd700);
 }
 
+/* Points reduction animation */
+.points-reduction-animation {
+  animation: pointsReduction 1s ease-in-out;
+}
+
+@keyframes pointsReduction {
+  0% {
+    color: #333;
+    transform: scale(1);
+  }
+  30% {
+    color: #dc3545;
+    transform: scale(0.7);
+  }
+  60% {
+    color: #dc3545;
+    transform: scale(0.7);
+  }
+  100% {
+    color: #333;
+    transform: scale(1);
+  }
+}
+
+/* Hint button reduction display */
+.hint-reduction {
+  color: #dc3545;
+  font-weight: 700;
+  margin-left: 0.25rem;
+  font-size: 1.2em;
+}
+
 .difficulty-dot {
   width: 8px;
   height: 8px;
@@ -1561,6 +1661,7 @@ body {
   display: flex;
   flex-direction: column;
   min-width: 0;
+  position: relative;
 }
 
 /* Output Container (keeping for backward compatibility) */
@@ -2056,7 +2157,7 @@ body {
 .progress-label {
   min-width: 120px;
   font-weight: 500;
-  color: #495057;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .progress-bar-container {
@@ -2742,6 +2843,35 @@ body {
   background: linear-gradient(45deg, #ffed4e, #ffd700);
 }
 
+/* Dark theme points reduction animation */
+.dark-theme .points-reduction-animation {
+  animation: pointsReductionDark 1s ease-in-out;
+}
+
+@keyframes pointsReductionDark {
+  0% {
+    color: #333;
+    transform: scale(1);
+  }
+  30% {
+    color: #ff6b6b;
+    transform: scale(0.7);
+  }
+  60% {
+    color: #ff6b6b;
+    transform: scale(0.7);
+  }
+  100% {
+    color: #333;
+    transform: scale(1);
+  }
+}
+
+/* Dark theme hint button reduction display */
+.dark-theme .hint-reduction {
+  color: #ff6b6b;
+}
+
 .dark-theme .editor-area {
   background: var(--bg-secondary);
 }
@@ -2759,6 +2889,10 @@ body {
 }
 
 .dark-theme .editor-header h2 {
+  color: var(--text-primary);
+}
+
+.dark-theme .editor-title {
   color: var(--text-primary);
 }
 
